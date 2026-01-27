@@ -2,15 +2,23 @@ import { useState, useRef, useEffect } from "react";
 import {
     DiskFraction,
     SquareFraction,
+    SquareDiagonalFraction,
+    SquareCornerTriangleFraction,
+    SquareQuarterSquareFraction,
+    SquareCrossFraction,
     RectangleFraction,
     HouseFraction,
 } from "./fractions";
 
 const FRACTION_COMPONENTS = {
-    disk: DiskFraction,
-    square: SquareFraction,
-    rectangle: RectangleFraction,
-    house: HouseFraction,
+    DiskFraction,
+    SquareFraction,
+    SquareDiagonalFraction,
+    SquareCornerTriangleFraction,
+    SquareQuarterSquareFraction,
+    SquareCrossFraction,
+    RectangleFraction,
+    HouseFraction,
 };
 
 export default function Piece({
@@ -24,6 +32,8 @@ export default function Piece({
     initialPosition = { x: 0, y: 0 },
     initialRotation = 0,
     onTransform,
+    // NOUVEAU : type de fractionnement
+    splittingType = null,
 }) {
     const [position, setPosition] = useState(initialPosition);
     const [rotation, setRotation] = useState(initialRotation);
@@ -59,7 +69,6 @@ export default function Piece({
     }, []);
 
     const handlePointerDown = (e) => {
-        // Ne sélectionner que si on clique sur la pièce elle-même, pas sur les boutons
         if (e.target.closest("button")) return;
 
         setIsSelected(true);
@@ -106,7 +115,20 @@ export default function Piece({
         resetInactivityTimer();
     };
 
-    const FractionComponent = FRACTION_COMPONENTS[shape];
+    // Sélectionner le bon composant de fraction
+    let FractionComponent;
+    if (splittingType && splittingType.component) {
+        FractionComponent = FRACTION_COMPONENTS[splittingType.component];
+    } else {
+        // Fallback vers l'ancien système
+        const legacyMapping = {
+            disk: DiskFraction,
+            square: SquareFraction,
+            rectangle: RectangleFraction,
+            house: HouseFraction,
+        };
+        FractionComponent = legacyMapping[shape];
+    }
 
     // Afficher les boutons si la pièce est sélectionnée ou en cours de drag
     const showControls = isSelected || isDragging;
@@ -147,9 +169,10 @@ export default function Piece({
                 startAngle={startAngle}
                 index={index}
                 proportions={proportions}
+                {...(splittingType?.props || {})}
             />
 
-            {/* Boutons de contrôle - affichés seulement si sélectionné/drag */}
+            {/* Boutons de contrôle */}
             {showControls && (
                 <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 flex gap-2 animate-controls-appear">
                     <button
@@ -157,7 +180,7 @@ export default function Piece({
                         className="group/btn relative w-10 h-10 bg-blue-500 text-white rounded-lg hover:bg-blue-600 active:scale-95 transition-all hover:scale-110 text-xl font-bold shadow-lg"
                         aria-label="Pivoter"
                     >
-                        ↻{/* Tooltip */}
+                        ↻
                         <span className="absolute -top-9 left-1/2 -translate-x-1/2 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none">
                             Pivoter
                         </span>
@@ -168,7 +191,7 @@ export default function Piece({
                             className="group/btn relative w-10 h-10 bg-green-500 text-white rounded-lg hover:bg-green-600 active:scale-95 transition-all hover:scale-110 text-xl font-bold shadow-lg"
                             aria-label="Retourner"
                         >
-                            ⇄{/* Tooltip */}
+                            ⇄
                             <span className="absolute -top-9 left-1/2 -translate-x-1/2 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none">
                                 Retourner
                             </span>

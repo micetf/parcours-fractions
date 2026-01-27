@@ -1,4 +1,6 @@
 import { PROGRESSION_EDUSCOL } from "../utils/fractionConfig";
+import { getRandomSplittingType } from "../utils/fractionTypes";
+
 
 function randomRotation() {
     const rotations = [0, 90, 180, 270];
@@ -35,11 +37,11 @@ export function generateProgression(level = "CE1") {
     const config = PROGRESSION_EDUSCOL[level];
     const exercises = [];
 
-    // Ordre pédagogique explicite des fractions : 1/2, 1/4, 1/8, 1/3, 1/5, 1/10
+    // Ordre pédagogique explicite des fractions
     const fractionOrder = [2, 4, 8, 3, 5, 10];
 
     // Construire la liste des fractions disponibles pour ce niveau
-    const availableFractions = new Map(); // denominator → {name, plural}
+    const availableFractions = new Map();
 
     config.figures.forEach((figure) => {
         config.fractions[figure]?.forEach((fraction) => {
@@ -63,6 +65,12 @@ export function generateProgression(level = "CE1") {
             );
 
             if (!hasFraction) return;
+
+            // NOUVEAU : Sélectionner aléatoirement un type de fractionnement
+            const splittingType = getRandomSplittingType(
+                figure,
+                fraction.denominator
+            );
 
             // Générer les variations visuelles (communes aux 2 activités)
             const figureRotation = randomRotation();
@@ -89,6 +97,7 @@ export function generateProgression(level = "CE1") {
                 scale,
                 startAngle,
                 pieceIndex,
+                splittingType, // NOUVEAU
             });
 
             // Activité 2
@@ -130,6 +139,7 @@ export function generateProgression(level = "CE1") {
                 proportions,
                 scale,
                 piecesData,
+                splittingType, // NOUVEAU
             });
         });
     });

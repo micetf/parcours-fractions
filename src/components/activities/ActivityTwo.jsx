@@ -106,6 +106,7 @@ export default function ActivityTwo({ exercise, onComplete }) {
                                     initialRotation={pieceData.rotation}
                                     proportions={exercise.proportions || {}}
                                     scale={exercise.scale || 1}
+                                    splittingType={exercise.splittingType} // ← AJOUTÉ
                                 />
                             ))}
                         </div>

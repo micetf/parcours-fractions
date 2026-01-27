@@ -11,12 +11,90 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### À venir
 
-- Activité 2 avec fractions > 1 (CM1)
+- Correction du bug triangle 1/4 (actuellement 1/8)
+- Triangles isocèles depuis le centre (1/4)
+- Fractionnements pour 1/8 avancés
 - Mode enseignant basique
 - Feedback sonore optionnel
-- Composant `Band` (bande prototypique distincte du rectangle)
-- Rectangle non-prototypique (inclinaisons, diagonales, formes en L)
-- Carré avec fractionnement diagonal (triangles)
+
+---
+
+## [0.3.0] - 2026-01-27
+
+### Added
+
+#### Fractionnements multiples (représentations variées)
+
+**Concept** : Une même fraction peut maintenant avoir plusieurs représentations géométriques, sélectionnées aléatoirement.
+
+**Carré 1/2** (2 types) :
+
+- Rectangle vertical (existant)
+- **Triangle rectangle diagonal** ✨ (nouveau)
+
+**Carré 1/4** (4 types) :
+
+- Rectangle vertical (existant)
+- **Triangle rectangle coin** ✨ (nouveau)
+- **Petit carré** ✨ (nouveau)
+- **Triangle rectangle croix** ✨ (nouveau)
+
+**Objectif pédagogique** : Généralisation du concept de fraction en évitant les stéréotypes visuels.
+
+#### Nouveaux composants
+
+- `SquareDiagonalFraction.jsx` - Triangle rectangle pour 1/2
+- `SquareCornerTriangleFraction.jsx` - Triangle rectangle coin pour 1/4
+- `SquareQuarterSquareFraction.jsx` - Petit carré pour 1/4
+- `SquareCrossFraction.jsx` - Triangle rectangle croix pour 1/4
+
+#### Architecture
+
+- `fractionTypes.js` - Configuration des types de fractionnements
+- Fonction `getRandomSplittingType()` - Sélection aléatoire du type
+
+### Changed
+
+#### Génération de progression
+
+- `progression.js` - Intègre maintenant la sélection aléatoire de types
+- Chaque exercice reçoit un champ `splittingType`
+- Console.log de debug pour vérifier les types générés
+
+#### Composant Piece
+
+- `Piece.jsx` - Accepte le paramètre `splittingType`
+- Sélection dynamique du composant de fraction selon le type
+- Fallback vers l'ancien système si `splittingType` absent
+
+#### Activités
+
+- `ActivityOne.jsx` - Passe `splittingType` au composant Piece
+- `ActivityTwo.jsx` - Passe `splittingType` au composant Piece
+
+### Technical Details
+
+**Fichiers créés** : 5
+
+- `src/components/shapes/fractions/SquareDiagonalFraction.jsx`
+- `src/components/shapes/fractions/SquareCornerTriangleFraction.jsx`
+- `src/components/shapes/fractions/SquareQuarterSquareFraction.jsx`
+- `src/components/shapes/fractions/SquareCrossFraction.jsx`
+- `src/utils/fractionTypes.js`
+
+**Fichiers modifiés** : 5
+
+- `src/components/shapes/Piece.jsx`
+- `src/components/shapes/fractions/index.js`
+- `src/data/progression.js`
+- `src/components/activities/ActivityOne.jsx`
+- `src/components/activities/ActivityTwo.jsx`
+
+**Lignes de code ajoutées** : ~500
+
+### Known Issues
+
+⚠️ **Bug identifié** : Le composant `SquareCornerTriangleFraction` génère un triangle représentant 1/8 au lieu de 1/4. À corriger dans v0.3.1.
 
 ---
 
@@ -298,4 +376,4 @@ const resetInactivityTimer = () => {
 
 ---
 
-**Dernière mise à jour :** 28 janvier 2026
+**Dernière mise à jour :** 27 janvier 2026

@@ -21,6 +21,7 @@ Application web interactive conforme aux **programmes 2025** de l'Éducation Nat
 ✅ **Conformité EDUSCOL** : Respect strict des programmes 2025  
 ✅ **Manipulation** : Déplacement, rotation, retournement des morceaux  
 ✅ **Présentation non-prototypique** : Variations aléatoires pour éviter les stéréotypes  
+✅ **Fractionnements multiples** : Plusieurs représentations géométriques par fraction ✨ **v0.3.0**  
 ✅ **Progressivité** : Adaptation automatique selon le niveau (CE1/CE2/CM1)  
 ✅ **Autonomie** : Sauvegarde automatique de la progression
 
@@ -30,17 +31,19 @@ Application web interactive conforme aux **programmes 2025** de l'Éducation Nat
 
 Voir **[CHANGELOG.md](./CHANGELOG.md)** pour l'historique détaillé des modifications.
 
-### Dernière version : v0.1.0 (27/01/2026)
+### Dernière version : v0.3.0 (27/01/2026)
 
-**Amélioration UX/UI majeure** : Affichage conditionnel des contrôles de manipulation
+**Fractionnements multiples** : Représentations géométriques variées
 
-- ✨ Les boutons n'apparaissent que lors de la sélection d'une pièce
-- 🎨 Bordure bleue pulsante pour indiquer la sélection active
-- ⏱️ Désélection automatique après 3 secondes d'inactivité
-- 💡 Tooltips sur les boutons pour guider l'utilisateur
-- 📱 Interface épurée réduisant la charge cognitive
+- ✨ **Carré 1/2** : Rectangle vertical OU triangle diagonal
+- ✨ **Carré 1/4** : Rectangle, triangle coin, petit carré OU croix
+- 🎲 Sélection aléatoire à chaque génération
+- 🎨 4 nouveaux composants de fractions
+- 🏗️ Architecture extensible pour futurs types
 
-**Impact :** Interface visuellement plus claire, particulièrement dans l'Activité 2 avec plusieurs morceaux.
+**Impact pédagogique :** Généralisation du concept de fraction en évitant l'association stéréotypée "fraction = une seule forme".
+
+**⚠️ Bug connu :** Triangle coin 1/4 représente actuellement 1/8 (correction prévue v0.3.1)
 
 ---
 
@@ -109,12 +112,21 @@ fractions-app/
 │   │   ├── shapes/
 │   │   │   ├── Piece.jsx      # Composant manipulable
 │   │   │   ├── figures/       # Figures complètes (4 formes)
-│   │   │   └── fractions/     # Morceaux de fractions (4 types)
+│   │   │   └── fractions/     # Morceaux de fractions
+│   │   │       ├── DiskFraction.jsx
+│   │   │       ├── SquareFraction.jsx
+│   │   │       ├── SquareDiagonalFraction.jsx ✨ v0.3.0
+│   │   │       ├── SquareCornerTriangleFraction.jsx ✨ v0.3.0
+│   │   │       ├── SquareQuarterSquareFraction.jsx ✨ v0.3.0
+│   │   │       ├── SquareCrossFraction.jsx ✨ v0.3.0
+│   │   │       ├── RectangleFraction.jsx
+│   │   │       └── HouseFraction.jsx
 │   │   └── progression/       # (futurs) Composants de suivi
 │   ├── hooks/
 │   │   └── useLocalStorage.js # Persistance locale
 │   ├── utils/
-│   │   └── fractionConfig.js  # Configuration EDUSCOL
+│   │   ├── fractionConfig.js  # Configuration EDUSCOL
+│   │   └── fractionTypes.js   # Types de fractionnements ✨ v0.3.0
 │   ├── data/
 │   │   └── progression.js     # Générateur d'exercices
 │   ├── App.jsx                # Composant racine
@@ -152,21 +164,40 @@ La configuration est définie dans `src/utils/fractionConfig.js` :
 
 #### CE1
 
-- **Figures** : disque
-- **Fractions** : 1/2, 1/4, 1/8
-- **Max dénominateur** : 10
+- **Figures** : carré, rectangle, disque
+- **Fractions** : 1/2, 1/3, 1/4, 1/5
+- **Max dénominateur** : 5
+- **Total exercices** : 18
 
 #### CE2
 
-- **Figures** : disque, carré, rectangle
-- **Fractions** : 1/2, 1/3, 1/4, 1/8
-- **Max dénominateur** : 12
+- **Figures** : carré, rectangle, disque
+- **Fractions** : 1/2, 1/3, 1/4, 1/5, 1/6, 1/8, 1/10
+- **Max dénominateur** : 10
+- **Total exercices** : 28
 
 #### CM1
 
-- **Figures** : disque, carré, rectangle, maison
+- **Figures** : carré, rectangle, disque, maison
 - **Fractions** : 1/2, 1/3, 1/4, 1/5, 1/8, 1/10
-- **Max dénominateur** : 20
+- **Max dénominateur** : 10
+- **Total exercices** : 26
+
+### Types de fractionnements (v0.3.0)
+
+La configuration est définie dans `src/utils/fractionTypes.js` :
+
+#### Carré 1/2
+
+- `vertical-rectangles` : Rectangle vertical (classique)
+- `diagonal-triangles` : Triangle rectangle diagonal
+
+#### Carré 1/4
+
+- `vertical-rectangles` : Rectangle vertical (classique)
+- `corner-triangles` : Triangle rectangle coin ⚠️ **Bug : affiche 1/8**
+- `quarter-squares` : Petit carré (1/4 de l'aire)
+- `cross-triangles` : Triangle rectangle croix diagonale
 
 ### Personnalisation visuelle
 
@@ -188,7 +219,7 @@ Modifier les variables CSS dans `src/index.css` :
 Ajuster le délai de désélection automatique dans `src/components/shapes/Piece.jsx` :
 
 ```javascript
-// Ligne ~48
+// Ligne ~58
 setTimeout(() => setIsSelected(false), 3000); // 3 secondes (3000ms)
 ```
 
@@ -222,6 +253,15 @@ Pour éviter les stéréotypes visuels :
     - Disque : angle de départ 0-360°
     - Autres : bande aléatoire (horizontal/vertical)
 
+### Fractionnements multiples (v0.3.0) ✨
+
+Pour éviter l'association stéréotypée "fraction = une seule forme" :
+
+- **Sélection aléatoire** : Chaque génération choisit un type de fractionnement
+- **Carré 1/2** : Soit rectangle vertical, soit triangle diagonal
+- **Carré 1/4** : Soit rectangle, soit triangle coin, soit petit carré, soit croix
+- **Extensible** : Architecture prête pour ajouter plus de types (triangles isocèles, 1/8, etc.)
+
 ### Progression
 
 - **Sauvegarde automatique** : localStorage du navigateur
@@ -232,58 +272,73 @@ Pour éviter les stéréotypes visuels :
 
 ## 🧑‍💻 Développement
 
-### Ajouter une nouvelle figure
+### Ajouter un nouveau type de fractionnement
 
-1. **Créer le composant figure** dans `src/components/shapes/figures/` :
+Exemple : Ajouter des triangles isocèles pour 1/4
+
+**1. Créer le composant fraction** dans `src/components/shapes/fractions/` :
 
 ```jsx
-export default function Triangle({
-    size = 200,
-    fill = "var(--shape-fill)",
-    rotation = 0,
-    proportions = {},
+// SquareIsoscelesFraction.jsx
+export default function SquareIsoscelesFraction({
+    fill = "var(--piece-fill)",
+    index = 0, // 0 à 3
 }) {
+    const center = { x: 100, y: 100 };
+    const midPoints = [
+        { x: 100, y: 20 }, // Haut
+        { x: 180, y: 100 }, // Droite
+        { x: 100, y: 180 }, // Bas
+        { x: 20, y: 100 }, // Gauche
+    ];
+
+    const current = midPoints[index];
+    const next = midPoints[(index + 1) % 4];
+
     return (
-        <svg width={size} height={size} viewBox="0 0 200 200">
-            <g transform={`rotate(${rotation} 100 100)`}>
-                {/* Votre géométrie SVG */}
-            </g>
+        <svg width="200" height="200" viewBox="0 0 200 200">
+            <path
+                d={`M ${center.x} ${center.y} L ${current.x} ${current.y} L ${next.x} ${next.y} Z`}
+                fill={fill}
+                stroke="#000"
+                strokeWidth="2"
+            />
         </svg>
     );
 }
 ```
 
-2. **Créer le composant fraction** dans `src/components/shapes/fractions/` :
+**2. Enregistrer dans les mappings** :
 
 ```jsx
-export default function TriangleFraction({
-    denominator,
-    fill = "var(--piece-fill)",
-    index = 0,
-    proportions = {},
-}) {
-    // Calculs pour 1/n de la figure
-    return <svg>...</svg>;
-}
-```
-
-3. **Enregistrer dans les mappings** :
-
-```jsx
-// src/components/activities/ActivityOne.jsx
-const FIGURE_COMPONENTS = {
-    // ...
-    triangle: Triangle,
-};
+// src/components/shapes/fractions/index.js
+export { default as SquareIsoscelesFraction } from "./SquareIsoscelesFraction";
 
 // src/components/shapes/Piece.jsx
+import { SquareIsoscelesFraction } from "./fractions";
+
 const FRACTION_COMPONENTS = {
     // ...
-    triangle: TriangleFraction,
+    SquareIsoscelesFraction,
 };
 ```
 
-4. **Ajouter la configuration** dans `src/utils/fractionConfig.js`
+**3. Ajouter dans la configuration** `src/utils/fractionTypes.js` :
+
+```javascript
+export const SQUARE_SPLITTING_TYPES = {
+    4: [
+        // ... types existants
+        {
+            id: "isosceles-center",
+            component: "SquareIsoscelesFraction",
+            props: {},
+        },
+    ],
+};
+```
+
+C'est tout ! Le nouveau type sera automatiquement sélectionné aléatoirement.
 
 ### Modifier la logique de génération
 
@@ -308,9 +363,10 @@ Le fichier `src/data/progression.js` contient toute la logique de génération d
 1. **Manipulation** : Objets tangibles (virtuels) à déplacer, pivoter
 2. **Verbalisation** : Phrases à compléter, questions guidées
 3. **Représentations variées** : 4 figures géométriques différentes
-4. **Progressivité** : Du simple (CE1, disque) au complexe (CM1, maison)
+4. **Progressivité** : Du simple (CE1, carré) au complexe (CM1, maison)
 5. **Non-prototypique** : Évite les représentations stéréotypées
 6. **Charge cognitive réduite** : Interface épurée (v0.1.0+)
+7. **Fractionnements multiples** : Généralisation du concept (v0.3.0+)
 
 ---
 
@@ -366,6 +422,7 @@ Avant chaque release, tester :
 - ✅ Bouton flip masqué pour disque
 - ✅ Affichage conditionnel des contrôles (v0.1.0+)
 - ✅ Désélection automatique après 3s (v0.1.0+)
+- ✅ **Fractionnements multiples variés** (v0.3.0+)
 - ✅ Validation correcte/incorrecte
 - ✅ Passage automatique entre exercices
 - ✅ Sauvegarde/restauration progression
@@ -396,30 +453,36 @@ Avant chaque release, tester :
 
 ## 🐛 Problèmes connus
 
-### v0.1.0 (Alpha)
+### v0.3.0 (Alpha)
 
+- **Triangle coin 1/4 affiche 1/8** : Le composant `SquareCornerTriangleFraction` génère un triangle trop petit (correction prévue v0.3.1)
 - Activité 2 limitée aux fractions < 1 (même en CM1)
 - Pas d'interface enseignant
 - Pas d'export des résultats
 - Support hors-ligne incomplet (nécessite chargement initial)
 
-Voir le [document SRS](./SRS.md) pour la liste complète des limitations.
+Voir le [CHANGELOG.md](./CHANGELOG.md) et le [SRS.md](./SRS.md) pour la liste complète.
 
 ---
 
 ## 🗺️ Roadmap
 
-### v0.2.0 (Priorité haute)
+### v0.3.1 (Priorité critique)
+
+- [ ] **Corriger le bug triangle 1/4** (affiche actuellement 1/8)
+
+### v0.4.0 (Priorité haute)
+
+- [ ] Triangles isocèles depuis le centre (1/4)
+- [ ] Fractionnements avancés pour 1/8
+- [ ] Rectangle avec diagonales (1/2, 1/4)
+- [ ] Tests utilisateurs avec élèves
+
+### v0.5.0 (Priorité moyenne)
 
 - [ ] Activité 2 avec fractions > 1 (CM1)
 - [ ] Feedback sonore optionnel
 - [ ] Mode enseignant basique
-
-### v0.3.0 (Priorité moyenne)
-
-- [ ] Export PDF des résultats
-- [ ] PWA (mode hors-ligne complet)
-- [ ] Activités complémentaires (comparaison, droite graduée)
 
 ### v1.0.0 (Long terme)
 
@@ -446,6 +509,13 @@ Les contributions sont les bienvenues !
 ### Conventions
 
 - **Commits** : Format [Conventional Commits](https://www.conventionalcommits.org)
+    - `feat:` Nouvelle fonctionnalité
+    - `fix:` Correction de bug
+    - `docs:` Documentation
+    - `style:` Formatage
+    - `refactor:` Refactorisation
+    - `test:` Tests
+    - `chore:` Tâches diverses
 - **Code** : ESLint + Prettier (config à ajouter)
 - **Branches** : `feature/`, `fix/`, `docs/`
 - **Changelog** : Mettre à jour [CHANGELOG.md](./CHANGELOG.md) selon [Keep a Changelog](https://keepachangelog.com/fr/)
@@ -499,10 +569,10 @@ Département : Ardèche
 
 ## 📊 Statistiques
 
-![Version](https://img.shields.io/badge/Version-0.1.0--alpha-blue)
-![Lines of Code](https://img.shields.io/badge/LOC-~2500-blue)
-![Components](https://img.shields.io/badge/Composants-15-green)
-![Bundle Size](https://img.shields.io/badge/Bundle-~150KB-orange)
+![Version](https://img.shields.io/badge/Version-0.3.0--alpha-blue)
+![Lines of Code](https://img.shields.io/badge/LOC-~3000-blue)
+![Components](https://img.shields.io/badge/Composants-19-green)
+![Bundle Size](https://img.shields.io/badge/Bundle-~180KB-orange)
 
 ---
 

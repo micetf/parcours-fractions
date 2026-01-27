@@ -74,6 +74,7 @@ export default function ActivityOne({ exercise, onComplete }) {
                                 initialRotation={exercise.pieceRotation || 0}
                                 proportions={exercise.proportions || {}}
                                 scale={exercise.scale || 1}
+                                splittingType={exercise.splittingType} // ← AJOUTÉ
                             />
                         </div>
                     </div>

@@ -1,4 +1,8 @@
 export { default as DiskFraction } from "./DiskFraction";
 export { default as SquareFraction } from "./SquareFraction";
+export { default as SquareDiagonalFraction } from "./SquareDiagonalFraction";
+export { default as SquareCornerTriangleFraction } from "./SquareCornerTriangleFraction";
+export { default as SquareQuarterSquareFraction } from "./SquareQuarterSquareFraction";
+export { default as SquareCrossFraction } from "./SquareCrossFraction";
 export { default as RectangleFraction } from "./RectangleFraction";
 export { default as HouseFraction } from "./HouseFraction";
