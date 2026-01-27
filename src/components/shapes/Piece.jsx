@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
     DiskFraction,
     SquareFraction,
@@ -29,16 +29,43 @@ export default function Piece({
     const [rotation, setRotation] = useState(initialRotation);
     const [isFlipped, setIsFlipped] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+    const [isSelected, setIsSelected] = useState(false);
 
     const pieceRef = useRef(null);
     const dragStartRef = useRef({ x: 0, y: 0 });
+    const inactivityTimerRef = useRef(null);
 
     // Rotation adaptée selon la forme
     const rotationStep = shape === "disk" ? 360 / denominator : 90;
     const showFlipButton = shape !== "disk";
 
+    // Timer de désélection automatique après 3 secondes d'inactivité
+    const resetInactivityTimer = () => {
+        if (inactivityTimerRef.current) {
+            clearTimeout(inactivityTimerRef.current);
+        }
+        inactivityTimerRef.current = setTimeout(() => {
+            setIsSelected(false);
+        }, 3000);
+    };
+
+    // Nettoyer le timer au démontage
+    useEffect(() => {
+        return () => {
+            if (inactivityTimerRef.current) {
+                clearTimeout(inactivityTimerRef.current);
+            }
+        };
+    }, []);
+
     const handlePointerDown = (e) => {
+        // Ne sélectionner que si on clique sur la pièce elle-même, pas sur les boutons
+        if (e.target.closest("button")) return;
+
+        setIsSelected(true);
         setIsDragging(true);
+        resetInactivityTimer();
+
         dragStartRef.current = {
             x: e.clientX - position.x,
             y: e.clientY - position.y,
@@ -55,11 +82,13 @@ export default function Piece({
         };
         setPosition(newPosition);
         onTransform?.({ position: newPosition, rotation, isFlipped });
+        resetInactivityTimer();
     };
 
     const handlePointerUp = (e) => {
         setIsDragging(false);
         e.target.releasePointerCapture(e.pointerId);
+        resetInactivityTimer();
     };
 
     const handleRotate = (e) => {
@@ -67,32 +96,51 @@ export default function Piece({
         const newRotation = (rotation + rotationStep) % 360;
         setRotation(newRotation);
         onTransform?.({ position, rotation: newRotation, isFlipped });
+        resetInactivityTimer();
     };
 
     const handleFlip = (e) => {
         e.stopPropagation();
         setIsFlipped(!isFlipped);
         onTransform?.({ position, rotation, isFlipped: !isFlipped });
+        resetInactivityTimer();
     };
 
     const FractionComponent = FRACTION_COMPONENTS[shape];
 
+    // Afficher les boutons si la pièce est sélectionnée ou en cours de drag
+    const showControls = isSelected || isDragging;
+
     return (
         <div
             ref={pieceRef}
-            className="absolute cursor-move touch-none select-none"
+            className="absolute cursor-move touch-none select-none group"
             style={{
                 transform: `translate(${position.x}px, ${position.y}px) 
                     rotate(${rotation}deg) 
                     scaleX(${isFlipped ? -1 : 1})
                     scale(${scale})`,
                 transition: isDragging ? "none" : "transform 0.2s ease",
-                zIndex: isDragging ? 50 : 10,
+                zIndex: isDragging || isSelected ? 50 : 10,
             }}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
         >
+            {/* Bordure de sélection */}
+            {isSelected && (
+                <div
+                    className="absolute inset-0 border-4 border-blue-400 rounded-lg pointer-events-none animate-selection-pulse"
+                    style={{
+                        width: "200px",
+                        height: "200px",
+                        left: "50%",
+                        top: "50%",
+                        transform: "translate(-50%, -50%)",
+                    }}
+                />
+            )}
+
             <FractionComponent
                 denominator={denominator}
                 orientation={orientation}
@@ -101,24 +149,33 @@ export default function Piece({
                 proportions={proportions}
             />
 
-            <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 flex gap-2">
-                <button
-                    onClick={handleRotate}
-                    className="w-10 h-10 bg-blue-500 text-white rounded-lg hover:bg-blue-600 active:scale-95 transition-transform text-xl font-bold shadow-lg"
-                    aria-label="Pivoter"
-                >
-                    ↻
-                </button>
-                {showFlipButton && (
+            {/* Boutons de contrôle - affichés seulement si sélectionné/drag */}
+            {showControls && (
+                <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 flex gap-2 animate-controls-appear">
                     <button
-                        onClick={handleFlip}
-                        className="w-10 h-10 bg-green-500 text-white rounded-lg hover:bg-green-600 active:scale-95 transition-transform text-xl font-bold shadow-lg"
-                        aria-label="Retourner"
+                        onClick={handleRotate}
+                        className="group/btn relative w-10 h-10 bg-blue-500 text-white rounded-lg hover:bg-blue-600 active:scale-95 transition-all hover:scale-110 text-xl font-bold shadow-lg"
+                        aria-label="Pivoter"
                     >
-                        ⇄
+                        ↻{/* Tooltip */}
+                        <span className="absolute -top-9 left-1/2 -translate-x-1/2 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none">
+                            Pivoter
+                        </span>
                     </button>
-                )}
-            </div>
+                    {showFlipButton && (
+                        <button
+                            onClick={handleFlip}
+                            className="group/btn relative w-10 h-10 bg-green-500 text-white rounded-lg hover:bg-green-600 active:scale-95 transition-all hover:scale-110 text-xl font-bold shadow-lg"
+                            aria-label="Retourner"
+                        >
+                            ⇄{/* Tooltip */}
+                            <span className="absolute -top-9 left-1/2 -translate-x-1/2 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none">
+                                Retourner
+                            </span>
+                        </button>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

@@ -26,6 +26,24 @@ Application web interactive conforme aux **programmes 2025** de l'Éducation Nat
 
 ---
 
+## 📝 Changelog
+
+Voir **[CHANGELOG.md](./CHANGELOG.md)** pour l'historique détaillé des modifications.
+
+### Dernière version : v0.1.0 (27/01/2026)
+
+**Amélioration UX/UI majeure** : Affichage conditionnel des contrôles de manipulation
+
+- ✨ Les boutons n'apparaissent que lors de la sélection d'une pièce
+- 🎨 Bordure bleue pulsante pour indiquer la sélection active
+- ⏱️ Désélection automatique après 3 secondes d'inactivité
+- 💡 Tooltips sur les boutons pour guider l'utilisateur
+- 📱 Interface épurée réduisant la charge cognitive
+
+**Impact :** Interface visuellement plus claire, particulièrement dans l'Activité 2 avec plusieurs morceaux.
+
+---
+
 ## 🚀 Démarrage rapide
 
 ### Prérequis
@@ -106,7 +124,8 @@ fractions-app/
 ├── vite.config.js
 ├── tailwind.config.js
 ├── package.json
-└── README.md
+├── README.md
+└── CHANGELOG.md               # Historique des versions
 ```
 
 ---
@@ -164,6 +183,21 @@ Modifier les variables CSS dans `src/index.css` :
 }
 ```
 
+### Paramètres de manipulation (v0.1.0+)
+
+Ajuster le délai de désélection automatique dans `src/components/shapes/Piece.jsx` :
+
+```javascript
+// Ligne ~48
+setTimeout(() => setIsSelected(false), 3000); // 3 secondes (3000ms)
+```
+
+**Recommandations par niveau :**
+
+- **CE1** : 4000ms (plus de temps pour les jeunes)
+- **CE2** : 3000ms (défaut)
+- **CM1** : 2500ms (plus réactif)
+
 ---
 
 ## 🎨 Fonctionnalités
@@ -175,6 +209,7 @@ Modifier les variables CSS dans `src/index.css` :
     - Disque : 360°/n (ex: 90° pour un quart)
     - Autres : 90° fixe
 - **Retournement** : Symétrie horizontale (sauf disque)
+- **Contrôles conditionnels** : Les boutons n'apparaissent que lors de la sélection (v0.1.0+)
 
 ### Variations non-prototypiques
 
@@ -275,6 +310,7 @@ Le fichier `src/data/progression.js` contient toute la logique de génération d
 3. **Représentations variées** : 4 figures géométriques différentes
 4. **Progressivité** : Du simple (CE1, disque) au complexe (CM1, maison)
 5. **Non-prototypique** : Évite les représentations stéréotypées
+6. **Charge cognitive réduite** : Interface épurée (v0.1.0+)
 
 ---
 
@@ -328,6 +364,8 @@ Avant chaque release, tester :
 - ✅ Drag & drop (souris + tactile)
 - ✅ Rotation adaptée (disque vs autres formes)
 - ✅ Bouton flip masqué pour disque
+- ✅ Affichage conditionnel des contrôles (v0.1.0+)
+- ✅ Désélection automatique après 3s (v0.1.0+)
 - ✅ Validation correcte/incorrecte
 - ✅ Passage automatique entre exercices
 - ✅ Sauvegarde/restauration progression
@@ -358,36 +396,38 @@ Avant chaque release, tester :
 
 ## 🐛 Problèmes connus
 
-### v1.0 (Alpha)
+### v0.1.0 (Alpha)
 
 - Activité 2 limitée aux fractions < 1 (même en CM1)
 - Pas d'interface enseignant
 - Pas d'export des résultats
 - Support hors-ligne incomplet (nécessite chargement initial)
 
-Voir le [document SRS](./SRS_Fractions.md) pour la liste complète des limitations.
+Voir le [document SRS](./SRS.md) pour la liste complète des limitations.
 
 ---
 
 ## 🗺️ Roadmap
 
-### v1.1 (Priorité haute)
+### v0.2.0 (Priorité haute)
 
 - [ ] Activité 2 avec fractions > 1 (CM1)
 - [ ] Feedback sonore optionnel
 - [ ] Mode enseignant basique
 
-### v1.2 (Priorité moyenne)
+### v0.3.0 (Priorité moyenne)
 
 - [ ] Export PDF des résultats
 - [ ] PWA (mode hors-ligne complet)
 - [ ] Activités complémentaires (comparaison, droite graduée)
 
-### v2.0 (Long terme)
+### v1.0.0 (Long terme)
 
 - [ ] Multi-utilisateurs avec base de données
 - [ ] Gamification (badges, scores)
 - [ ] Adaptation intelligente de la difficulté
+
+Voir [CHANGELOG.md](./CHANGELOG.md) pour plus de détails.
 
 ---
 
@@ -408,6 +448,7 @@ Les contributions sont les bienvenues !
 - **Commits** : Format [Conventional Commits](https://www.conventionalcommits.org)
 - **Code** : ESLint + Prettier (config à ajouter)
 - **Branches** : `feature/`, `fix/`, `docs/`
+- **Changelog** : Mettre à jour [CHANGELOG.md](./CHANGELOG.md) selon [Keep a Changelog](https://keepachangelog.com/fr/)
 
 ### Tests avant PR
 
@@ -421,7 +462,7 @@ pnpm preview        # Test build local
 
 ## 📄 Licence
 
-- MIT (open-source permissif)
+MIT (open-source permissif)
 
 ---
 
@@ -443,7 +484,8 @@ Département : Ardèche
 
 ### Pour les enseignants
 
-- **Documentation** : [Voir SRS_Fractions.md](./SRS_Fractions.md)
+- **Documentation** : [Voir SRS.md](./SRS.md)
+- **Historique** : [Voir CHANGELOG.md](./CHANGELOG.md)
 - **Vidéos** : [À venir]
 - **Contact** : [email à définir]
 
@@ -451,11 +493,13 @@ Département : Ardèche
 
 - **Issues** : [GitHub Issues](https://github.com/micetf/parcours-fractions/issues)
 - **Discussions** : [GitHub Discussions](https://github.com/micetf/parcours-fractions/discussions)
+- **Changelog** : [CHANGELOG.md](./CHANGELOG.md)
 
 ---
 
 ## 📊 Statistiques
 
+![Version](https://img.shields.io/badge/Version-0.1.0--alpha-blue)
 ![Lines of Code](https://img.shields.io/badge/LOC-~2500-blue)
 ![Components](https://img.shields.io/badge/Composants-15-green)
 ![Bundle Size](https://img.shields.io/badge/Bundle-~150KB-orange)
@@ -468,7 +512,8 @@ Département : Ardèche
 - [Documentation Vite](https://vitejs.dev)
 - [Documentation Tailwind](https://tailwindcss.com)
 - [Programmes EDUSCOL 2025](https://eduscol.education.fr)
-- [Convention Commits](https://www.conventionalcommits.org)
+- [Keep a Changelog](https://keepachangelog.com/fr/)
+- [Conventional Commits](https://www.conventionalcommits.org)
 
 ---
 
