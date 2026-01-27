@@ -14,6 +14,166 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - Activité 2 avec fractions > 1 (CM1)
 - Mode enseignant basique
 - Feedback sonore optionnel
+- Composant `Band` (bande prototypique distincte du rectangle)
+- Rectangle non-prototypique (inclinaisons, diagonales, formes en L)
+- Carré avec fractionnement diagonal (triangles)
+
+---
+
+## [0.2.0] - 2026-01-28
+
+### Changed
+
+#### Interface utilisateur
+
+- **Suppression complète du sélecteur de niveau** : L'application démarre directement en CE1, sans choix visible CE1/CE2/CM1
+- L'en-tête affiche uniquement le titre "Les Fractions" et la barre de progression
+- Le bouton "Recommencer" reste accessible
+
+#### Progression pédagogique
+
+- **Nouvelle logique de progression** : Fraction → Figure → Activité (au lieu de Figure → Fraction → Activité)
+    - Exemple : 1/2 sur carré, rectangle, disque PUIS 1/4 sur carré, rectangle, disque
+    - Avantage : Transfert immédiat du concept de fraction sur plusieurs représentations
+- **Ordre des figures** : Carré → Rectangle → Disque (→ Maison en CM1)
+    - Justification : Complexité cognitive croissante (symétrie → asymétrie → rotation angulaire)
+- **Ordre des fractions** : 1/2, 1/4, 1/8, 1/3, 1/5, 1/10
+    - Justification : Puissances de 2 (divisions successives) puis autres dénominateurs
+
+#### Configuration EDUSCOL (CORRECTION MAJEURE)
+
+**❌ Ancienne configuration (erronée)** :
+
+```javascript
+CE1: {
+    figures: ["disk"],
+    fractions: { disk: [2, 4, 8] }
+}
+```
+
+**✅ Nouvelle configuration (conforme programmes 2025)** :
+
+```javascript
+CE1: {
+    figures: ["square", "rectangle", "disk"],
+    fractions: {
+        square: [2, 4],
+        rectangle: [2, 3, 4, 5],
+        disk: [2, 3, 4]
+    }
+}
+```
+
+**Source** : Programme cycle 2 EDUSCOL 2025 (BO 31/10/2024)
+
+> "Les fractions rencontrées au CE1 ont un dénominateur égal à 2, 3, 4, 5, 6, 8 ou 10."
+> "L'élève sait partager une bande de papier en un nombre donné de parts égales."
+
+**Changements détaillés par niveau** :
+
+**CE1** :
+
+- Ajout du carré (dénominateurs 2, 4)
+- Ajout du rectangle (dénominateurs 2, 3, 4, 5)
+- Conservation du disque (dénominateurs 2, 3, 4)
+- Suppression du dénominateur 8 (déplacé au CE2)
+- Total exercices : 18 (contre 6 auparavant)
+
+**CE2** :
+
+- Ajout du dénominateur 8 pour carré, rectangle, disque
+- Ajout des dénominateurs 6, 10 pour rectangle
+- Total exercices : 34
+
+**CM1** :
+
+- Conservation des figures square, rectangle, disk, house
+- Ajustement des dénominateurs selon programme
+
+### Fixed
+
+- **Conformité EDUSCOL** : Configuration complète revue selon le document officiel `ensel135_annexe4.pdf`
+- **Ordre pédagogique** : La progression respecte maintenant le principe de transfert immédiat des concepts
+
+### Technical
+
+#### Fichiers modifiés
+
+**`src/utils/fractionConfig.js`** :
+
+- Refonte complète de `PROGRESSION_EDUSCOL`
+- Ajout de fractions manquantes pour CE1
+- Réorganisation de l'ordre des figures : `["square", "rectangle", "disk"]`
+
+**`src/data/progression.js`** :
+
+- Nouvelle fonction `generateProgression()` avec logique Fraction → Figure → Activité
+- Ordre de tri explicite : `const fractionOrder = [2, 4, 8, 3, 5, 10];`
+- Boucle imbriquée modifiée :
+
+```javascript
+sortedFractions.forEach((fraction) => {
+    config.figures.forEach((figure) => {
+        // Activité 1
+        // Activité 2
+    });
+});
+```
+
+**`src/App.jsx`** :
+
+- Suppression complète du sélecteur de niveau (lignes 8-10, 14-30)
+- Niveau fixe : `const defaultLevel = "CE1";`
+- Suppression de la fonction `handleLevelChange()`
+- Suppression de la sauvegarde `fractions-level` dans localStorage
+
+**`src/hooks/useLocalStorage.js`** :
+
+- Aucune modification (toujours utilisé pour `fractions-index`)
+
+#### Impact sur la génération d'exercices
+
+**Avant (v0.1.0)** :
+
+```
+Disque 1/2 Act.1
+Disque 1/2 Act.2
+Disque 1/4 Act.1
+Disque 1/4 Act.2
+Disque 1/8 Act.1
+Disque 1/8 Act.2
+```
+
+**Après (v0.2.0)** :
+
+```
+Carré 1/2 Act.1
+Carré 1/2 Act.2
+Rectangle 1/2 Act.1
+Rectangle 1/2 Act.2
+Disque 1/2 Act.1
+Disque 1/2 Act.2
+Carré 1/4 Act.1
+Carré 1/4 Act.2
+...
+```
+
+### Rationale pédagogique
+
+**Pourquoi Carré → Rectangle → Disque ?**
+
+| Figure    | Complexité                                      | Ancrage concret              |
+| --------- | ----------------------------------------------- | ---------------------------- |
+| Carré     | Symétrique, division simple (2 ou 4)            | Serviette, gaufre            |
+| Rectangle | Asymétrique, plus de possibilités (3, 4, 5)     | Tablette de chocolat         |
+| Disque    | Division angulaire, rotation autour d'un centre | Pizza, gâteau d'anniversaire |
+
+**Pourquoi Fraction → Figure ?**
+
+- Principe didactique : **Transfert immédiat du concept**
+- L'élève construit la notion de "un demi" sur 3 représentations consécutives
+- Évite l'association stéréotypée "fraction = disque uniquement"
+- Conforme au principe EDUSCOL de "présentation non-prototypique"
 
 ---
 
@@ -65,28 +225,9 @@ const resetInactivityTimer = () => {
 };
 ```
 
-**Affichage conditionnel :**
-
-```javascript
-const showControls = isSelected || isDragging;
-
-{
-    showControls && (
-        <div className="animate-controls-appear">
-            {/* Boutons rotation/flip */}
-        </div>
-    );
-}
-```
-
-**Cleanup automatique :**
-
-- `useEffect` avec fonction de nettoyage pour éviter les fuites mémoires
-- Le timer est systématiquement clearé au démontage du composant
-
 #### Fichier `index.css`
 
-**Animation de pulsation (bordure de sélection) :**
+**Animation de pulsation (bordure de sélection)** :
 
 ```css
 @keyframes selection-pulse {
@@ -102,10 +243,7 @@ const showControls = isSelected || isDragging;
 }
 ```
 
-- Boucle infinie (2s par cycle)
-- Effet de halo qui s'étend puis se rétracte
-
-**Animation d'apparition des contrôles :**
+**Animation d'apparition des contrôles** :
 
 ```css
 @keyframes controls-appear {
@@ -120,91 +258,6 @@ const showControls = isSelected || isDragging;
 }
 ```
 
-- Durée : 0.2s
-- Mouvement vertical + fade-in pour un effet naturel
-
-#### Comportement UX
-
-**Scénario nominal :**
-
-1. **État initial** : Pièce affichée sans bordure ni boutons
-2. **Premier touch/clic** : Bordure bleue + boutons apparaissent (animation)
-3. **Manipulation** : Les contrôles restent visibles, timer se réinitialise
-4. **Inactivité (3s)** : Désélection automatique, retour à l'état initial
-
-**Cas particuliers gérés :**
-
-- Clic sur bouton n'active PAS la sélection (via `e.target.closest("button")`)
-- Chaque pièce gère son propre état indépendamment (pas d'état global)
-- z-index adapté : 50 si sélectionné/drag, 10 sinon
-
-#### Rationale pédagogique
-
-**Conformité aux principes de l'ergonomie cognitive :**
-
-- **Charge cognitive réduite** : Interface épurée, focus sur la fraction
-- **Affordance progressive** : Les actions se révèlent à l'usage
-- **Feedback immédiat** : Bordure + animation = signal clair
-- **Attention guidée** : L'élève se concentre sur le contenu, pas sur l'UI
-
-**Avantages observables :**
-
-- Particulièrement efficace dans l'Activité 2 avec plusieurs morceaux
-- Meilleure lisibilité pour l'enseignant observant l'écran
-- Découverte naturelle des fonctionnalités par manipulation
-
-#### Configuration
-
-**Paramètres ajustables :**
-
-| Paramètre                  | Fichier     | Ligne | Valeur par défaut |
-| -------------------------- | ----------- | ----- | ----------------- |
-| Délai de désélection       | `Piece.jsx` | ~48   | 3000ms            |
-| Couleur bordure            | `Piece.jsx` | ~137  | `border-blue-400` |
-| Durée animation apparition | `index.css` | ~35   | 0.2s              |
-| Cycle pulsation            | `index.css` | ~17   | 2s                |
-
-**Exemple d'ajustement par niveau :**
-
-```javascript
-// Adapter le délai selon l'âge
-const delay = {
-    CE1: 4000, // Plus de temps pour les jeunes
-    CE2: 3000,
-    CM1: 2500,
-}[level];
-
-setTimeout(() => setIsSelected(false), delay);
-```
-
-#### Tests recommandés
-
-**Desktop :**
-
-- [x] Clic sur pièce → sélection + affichage boutons
-- [x] Drag fluide avec boutons visibles
-- [x] Rotation/flip → action + timer reset
-- [x] Désélection après 3s d'inactivité
-- [x] Tooltips au survol
-
-**Tablette :**
-
-- [x] Touch sur pièce → sélection
-- [x] Drag tactile sans lag
-- [x] Touch sur boutons → actions immédiates
-
-**Activité 2 (plusieurs pièces) :**
-
-- [x] Sélection indépendante par pièce
-- [x] Pas de conflit entre timers
-- [x] z-index correct
-
-#### Dépendances
-
-- React 18.3.1+ (hooks `useState`, `useRef`, `useEffect`)
-- Tailwind CSS 3.4+ (classes `group`, `group-hover`)
-- Aucune dépendance externe supplémentaire
-
 ---
 
 ## [0.0.1] - 2026-01-20
@@ -216,7 +269,7 @@ setTimeout(() => setIsSelected(false), delay);
 - Figures géométriques : Disque, Carré, Rectangle, Maison
 - Composants de fractions correspondants
 - Système de drag & drop avec `PointerEvents`
-- Configuration EDUSCOL pour les 3 niveaux (CE1, CE2, CM1)
+- Configuration EDUSCOL pour les 3 niveaux (CE1, CE2, CM1) - **INCORRECTE, corrigée en v0.2.0**
 - Générateur de progression avec variations non-prototypiques
 - Sauvegarde locale avec `useLocalStorage`
 - Boutons de rotation et retournement (affichage permanent)
@@ -245,4 +298,4 @@ setTimeout(() => setIsSelected(false), delay);
 
 ---
 
-**Dernière mise à jour :** 27 janvier 2026
+**Dernière mise à jour :** 28 janvier 2026

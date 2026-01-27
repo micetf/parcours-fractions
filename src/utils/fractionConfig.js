@@ -1,23 +1,27 @@
 export const PROGRESSION_EDUSCOL = {
     CE1: {
-        figures: ["disk"],
+        figures: ["square", "rectangle", "disk"],
         fractions: {
-            disk: [
+            square: [
                 { denominator: 2, name: "demi", plural: "demis" },
                 { denominator: 4, name: "quart", plural: "quarts" },
-                { denominator: 8, name: "huitième", plural: "huitièmes" },
+            ],
+            rectangle: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+                { denominator: 5, name: "cinquième", plural: "cinquièmes" },
+            ],
+            disk: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
             ],
         },
     },
     CE2: {
-        figures: ["disk", "square", "rectangle"],
+        figures: ["square", "rectangle", "disk"],
         fractions: {
-            disk: [
-                { denominator: 2, name: "demi", plural: "demis" },
-                { denominator: 4, name: "quart", plural: "quarts" },
-                { denominator: 8, name: "huitième", plural: "huitièmes" },
-                { denominator: 3, name: "tiers", plural: "tiers" },
-            ],
             square: [
                 { denominator: 2, name: "demi", plural: "demis" },
                 { denominator: 4, name: "quart", plural: "quarts" },
@@ -25,21 +29,24 @@ export const PROGRESSION_EDUSCOL = {
             ],
             rectangle: [
                 { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+                { denominator: 5, name: "cinquième", plural: "cinquièmes" },
+                { denominator: 6, name: "sixième", plural: "sixièmes" },
+                { denominator: 8, name: "huitième", plural: "huitièmes" },
+                { denominator: 10, name: "dixième", plural: "dixièmes" },
+            ],
+            disk: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
                 { denominator: 4, name: "quart", plural: "quarts" },
                 { denominator: 8, name: "huitième", plural: "huitièmes" },
-                { denominator: 3, name: "tiers", plural: "tiers" },
             ],
         },
     },
     CM1: {
-        figures: ["disk", "square", "rectangle", "house"],
+        figures: ["square", "rectangle", "disk", "house"],
         fractions: {
-            disk: [
-                { denominator: 2, name: "demi", plural: "demis" },
-                { denominator: 4, name: "quart", plural: "quarts" },
-                { denominator: 8, name: "huitième", plural: "huitièmes" },
-                { denominator: 3, name: "tiers", plural: "tiers" },
-            ],
             square: [
                 { denominator: 2, name: "demi", plural: "demis" },
                 { denominator: 4, name: "quart", plural: "quarts" },
@@ -47,9 +54,15 @@ export const PROGRESSION_EDUSCOL = {
             ],
             rectangle: [
                 { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
                 { denominator: 4, name: "quart", plural: "quarts" },
                 { denominator: 8, name: "huitième", plural: "huitièmes" },
+            ],
+            disk: [
+                { denominator: 2, name: "demi", plural: "demis" },
                 { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+                { denominator: 8, name: "huitième", plural: "huitièmes" },
             ],
             house: [
                 { denominator: 5, name: "cinquième", plural: "cinquièmes" },
@@ -60,8 +73,8 @@ export const PROGRESSION_EDUSCOL = {
 };
 
 export const FIGURE_NAMES = {
-    disk: "disque",
     square: "carré",
     rectangle: "rectangle",
+    disk: "disque",
     house: "maison",
 };

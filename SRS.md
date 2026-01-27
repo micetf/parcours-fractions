@@ -2,10 +2,19 @@
 
 ## Application Web d'Apprentissage des Fractions
 
-**Version :** 1.0  
-**Date :** 27 janvier 2026  
+**Version :** 2.0  
+**Date :** 28 janvier 2026  
 **Auteur :** Conseiller Pédagogique de Circonscription Numérique  
-**Statut :** En développement
+**Statut :** En développement - Alpha v0.2.0
+
+---
+
+## Historique des révisions
+
+| Version | Date       | Auteur        | Modifications                                           |
+| ------- | ---------- | ------------- | ------------------------------------------------------- |
+| 1.0     | 27/01/2026 | CPC Numérique | Création initiale - État Alpha v0.1.0                   |
+| 2.0     | 28/01/2026 | CPC Numérique | Correction configuration EDUSCOL + nouvelle progression |
 
 ---
 
@@ -14,6 +23,8 @@
 ### 1.1 Objectif du document
 
 Ce document spécifie les exigences fonctionnelles et non-fonctionnelles de l'application web d'apprentissage des fractions destinée aux élèves de cycle 2 et cycle 3 de l'école primaire française.
+
+**Note importante** : La version 1.0 de ce document contenait une erreur majeure dans la configuration des fractions par niveau, ne respectant pas les programmes EDUSCOL 2025. Cette version 2.0 corrige cette erreur suite à la consultation du document officiel `ensel135_annexe4.pdf`.
 
 ### 1.2 Contexte du projet
 
@@ -111,19 +122,25 @@ L'élève répond à une série de questions progressives sur des morceaux de fr
 
 ### 3.1 Gestion des niveaux
 
-#### EF-01 : Sélection du niveau
+#### EF-01 : Niveau par défaut
 
 **Priorité :** Haute  
-**Description :** L'utilisateur doit pouvoir sélectionner son niveau scolaire.
+**Description :** L'application démarre directement au niveau CE1 sans sélection visible de l'utilisateur.
 
 **Critères d'acceptation :**
 
-- 3 boutons visibles : CE1, CE2, CM1
-- Le niveau actif est mis en évidence visuellement
-- Le changement de niveau réinitialise la progression
-- Le niveau sélectionné est sauvegardé localement
+- Aucun bouton de sélection de niveau n'est affiché dans l'interface
+- Le niveau CE1 est utilisé par défaut
+- La progression générée correspond au niveau CE1
+- Le niveau n'est pas sauvegardé dans localStorage (suppression de `fractions-level`)
 
 **Dépendances :** Aucune
+
+**Rationale** :
+
+- Simplification de l'interface (réduction de la charge cognitive)
+- Évite la stigmatisation par le niveau scolaire
+- Possibilité future d'adaptation automatique de la difficulté
 
 ---
 
@@ -132,31 +149,66 @@ L'élève répond à une série de questions progressives sur des morceaux de fr
 #### EF-02 : Fractions disponibles selon le niveau
 
 **Priorité :** Haute  
-**Description :** Les fractions présentées doivent respecter les programmes EDUSCOL.
+**Description :** Les fractions présentées doivent respecter strictement les programmes EDUSCOL 2025.
+
+**Source officielle** : Programme cycle 2, BO du 31 octobre 2024 (`ensel135_annexe4.pdf`)
+
+**Citation textuelle** :
+
+> "Les fractions rencontrées au CE1 ont un dénominateur égal à 2, 3, 4, 5, 6, 8 ou 10."
+> "L'élève sait partager une bande de papier en un nombre donné de parts égales, en s'appuyant éventuellement sur un quadrillage. L'élève sait repérer une partie correspondant à une fraction comme 1/2, 1/3 ou 1/6."
 
 **Règles métier :**
 
 **CE1 :**
 
-- Figures : disque uniquement
-- Dénominateurs : 2, 4, 8
-- Fractions ≤ 1 uniquement
+- **Figures** : Carré, Rectangle, Disque
+- **Ordre de présentation** : Carré → Rectangle → Disque
+- **Dénominateurs par figure** :
+    - **Carré** : 2, 4
+    - **Rectangle** : 2, 3, 4, 5
+    - **Disque** : 2, 3, 4
+- **Maximum dénominateur** : 5
+- **Fractions > 1** : Non (toutes ≤ 1)
+
+**Rationale ordre des figures** :
+
+1. **Carré** : Symétrique, division simple, ancrage concret (serviette, gaufre)
+2. **Rectangle** : Asymétrique, plus de possibilités, familier (tablette de chocolat)
+3. **Disque** : Division angulaire (rotation), plus abstrait, mais ancrage émotionnel fort (pizza, gâteau)
 
 **CE2 :**
 
-- Figures : disque, carré, rectangle
-- Dénominateurs : disque (2,3,4,8), carré (2,4,8), rectangle (2,3,4,8)
-- Maximum : 12
-- Fractions ≤ 1 uniquement
+- **Figures** : Carré, Rectangle, Disque
+- **Ordre** : Carré → Rectangle → Disque
+- **Dénominateurs par figure** :
+    - **Carré** : 2, 4, 8
+    - **Rectangle** : 2, 3, 4, 5, 6, 8, 10
+    - **Disque** : 2, 3, 4, 8
+- **Maximum dénominateur** : 10
+- **Fractions > 1** : Non (toutes ≤ 1)
 
 **CM1 :**
 
-- Figures : disque, carré, rectangle, maison
-- Dénominateurs : disque (2,3,4,8), carré (2,4,8), rectangle (2,3,4,8), maison (5,10)
-- Maximum : 20
-- Fractions > 1 autorisées (activité 2 uniquement)
+- **Figures** : Carré, Rectangle, Disque, Maison
+- **Ordre** : Carré → Rectangle → Disque → Maison
+- **Dénominateurs par figure** :
+    - **Carré** : 2, 4, 8
+    - **Rectangle** : 2, 3, 4, 8
+    - **Disque** : 2, 3, 4, 8
+    - **Maison** : 5, 10
+- **Maximum dénominateur** : 10
+- **Fractions > 1** : Oui (activité 2 uniquement - prévu pour v0.3.0)
 
-**Source :** Document EDUSCOL 65186
+**Source** : Document EDUSCOL `ensel135_annexe4.pdf`, consultation directe du 28/01/2026
+
+**Correction par rapport à SRS v1.0** :
+
+| Niveau | V1.0 (Erroné)               | V2.0 (Conforme EDUSCOL 2025)                        |
+| ------ | --------------------------- | --------------------------------------------------- |
+| CE1    | Disque uniquement (2, 4, 8) | Carré (2, 4) + Rectangle (2,3,4,5) + Disque (2,3,4) |
+| CE2    | Disque, Carré, Rectangle    | ✓ Ordre modifié + ajout dénominateurs               |
+| CM1    | Idem CE2 + Maison           | ✓ Ajustements dénominateurs                         |
 
 ---
 
@@ -275,12 +327,57 @@ L'élève répond à une série de questions progressives sur des morceaux de fr
 
 **Priorité :** Haute
 
-**Règle :** Pour chaque combinaison (figure, fraction), générer :
+**Règle :** Pour chaque combinaison (fraction, figure), générer :
 
 1. Un exercice d'activité 1
 2. Un exercice d'activité 2
 
-**Ordre :** Séquentiel dans l'ordre : disque → carré → rectangle → maison
+**Ordre de génération** :
+
+```
+Pour chaque fraction (1/2, 1/4, 1/8, 1/3, 1/5, 1/10) :
+    Pour chaque figure (carré, rectangle, disque, maison) :
+        Si cette fraction existe pour cette figure :
+            Créer exercice activité 1
+            Créer exercice activité 2
+```
+
+**Exemple de séquence CE1** :
+
+| #   | Fraction | Figure    | Activité |
+| --- | -------- | --------- | -------- |
+| 1   | 1/2      | Carré     | 1        |
+| 2   | 1/2      | Carré     | 2        |
+| 3   | 1/2      | Rectangle | 1        |
+| 4   | 1/2      | Rectangle | 2        |
+| 5   | 1/2      | Disque    | 1        |
+| 6   | 1/2      | Disque    | 2        |
+| 7   | 1/4      | Carré     | 1        |
+| 8   | 1/4      | Carré     | 2        |
+| 9   | 1/4      | Rectangle | 1        |
+| 10  | 1/4      | Rectangle | 2        |
+| 11  | 1/4      | Disque    | 1        |
+| 12  | 1/4      | Disque    | 2        |
+| 13  | 1/3      | Rectangle | 1        |
+| 14  | 1/3      | Rectangle | 2        |
+| 15  | 1/3      | Disque    | 1        |
+| 16  | 1/3      | Disque    | 2        |
+| 17  | 1/5      | Rectangle | 1        |
+| 18  | 1/5      | Rectangle | 2        |
+
+**Total CE1** : 18 exercices
+
+**Rationale pédagogique** :
+
+- **Transfert immédiat** : Le concept de "un demi" est renforcé sur 3 figures consécutives
+- **Variété cognitive** : Maintien de l'attention par changement de figure tous les 2 exercices
+- **Généralisation** : Évite l'association stéréotypée "fraction = une seule forme"
+- **Conforme EDUSCOL** : Principe de "présentation non-prototypique"
+
+**Changement par rapport à v1.0** :
+
+- Ancienne logique : Figure → Fraction → Activité (monotonie, transfert retardé)
+- Nouvelle logique : Fraction → Figure → Activité (transfert immédiat)
 
 #### EF-09 : Barre de progression
 
@@ -293,14 +390,19 @@ L'élève répond à une série de questions progressives sur des morceaux de fr
 - Pourcentage de complétion
 - Barre visuelle animée
 
+**Note** : Le niveau (CE1/CE2/CM1) n'est plus affiché
+
 #### EF-10 : Sauvegarde de la progression
 
 **Priorité :** Moyenne
 
 **Données sauvegardées :**
 
-- Niveau sélectionné
-- Index de l'exercice courant
+- Index de l'exercice courant : `fractions-index`
+
+**Données supprimées (v0.2.0)** :
+
+- ~~Niveau sélectionné : `fractions-level`~~ (niveau fixe CE1)
 
 **Mécanisme :** localStorage du navigateur
 
@@ -308,10 +410,8 @@ L'élève répond à une série de questions progressives sur des morceaux de fr
 
 **Priorité :** Basse
 
-**Action :** Bouton "Recommencer" avec confirmation
-**Effet :** Retour à l'exercice 0 du niveau courant
-
----
+**Action :** Bouton "Recommencer" avec confirmation  
+**Effet :** Retour à l'exercice 0 du niveau CE1
 
 ## 4. Exigences non-fonctionnelles
 
@@ -368,30 +468,28 @@ L'élève répond à une série de questions progressives sur des morceaux de fr
 ```
 src/
 ├── components/
-│   ├── ui/                    # Composants génériques (futurs)
-│   ├── activities/            # Activités pédagogiques
+│   ├── activities/
 │   │   ├── ActivityOne.jsx
 │   │   └── ActivityTwo.jsx
-│   ├── shapes/               # Formes géométriques
-│   │   ├── Piece.jsx         # Morceau manipulable
-│   │   ├── figures/          # Figures complètes
+│   ├── shapes/
+│   │   ├── Piece.jsx
+│   │   ├── figures/
 │   │   │   ├── Disk.jsx
 │   │   │   ├── Square.jsx
 │   │   │   ├── Rectangle.jsx
 │   │   │   └── House.jsx
-│   │   └── fractions/        # Morceaux de fractions
+│   │   └── fractions/
 │   │       ├── DiskFraction.jsx
 │   │       ├── SquareFraction.jsx
 │   │       ├── RectangleFraction.jsx
 │   │       └── HouseFraction.jsx
-│   └── progression/          # (futurs) ProgressBar, etc.
-├── hooks/                    # Hooks React personnalisés
+├── hooks/
 │   └── useLocalStorage.js
-├── utils/                    # Utilitaires
-│   └── fractionConfig.js     # Configuration EDUSCOL
-├── data/                     # Générateurs de données
-│   └── progression.js
-└── App.jsx                   # Composant racine
+├── utils/
+│   └── fractionConfig.js     # Configuration EDUSCOL (CORRIGÉE v2.0)
+├── data/
+│   └── progression.js         # Générateur (MODIFIÉ v2.0)
+└── App.jsx                    # (MODIFIÉ v2.0 - pas de sélecteur niveau)
 ```
 
 ### 5.3 Flux de données
@@ -462,7 +560,7 @@ App (mise à jour état)
 ```javascript
 PROGRESSION_EDUSCOL = {
   [niveau]: {
-    figures: string[],
+    figures: string[],          // ["square", "rectangle", "disk"] (CE1)
     fractions: {
       [figure]: [
         {
@@ -476,12 +574,39 @@ PROGRESSION_EDUSCOL = {
 }
 ```
 
+**Exemple concret (CE1)** :
+
+```javascript
+PROGRESSION_EDUSCOL = {
+    CE1: {
+        figures: ["square", "rectangle", "disk"],
+        fractions: {
+            square: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+            ],
+            rectangle: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+                { denominator: 5, name: "cinquième", plural: "cinquièmes" },
+            ],
+            disk: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+            ],
+        },
+    },
+};
+```
+
 ### 6.3 Données sauvegardées (localStorage)
 
 ```javascript
 {
-  'fractions-level': 'CE1'|'CE2'|'CM1',
-  'fractions-index': number
+  'fractions-index': number  // Index de l'exercice courant
+  // 'fractions-level' SUPPRIMÉ en v0.2.0
 }
 ```
 
@@ -517,9 +642,13 @@ PROGRESSION_EDUSCOL = {
 
 #### En-tête
 
-- Titre : "Les Fractions" (texte-4xl)
-- Sélecteur de niveau : 3 boutons horizontaux
-- Barre de progression : fond gris, remplissage bleu animé
+- **Titre** : "Les Fractions" (text-4xl)
+- **~~Sélecteur de niveau~~** : SUPPRIMÉ en v0.2.0
+- **Barre de progression** : Fond gris, remplissage bleu animé
+    - Affichage : "Exercice X / Y" | "Activité N" | "Z%"
+    - Bouton "Recommencer"
+
+**Changement v0.2.0** : Interface épurée sans sélection de niveau
 
 #### Zone d'activité
 
@@ -544,19 +673,19 @@ PROGRESSION_EDUSCOL = {
 
 ### 8.1 Génération des exercices
 
-**RM-01 :** Chaque combinaison (figure, fraction, niveau) génère 2 exercices (activité 1 et 2)
+**RM-01** : Pour chaque fraction disponible au niveau CE1, générer 2 exercices (activité 1 et 2) pour chaque figure compatible
 
-**RM-02 :** Les variations visuelles sont générées aléatoirement à chaque nouvelle génération de progression
+**RM-02** : Les variations visuelles sont générées aléatoirement à chaque nouvelle génération de progression
 
-**RM-03 :** Les angles et positions aléatoires utilisent Math.random() uniquement lors de la génération de la progression (pas en render)
+**RM-03** : Les angles et positions aléatoires utilisent Math.random() uniquement lors de la génération de la progression (pas en render)
 
-**RM-04 :** Pour l'activité 2, le nombre de morceaux donnés est : 1 ≤ n < dénominateur
+**RM-04** : Pour l'activité 2, le nombre de morceaux donnés est : 1 ≤ n < dénominateur
+
+**RM-05 (NOUVEAU)** : L'ordre de génération suit : Fraction (ordre pédagogique) → Figure (carré → rectangle → disque) → Activité (1 puis 2)
+
+**RM-06 (NOUVEAU)** : L'ordre pédagogique des fractions est : 2, 4, 8, 3, 5, 10 (puissances de 2 puis autres)
 
 ### 8.2 Manipulation
-
-**RM-05 :** La rotation du disque s'effectue par pas de 360°/dénominateur
-
-**RM-06 :** La rotation des autres formes s'effectue par pas de 90°
 
 **RM-07 :** Le bouton flip n'est pas affiché pour les disques (symétrie radiale)
 
@@ -580,18 +709,20 @@ PROGRESSION_EDUSCOL = {
 
 **Acteur principal :** Élève  
 **Préconditions :** Application chargée  
-**Postconditions :** Progression initialisée
+**Postconditions :** Progression initialisée au niveau CE1
 
 **Scénario nominal :**
 
-1. L'élève sélectionne son niveau (CE1, CE2 ou CM1)
-2. Le système génère la liste des exercices
-3. Le système affiche le premier exercice
-4. La progression est sauvegardée
+1. L'application démarre directement au niveau CE1 (pas de sélection)
+2. Le système génère la liste des 18 exercices (CE1)
+3. Le système affiche le premier exercice (Carré 1/2 Activité 1)
+4. La progression est sauvegardée dans localStorage (`fractions-index`)
 
 **Scénarios alternatifs :**
 
 - 1a. Une progression existe déjà → Le système reprend où l'élève s'était arrêté
+
+**Changement v0.2.0** : Plus de sélection de niveau
 
 ---
 
@@ -634,12 +765,14 @@ PROGRESSION_EDUSCOL = {
 
 ### 10.1 Limitations de la version 1.0
 
-**L10-01 :** Pas d'interface enseignant pour personnaliser les exercices  
-**L10-02 :** Pas de suivi détaillé des erreurs par élève  
-**L10-03 :** Pas d'export des résultats  
-**L10-04 :** Pas de support multi-utilisateurs  
-**L10-05 :** Pas de mode hors-ligne progressif (PWA)  
-**L10-06 :** Activité 2 limitée aux fractions < 1 (même en CM1)
+**L10-01 :** Pas de sélection de niveau (fixe CE1)  
+**L10-02 :** Pas d'interface enseignant pour personnaliser les exercices  
+**L10-03 :** Pas de suivi détaillé des erreurs par élève  
+**L10-04 :** Pas d'export des résultats  
+**L10-05 :** Pas de support multi-utilisateurs  
+**L10-06 :** Pas de mode hors-ligne progressif (PWA)  
+**L10-07 :** Activité 2 limitée aux fractions < 1 (même en CM1)  
+**L10-08 :** Rectangle = bande simple (pas de fractionnements complexes)
 
 ### 10.2 Contraintes techniques
 
@@ -654,33 +787,48 @@ PROGRESSION_EDUSCOL = {
 
 ### 11.1 Priorité haute
 
-**EV-H1 :** Activité 2 avec fractions > 1 (CM1)
+**EV-H1 :** Adaptation automatique du niveau selon la progression de l'élève
+
+- Démarrage CE1 pour tous
+- Montée en niveau automatique (CE2, CM1) selon taux de réussite
+- Algorithme de détection du niveau optimal
+
+**EV-H2 :** Composant `Band` distinct du rectangle
+
+- Bande prototypique (étroite, horizontale/verticale)
+- Rectangle non-prototypique (inclinaisons, diagonales)
+
+**EV-H3 :** Activité 2 avec fractions > 1 (CM1)
 
 - "On a plus d'une figure ! Combien de morceaux en plus ?"
 - "L'ensemble fait une figure + x nèmes"
 
-**EV-H2 :** Mode enseignant
+**EV-H4 :** Mode enseignant
 
+- Sélection manuelle du niveau
 - Sélection manuelle des exercices
 - Paramétrage des variations
 - Consultation des résultats
 
-**EV-H3 :** Feedback sonore optionnel
-
-- Sons de validation/erreur
-- Activation/désactivation par l'utilisateur
-
 ### 11.2 Priorité moyenne
 
-**EV-M1 :** Export des résultats (PDF, CSV)  
-**EV-M2 :** Mode hors-ligne complet (PWA)  
-**EV-M3 :** Activités complémentaires :
+**EV-M1 :** Fractionnements avancés
+
+- Carré avec diagonales (triangles)
+- Rectangle avec formes en L
+
+**EV-M2 :** Export des résultats (PDF, CSV)  
+**EV-M3 :** Mode hors-ligne complet (PWA)  
+**EV-M4 :** Feedback sonore optionnel
+**EV-M5 :** Export des résultats (PDF, CSV)  
+**EV-M6 :** Mode hors-ligne complet (PWA)  
+**EV-M7 :** Activités complémentaires :
 
 - Comparaison de fractions
 - Fractions sur droite graduée
 - Calculs simples (addition de fractions même dénominateur)
 
-**EV-M4 :** Personnalisation visuelle
+**EV-M8 :** Personnalisation visuelle
 
 - Choix des couleurs
 - Mode sombre
@@ -696,23 +844,26 @@ PROGRESSION_EDUSCOL = {
 
 ## 12. Critères d'acceptation globaux
 
-### Phase Alpha (actuelle)
+### Phase Alpha (v0.2.0)
 
-✅ **CA-A1 :** Les trois niveaux (CE1, CE2, CM1) sont fonctionnels  
-✅ **CA-A2 :** Les deux types d'activités fonctionnent correctement  
-✅ **CA-A3 :** Les fractions respectent la configuration EDUSCOL  
-✅ **CA-A4 :** Les figures et morceaux sont présentés de manière non-prototypique  
-✅ **CA-A5 :** La manipulation (drag, rotate, flip) fonctionne sur desktop et tablette  
+✅ **CA-A1 :** Le niveau CE1 fonctionne correctement  
+✅ **CA-A2 :** Les deux types d'activités fonctionnent  
+✅ **CA-A3 :** Les fractions respectent la configuration EDUSCOL 2025 (corrigée)  
+✅ **CA-A4 :** Les figures sont présentées de manière non-prototypique  
+✅ **CA-A5 :** La manipulation fonctionne sur desktop et tablette  
 ✅ **CA-A6 :** La progression est sauvegardée et restaurée  
-⬜ **CA-A7 :** L'application est testée sur les 4 navigateurs cibles  
-⬜ **CA-A8 :** L'accessibilité WCAG AA est validée
+✅ **CA-A7 :** La progression suit l'ordre Fraction → Figure → Activité  
+✅ **CA-A8 :** L'ordre des figures est Carré → Rectangle → Disque  
+⬜ **CA-A9 :** Tests sur les 4 navigateurs cibles  
+⬜ **CA-A10 :** Accessibilité WCAG AA validée
 
-### Phase Beta
+### Phase Beta (v0.3.0+)
 
 ⬜ **CA-B1 :** Tests utilisateurs avec 3 classes (CE1, CE2, CM1)  
 ⬜ **CA-B2 :** Corrections des bugs remontés  
 ⬜ **CA-B3 :** Optimisations de performance si nécessaire  
-⬜ **CA-B4 :** Documentation utilisateur (guide enseignant)
+⬜ **CA-B4 :** Documentation utilisateur (guide enseignant)  
+⬜ **CA-B5 :** Implémentation de l'adaptation automatique de niveau
 
 ### Phase Release
 
@@ -725,43 +876,69 @@ PROGRESSION_EDUSCOL = {
 
 ## 13. Annexes
 
-### Annexe A : Nomenclature des fractions
+| Dénominateur | Nom singulier | Nom pluriel | CE1 | CE2 | CM1 |
+| ------------ | ------------- | ----------- | --- | --- | --- |
+| 2            | demi          | demis       | ✓   | ✓   | ✓   |
+| 3            | tiers         | tiers       | ✓   | ✓   | ✓   |
+| 4            | quart         | quarts      | ✓   | ✓   | ✓   |
+| 5            | cinquième     | cinquièmes  | ✓   | ✓   | ✓   |
+| 6            | sixième       | sixièmes    | ✗   | ✓   | ✗   |
+| 8            | huitième      | huitièmes   | ✗   | ✓   | ✓   |
+| 10           | dixième       | dixièmes    | ✗   | ✓   | ✓   |
 
-| Dénominateur | Nom singulier | Nom pluriel | Programmes    |
-| ------------ | ------------- | ----------- | ------------- |
-| 2            | demi          | demis       | CE1, CE2, CM1 |
-| 3            | tiers         | tiers       | CE2, CM1      |
-| 4            | quart         | quarts      | CE1, CE2, CM1 |
-| 5            | cinquième     | cinquièmes  | CM1 (maison)  |
-| 8            | huitième      | huitièmes   | CE1, CE2, CM1 |
-| 10           | dixième       | dixièmes    | CM1 (maison)  |
+### Annexe B : Mapping figures/fractions par niveau (v2.0)
 
-### Annexe B : Mapping figures/fractions par niveau
+#### CE1 (18 exercices)
 
-Voir section 3.2 pour le détail complet.
+| Figure    | Dénominateurs | Nb exercices |
+| --------- | ------------- | ------------ |
+| Carré     | 2, 4          | 4 (2×2)      |
+| Rectangle | 2, 3, 4, 5    | 8 (4×2)      |
+| Disque    | 2, 3, 4       | 6 (3×2)      |
+| **Total** |               | **18**       |
+
+**Séquence complète** :
+1-2: Carré 1/2 | 3-4: Rectangle 1/2 | 5-6: Disque 1/2  
+7-8: Carré 1/4 | 9-10: Rectangle 1/4 | 11-12: Disque 1/4  
+13-14: Rectangle 1/3 | 15-16: Disque 1/3  
+17-18: Rectangle 1/5
+
+#### CE2 (34 exercices)
+
+| Figure    | Dénominateurs        | Nb exercices |
+| --------- | -------------------- | ------------ |
+| Carré     | 2, 4, 8              | 6 (3×2)      |
+| Rectangle | 2, 3, 4, 5, 6, 8, 10 | 14 (7×2)     |
+| Disque    | 2, 3, 4, 8           | 8 (4×2)      |
+| **Total** |                      | **28**       |
+
+#### CM1 (32 exercices)
+
+| Figure    | Dénominateurs | Nb exercices |
+| --------- | ------------- | ------------ |
+| Carré     | 2, 4, 8       | 6 (3×2)      |
+| Rectangle | 2, 3, 4, 8    | 8 (4×2)      |
+| Disque    | 2, 3, 4, 8    | 8 (4×2)      |
+| Maison    | 5, 10         | 4 (2×2)      |
+| **Total** |               | **26**       |
 
 ### Annexe C : Algorithmes clés
 
-#### Génération angle de départ aléatoire (disque)
+#### Ordre de génération (v2.0)
 
 ```javascript
-function randomStartAngle() {
-    return Math.floor(Math.random() * 360);
-}
-```
+// Ordre pédagogique des fractions
+const fractionOrder = [2, 4, 8, 3, 5, 10];
 
-#### Sélection index de bande aléatoire
+// Ordre des figures
+const figureOrder = ["square", "rectangle", "disk", "house"];
 
-```javascript
-function randomPieceIndex(denominator) {
-    return Math.floor(Math.random() * denominator);
-}
-```
-
-#### Calcul angle de rotation adapté
-
-```javascript
-const rotationStep = shape === "disk" ? 360 / denominator : 90;
+// Génération
+for each fraction in fractionOrder:
+    for each figure in figureOrder:
+        if fraction exists for figure:
+            generate activity 1
+            generate activity 2
 ```
 
 ### Annexe D : Références des documents EDUSCOL
@@ -769,6 +946,8 @@ const rotationStep = shape === "disk" ? 360 / denominator : 90;
 1. **Programme cycle 2 (2025)** - BO 31/10/2024
 
     - URL : https://www.education.gouv.fr/sites/default/files/ensel135_annexe4.pdf
+    - **Consulté le** : 28/01/2026
+    - **Section** : "Les fractions" (CE1), page 17-18
 
 2. **Ressources fractions cycle 3**
 
@@ -783,12 +962,11 @@ const rotationStep = shape === "disk" ? 360 / denominator : 90;
 
 ---
 
-## Historique des versions
-
-| Version | Date       | Auteur        | Modifications                  |
-| ------- | ---------- | ------------- | ------------------------------ |
-| 1.0     | 27/01/2026 | CPC Numérique | Création initiale - État Alpha |
+| Version | Date       | Auteur        | Modifications                                                               |
+| ------- | ---------- | ------------- | --------------------------------------------------------------------------- |
+| 1.0     | 27/01/2026 | CPC Numérique | Création initiale - État Alpha v0.1.0                                       |
+| 2.0     | 28/01/2026 | CPC Numérique | Correction majeure configuration EDUSCOL + nouvelle progression pédagogique |
 
 ---
 
-**Fin du document SRS**
+**Fin du document SRS v2.0**

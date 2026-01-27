@@ -31,12 +31,40 @@ function randomPieceIndex(denominator) {
     return Math.floor(Math.random() * denominator);
 }
 
-export function generateProgression(level = "CE2") {
+export function generateProgression(level = "CE1") {
     const config = PROGRESSION_EDUSCOL[level];
     const exercises = [];
 
+    // Ordre pédagogique explicite des fractions : 1/2, 1/4, 1/8, 1/3, 1/5, 1/10
+    const fractionOrder = [2, 4, 8, 3, 5, 10];
+
+    // Construire la liste des fractions disponibles pour ce niveau
+    const availableFractions = new Map(); // denominator → {name, plural}
+
     config.figures.forEach((figure) => {
         config.fractions[figure]?.forEach((fraction) => {
+            if (!availableFractions.has(fraction.denominator)) {
+                availableFractions.set(fraction.denominator, fraction);
+            }
+        });
+    });
+
+    // Trier selon l'ordre pédagogique défini
+    const sortedFractions = fractionOrder
+        .filter((denom) => availableFractions.has(denom))
+        .map((denom) => availableFractions.get(denom));
+
+    // PROGRESSION : Fraction → Figure → Activité
+    sortedFractions.forEach((fraction) => {
+        config.figures.forEach((figure) => {
+            // Vérifier que cette fraction existe pour cette figure
+            const hasFraction = config.fractions[figure]?.some(
+                (f) => f.denominator === fraction.denominator
+            );
+
+            if (!hasFraction) return;
+
+            // Générer les variations visuelles (communes aux 2 activités)
             const figureRotation = randomRotation();
             const proportions = randomProportions(figure);
             const scale = randomScale();

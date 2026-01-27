@@ -5,20 +5,14 @@ import { generateProgression } from "./data/progression";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 
 function App() {
-    const [level, setLevel] = useLocalStorage("fractions-level", "CE2");
-    const [exercises, setExercises] = useState(() =>
-        generateProgression(level)
-    );
+    // Niveau fixe CE1 par défaut (non affiché à l'utilisateur)
+    const defaultLevel = "CE1";
+
+    const [exercises] = useState(() => generateProgression(defaultLevel));
     const [currentIndex, setCurrentIndex] = useLocalStorage(
         "fractions-index",
         0
     );
-
-    const handleLevelChange = (newLevel) => {
-        setLevel(newLevel);
-        setExercises(generateProgression(newLevel));
-        setCurrentIndex(0);
-    };
 
     const handleComplete = () => {
         if (currentIndex < exercises.length - 1) {
@@ -46,23 +40,6 @@ function App() {
                 <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
                     Les Fractions
                 </h1>
-
-                {/* Sélecteur de niveau */}
-                <div className="flex justify-center gap-4 mb-4">
-                    {["CE1", "CE2", "CM1"].map((lvl) => (
-                        <button
-                            key={lvl}
-                            onClick={() => handleLevelChange(lvl)}
-                            className={`px-6 py-3 rounded-xl font-bold text-lg transition-all ${
-                                level === lvl
-                                    ? "bg-primary text-white shadow-lg scale-105"
-                                    : "bg-white text-gray-700 hover:bg-gray-100"
-                            }`}
-                        >
-                            {lvl}
-                        </button>
-                    ))}
-                </div>
 
                 {/* Progression */}
                 <div className="bg-white rounded-xl p-4 shadow-md">
