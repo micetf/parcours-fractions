@@ -1,7 +1,6 @@
 import { PROGRESSION_EDUSCOL } from "../utils/fractionConfig";
 import { getRandomSplittingType } from "../utils/fractionTypes";
 
-
 function randomRotation() {
     const rotations = [0, 90, 180, 270];
     return rotations[Math.floor(Math.random() * rotations.length)];

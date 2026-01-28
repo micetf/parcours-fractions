@@ -19,6 +19,33 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
+## [0.4.4] - 2026-01-28
+
+### Fixed
+
+#### Correction dimensions rectangle vs carré
+
+**Problème** : Le rectangle s'affichait comme un carré (160×160px) créant une ambiguïté pédagogique.
+
+**Cause** : `baseHeight = 100` dans `Rectangle.jsx` et `RectangleFraction.jsx` combiné avec `proportions.height = 1.6` donnait `100 × 1.6 = 160px`, soit les mêmes dimensions que le carré (160×160).
+
+**Solution** :
+
+- `baseHeight` passé de 100 à 160
+- ViewBox adapté dynamiquement aux proportions (`200 × 320` au lieu de `200 × 200`)
+- Centre de rotation recalculé (`centerY = viewBoxHeight / 2`)
+
+**Résultat** : Rectangle désormais clairement distinct du carré (160×256px avec proportions par défaut).
+
+### Technical Details
+
+**Fichiers modifiés** : 2
+
+- `src/components/shapes/figures/Rectangle.jsx`
+- `src/components/shapes/fractions/RectangleFraction.jsx`
+
+**Lignes de code modifiées** : ~30
+
 ## [0.4.3] - 2026-01-28
 
 ### Fixed

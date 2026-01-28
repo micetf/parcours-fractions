@@ -1,3 +1,4 @@
+// src/components/shapes/fractions/RectangleFraction.jsx
 export default function RectangleFraction({
     denominator,
     fill = "var(--piece-fill)",
@@ -6,18 +7,27 @@ export default function RectangleFraction({
     proportions = { width: 1, height: 1.6 },
 }) {
     const baseWidth = 160;
-    const baseHeight = 100;
+    const baseHeight = 160; // ✅ Même changement
     const width = baseWidth * proportions.width;
     const height = baseHeight * proportions.height;
+
+    // ✅ ViewBox adapté
+    const viewBoxHeight = (200 * proportions.height) / proportions.width;
+    const centerY = viewBoxHeight / 2;
+
     const x = 100 - width / 2;
-    const y = 100 - height / 2;
+    const y = centerY - height / 2;
 
     if (orientation === "vertical") {
         const pieceWidth = width / denominator;
         const pieceX = x + index * pieceWidth;
 
         return (
-            <svg width="200" height="200" viewBox="0 0 200 200">
+            <svg
+                width="200"
+                height={(200 * proportions.height) / proportions.width}
+                viewBox={`0 0 200 ${viewBoxHeight}`}
+            >
                 <rect
                     x={pieceX}
                     y={y}
@@ -35,7 +45,11 @@ export default function RectangleFraction({
         const pieceY = y + index * pieceHeight;
 
         return (
-            <svg width="200" height="200" viewBox="0 0 200 200">
+            <svg
+                width="200"
+                height={(200 * proportions.height) / proportions.width}
+                viewBox={`0 0 200 ${viewBoxHeight}`}
+            >
                 <rect
                     x={x}
                     y={pieceY}
