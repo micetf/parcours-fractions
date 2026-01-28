@@ -11,13 +11,69 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### À venir
 
-- Correction du bug triangle 1/4 (actuellement 1/8)
 - Mode Collectif : Système de clippage automatique
 - Mode Collectif : Mode plein écran
 - Mode Guidé : Interface enseignant et élève
-- Triangles isocèles depuis le centre (1/4)
-- Fractionnements pour 1/8 avancés
+- Fractionnements avancés pour autres figures
 - Feedback sonore optionnel
+
+---
+
+## [0.4.1] - 2026-01-28
+
+### Fixed
+
+#### Correction géométrie triangle coin 1/4
+
+**Problème** : Le composant `SquareCornerTriangleFraction` générait un triangle de 1/8 au lieu de 1/4.
+
+**Cause** : Les deux côtés de l'angle droit mesuraient 80px (demi-côté), donnant une aire de 3 200 px² = 1/8.
+
+**Solution** : Triangle rectangle avec :
+
+- Un côté de l'angle droit = 160px (côté complet du carré)
+- Autre côté de l'angle droit = 80px (demi-côté)
+- Aire = 6 400 px² = 1/4 ✓
+
+### Added
+
+#### Nouveaux fractionnements pour 1/8 du carré
+
+**Triangle isocèle rectangle** ✨
+
+- Composant : `SquareIsoscelesTriangleFraction.jsx`
+- Géométrie : Triangle isocèle rectangle avec côtés perpendiculaires de 80px (demi-côté)
+- Représentation : Le carré divisé en 4 petits carrés, chacun coupé en diagonale
+- 8 positions possibles
+
+**Triangle rectangle mince** ✨
+
+- Composant : `SquareRectangleThin8thFraction.jsx`
+- Géométrie : Base 160px (côté complet) × hauteur 40px (quart du côté)
+- Représentation : Bandes minces le long des 4 côtés
+- 8 positions possibles
+
+**Configuration** : Les deux types ajoutés au sélecteur du Mode Collectif avec noms :
+
+- "Triangles isocèles"
+- "Triangles rectangles minces"
+
+### Technical Details
+
+**Fichiers créés** : 2
+
+- `src/components/shapes/fractions/SquareIsoscelesTriangleFraction.jsx`
+- `src/components/shapes/fractions/SquareRectangleThin8thFraction.jsx`
+
+**Fichiers modifiés** : 4
+
+- `src/components/shapes/fractions/SquareCornerTriangleFraction.jsx` (correction géométrique)
+- `src/components/shapes/fractions/index.js` (exports)
+- `src/utils/fractionTypes.js` (ajout types 1/8)
+- `src/modes/CollectiveMode/FigureSelector.jsx` (noms affichés)
+- `src/components/shapes/Piece.jsx` (imports)
+
+**Lignes de code modifiées** : ~150
 
 ---
 
@@ -135,16 +191,6 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 **Lignes de code ajoutées** : ~800
 
-### Known Issues
-
-⚠️ **Bug triangle coin 1/4** (existant depuis v0.3.0) : Le composant `SquareCornerTriangleFraction` génère un triangle représentant 1/8 au lieu de 1/4. À corriger dans v0.4.1.
-
-**Mode Collectif** :
-
-- Pas de système de clippage automatique (prévu v0.5.0)
-- Pas de mode plein écran (prévu v0.5.0)
-- Les morceaux ne se "collent" pas à la figure de référence
-
 ---
 
 ## [0.3.0] - 2026-01-27
@@ -219,10 +265,6 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 - `src/components/activities/ActivityTwo.jsx`
 
 **Lignes de code ajoutées** : ~500
-
-### Known Issues
-
-⚠️ **Bug identifié** : Le composant `SquareCornerTriangleFraction` génère un triangle représentant 1/8 au lieu de 1/4. À corriger dans v0.4.1.
 
 ---
 

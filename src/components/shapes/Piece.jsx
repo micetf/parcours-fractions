@@ -6,6 +6,8 @@ import {
     SquareCornerTriangleFraction,
     SquareQuarterSquareFraction,
     SquareCrossFraction,
+    SquareIsoscelesTriangleFraction,
+    SquareRectangleThin8thFraction,
     RectangleFraction,
     HouseFraction,
 } from "./fractions";
@@ -17,6 +19,8 @@ const FRACTION_COMPONENTS = {
     SquareCornerTriangleFraction,
     SquareQuarterSquareFraction,
     SquareCrossFraction,
+    SquareIsoscelesTriangleFraction,
+    SquareRectangleThin8thFraction,
     RectangleFraction,
     HouseFraction,
 };

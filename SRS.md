@@ -2,20 +2,21 @@
 
 ## Application Web d'Apprentissage des Fractions
 
-**Version :** 3.0  
+**Version :** 3.1  
 **Date :** 28 janvier 2026  
 **Auteur :** Conseiller Pédagogique de Circonscription Numérique  
-**Statut :** En développement - Alpha v0.4.0
+**Statut :** En développement - Alpha v0.4.1
 
 ---
 
 ## Historique des révisions
 
-| Version | Date       | Auteur        | Modifications                                           |
-| ------- | ---------- | ------------- | ------------------------------------------------------- |
-| 1.0     | 27/01/2026 | CPC Numérique | Création initiale - État Alpha v0.1.0                   |
-| 2.0     | 28/01/2026 | CPC Numérique | Correction configuration EDUSCOL + nouvelle progression |
-| 3.0     | 28/01/2026 | CPC Numérique | Ajout Mode Collectif - État Alpha v0.4.0                |
+| Version | Date       | Auteur        | Modifications                                                               |
+| ------- | ---------- | ------------- | --------------------------------------------------------------------------- |
+| 1.0     | 27/01/2026 | CPC Numérique | Création initiale - État Alpha v0.1.0                                       |
+| 2.0     | 28/01/2026 | CPC Numérique | Correction configuration EDUSCOL + nouvelle progression                     |
+| 3.0     | 28/01/2026 | CPC Numérique | Ajout Mode Collectif - État Alpha v0.4.0                                    |
+| 3.1     | 28/01/2026 | CPC Numérique | Correction géométrie triangle 1/4 + ajout triangles 1/8 - État Alpha v0.4.1 |
 
 ---
 
@@ -25,7 +26,7 @@
 
 Ce document spécifie les exigences fonctionnelles et non-fonctionnelles de l'application web d'apprentissage des fractions destinée aux élèves de cycle 2 et cycle 3 de l'école primaire française, ainsi qu'aux enseignants pour la démonstration collective.
 
-**Note importante** : La version 3.0 ajoute le Mode Collectif permettant aux enseignants de manipuler des fractions devant la classe avec configuration libre.
+**Note importante** : La version 3.1 corrige la géométrie du triangle coin 1/4 et ajoute deux nouveaux types de fractionnement pour 1/8.
 
 ### 1.2 Contexte du projet
 
@@ -38,8 +39,9 @@ L'application s'inscrit dans le cadre des programmes de mathématiques 2025 de l
 
 - Élèves de CE1, CE2, CM1 (Mode Autonome)
 - Enseignants du primaire (Mode Collectif)
-  **Domaine d'application :** Enseignement des mathématiques - Fractions  
-  **Type :** Application web éducative monopage (SPA)
+
+**Domaine d'application :** Enseignement des mathématiques - Fractions  
+**Type :** Application web éducative monopage (SPA)
 
 ### 1.4 Définitions et acronymes
 
@@ -177,15 +179,31 @@ L'enseignant manipule des morceaux devant la classe avec :
 
 ### 3.2 Mode Autonome (préexistant v0.1-0.3)
 
-_Voir sections 3.3 à 3.5 du SRS v2.0 pour les détails complets_
-
 #### EF-02 : Niveau par défaut
 
 Le mode autonome démarre au niveau CE1 sans sélection visible.
 
 #### EF-03 : Configuration des fractions par niveau
 
-Les fractions présentées respectent strictement les programmes EDUSCOL 2025 (voir section détaillée SRS v2.0).
+Les fractions présentées respectent strictement les programmes EDUSCOL 2025.
+
+**CE1** :
+
+- Figures : Carré, Rectangle, Disque
+- Fractions : 1/2, 1/3, 1/4, 1/5 (selon figure)
+- Total : 18 exercices
+
+**CE2** :
+
+- Figures : Carré, Rectangle, Disque
+- Fractions : 1/2, 1/3, 1/4, 1/5, 1/6, 1/8, 1/10 (selon figure)
+- Total : 28 exercices
+
+**CM1** :
+
+- Figures : Carré, Rectangle, Disque, Maison
+- Fractions : 1/2, 1/3, 1/4, 1/5, 1/8, 1/10 (selon figure)
+- Total : 26 exercices
 
 #### EF-04 : Activité 1 - Compléter pour faire la figure
 
@@ -335,10 +353,10 @@ Sauvegarde de l'index de l'exercice courant dans localStorage (`fractions-autono
 Configuration : Carré, 1/4 (quarts), 3 morceaux
 
 Questions affichées :
-• Que représente un de ces morceaux pour la figure ?
-• Combien de morceaux a-t-on ? On a 3 quarts
-• Combien de quarts faut-il pour faire le carré complet ?
-• Combien de morceaux manque-t-il ? Il manque 1 quart
+- Que représente un de ces morceaux pour la figure ?
+- Combien de morceaux a-t-on ? On a 3 quarts
+- Combien de quarts faut-il pour faire le carré complet ?
+- Combien de morceaux manque-t-il ? Il manque 1 quart
 ```
 
 #### EF-13 : Réinitialisation
@@ -350,27 +368,61 @@ Questions affichées :
 
 ---
 
-### 3.4 Configuration des fractions par niveau (Mode Autonome)
+### 3.4 Types de fractionnements (v0.3.0 + v0.4.1)
 
-_Voir section détaillée SRS v2.0 - Pas de changement en v0.4.0_
+#### EF-14 : Fractionnements du carré
 
-**CE1** :
+**Priorité :** Haute
 
-- Figures : Carré, Rectangle, Disque
-- Dénominateurs : 2, 3, 4, 5 (selon figure)
-- Total : 18 exercices
+**Carré 1/2 (2 types)** :
 
-**CE2** :
+- Rectangles verticaux (classique)
+- Triangles diagonaux
 
-- Figures : Carré, Rectangle, Disque
-- Dénominateurs : 2, 3, 4, 5, 6, 8, 10 (selon figure)
-- Total : 28 exercices
+**Carré 1/4 (4 types)** :
 
-**CM1** :
+- Rectangles verticaux (classique)
+- Triangles coins (✅ corrigé v0.4.1 : 160×80px)
+- Petits carrés (1/4 de l'aire : 80×80px)
+- Triangles croix diagonale
 
-- Figures : Carré, Rectangle, Disque, Maison
-- Dénominateurs : 2, 3, 4, 5, 8, 10 (selon figure)
-- Total : 26 exercices
+**Carré 1/8 (4 types)** (✨ v0.4.1) :
+
+- Rectangles verticaux (classique)
+- Rectangles horizontaux (classique)
+- **Triangles isocèles rectangles** (nouveau) : 80×80px
+- **Triangles rectangles minces** (nouveau) : 160×40px
+
+**Vérifications géométriques** :
+
+```javascript
+// Carré : 160×160 = 25 600 px²
+
+// 1/4 (6 400 px²) :
+// - Rectangle vertical : 40×160 = 6 400 ✓
+// - Triangle coin : (160×80)/2 = 6 400 ✓
+// - Petit carré : 80×80 = 6 400 ✓
+// - Triangle croix : (160×80)/2 = 6 400 ✓
+
+// 1/8 (3 200 px²) :
+// - Rectangle vertical : 20×160 = 3 200 ✓
+// - Rectangle horizontal : 160×20 = 3 200 ✓
+// - Triangle isocèle rectangle : (80×80)/2 = 3 200 ✓
+// - Triangle rectangle mince : (160×40)/2 = 3 200 ✓
+```
+
+#### EF-15 : Fractionnements du rectangle
+
+**Rectangle 1/2 à 1/5 (2 types)** :
+
+- Rectangles verticaux
+- Rectangles horizontaux
+
+#### EF-16 : Fractionnements du disque
+
+**Disque (1 type)** :
+
+- Secteurs angulaires
 
 ---
 
@@ -385,33 +437,33 @@ _Voir section détaillée SRS v2.0 - Pas de changement en v0.4.0_
 
 ### 4.2 Utilisabilité
 
-**ENF-04 :** Interface adaptée aux jeunes lecteurs (taille police ≥ 16px)  
-**ENF-05 :** Boutons tactiles ≥ 44×44 pixels  
-**ENF-06 :** Feedback immédiat pour toute action utilisateur  
-**ENF-07 :** Palette de couleurs non-agressive (tons pastels)  
-**ENF-08 :** Mode Collectif : Interface adaptée à la projection (contrastes, tailles)
+**ENF-05 :** Interface adaptée aux jeunes lecteurs (taille police ≥ 16px)  
+**ENF-06 :** Boutons tactiles ≥ 44×44 pixels  
+**ENF-07 :** Feedback immédiat pour toute action utilisateur  
+**ENF-08 :** Palette de couleurs non-agressive (tons pastels)  
+**ENF-09 :** Mode Collectif : Interface adaptée à la projection (contrastes, tailles)
 
 ### 4.3 Accessibilité
 
-**ENF-09 :** Contraste WCAG AA minimum (4.5:1)  
-**ENF-10 :** Navigation clavier complète  
-**ENF-11 :** Attributs ARIA sur les boutons  
-**ENF-12 :** Support lecteurs d'écran (basique)
+**ENF-10 :** Contraste WCAG AA minimum (4.5:1)  
+**ENF-11 :** Navigation clavier complète  
+**ENF-12 :** Attributs ARIA sur les boutons  
+**ENF-13 :** Support lecteurs d'écran (basique)
 
 ### 4.4 Fiabilité
 
-**ENF-13 :** Pas de perte de données en cas de fermeture du navigateur  
-**ENF-14 :** Gestion des erreurs localStorage (mode dégradé)  
-**ENF-15 :** Génération déterministe des exercices (seed basé sur ID)  
-**ENF-16 :** Isolation des sauvegardes par mode (pas d'écrasement)
+**ENF-14 :** Pas de perte de données en cas de fermeture du navigateur  
+**ENF-15 :** Gestion des erreurs localStorage (mode dégradé)  
+**ENF-16 :** Génération déterministe des exercices (seed basé sur ID)  
+**ENF-17 :** Isolation des sauvegardes par mode (pas d'écrasement)
 
 ### 4.5 Maintenabilité
 
-**ENF-17 :** Code modulaire avec composants réutilisables  
-**ENF-18 :** Séparation configuration / logique métier  
-**ENF-19 :** Documentation inline (JSDoc light)  
-**ENF-20 :** Nomenclature cohérente (français métier, anglais code)  
-**ENF-21 :** Architecture extensible pour nouveaux modes
+**ENF-18 :** Code modulaire avec composants réutilisables  
+**ENF-19 :** Séparation configuration / logique métier  
+**ENF-20 :** Documentation inline (JSDoc light)  
+**ENF-21 :** Nomenclature cohérente (français métier, anglais code)  
+**ENF-22 :** Architecture extensible pour nouveaux modes
 
 ---
 
@@ -432,30 +484,32 @@ _Voir section détaillée SRS v2.0 - Pas de changement en v0.4.0_
 
 ```
 src/
-├── modes/                         # ✨ NOUVEAU v0.4.0
+├── modes/
 │   └── CollectiveMode/
 │       ├── CollectiveMode.jsx
 │       ├── FigureSelector.jsx
 │       └── ManipulationZone.jsx
 ├── components/
-│   ├── ModeSelector.jsx           # ✨ NOUVEAU v0.4.0
+│   ├── ModeSelector.jsx
 │   ├── activities/
 │   │   ├── ActivityOne.jsx
 │   │   └── ActivityTwo.jsx
 │   ├── shapes/
-│   │   ├── Piece.jsx              # MODIFIÉ v0.4.0 (collectiveMode)
+│   │   ├── Piece.jsx
 │   │   ├── figures/
 │   │   │   ├── Disk.jsx
 │   │   │   ├── Square.jsx
 │   │   │   ├── Rectangle.jsx
 │   │   │   └── House.jsx
-│   │   └── fractions/
+│   │   └── fractions/                          (10 composants v0.4.1)
 │   │       ├── DiskFraction.jsx
 │   │       ├── SquareFraction.jsx
 │   │       ├── SquareDiagonalFraction.jsx
-│   │       ├── SquareCornerTriangleFraction.jsx
+│   │       ├── SquareCornerTriangleFraction.jsx      (✅ corrigé)
 │   │       ├── SquareQuarterSquareFraction.jsx
 │   │       ├── SquareCrossFraction.jsx
+│   │       ├── SquareIsoscelesTriangleFraction.jsx   (✨ nouveau)
+│   │       ├── SquareRectangleThin8thFraction.jsx    (✨ nouveau)
 │   │       ├── RectangleFraction.jsx
 │   │       └── HouseFraction.jsx
 ├── hooks/
@@ -465,7 +519,7 @@ src/
 │   └── fractionTypes.js
 ├── data/
 │   └── progression.js
-└── App.jsx                        # MODIFIÉ v0.4.0 (routage modes)
+└── App.jsx
 ```
 
 ### 5.3 Flux de données
@@ -516,11 +570,119 @@ Piece (collectiveMode=true)
 
 ### 6.1 Structure d'un exercice (Mode Autonome)
 
-_Inchangé depuis SRS v2.0 - Voir détails complets dans version précédente_
+```javascript
+{
+  id: string,                    // "square-2-act1-0.123456"
+  figure: string,                // "disk"|"square"|"rectangle"|"house"
+  fraction: {
+    denominator: number,         // 2, 3, 4, 5, 8, 10
+    name: string,                // "demi", "tiers"...
+    plural: string               // "demis", "tiers"...
+  },
+  activity: number,              // 1 ou 2
+  figureRotation: number,        // 0, 90, 180, 270
+  pieceRotation: number,         // 0, 90, 180, 270 (ou angle disque)
+  divisionOrientation: string,   // "vertical"|"horizontal"
+  proportions: object,           // { width, height } ou { roofHeight }
+  scale: number,                 // 0.8-1.2
+  splittingType: {               // v0.3.0+
+    id: string,
+    component: string,
+    props: object
+  },
+  // Activité 1 uniquement
+  startAngle: number,            // 0-360 (disque)
+  pieceIndex: number,            // 0 à (denominator-1)
+  // Activité 2 uniquement
+  givenPieces: number,           // 1 à (denominator-1)
+  piecesData: [
+    {
+      startAngle: number,
+      index: number,
+      position: { x, y },
+      rotation: number
+    }
+  ]
+}
+```
 
 ### 6.2 Configuration EDUSCOL (Mode Autonome)
 
-_Inchangé depuis SRS v2.0 - Voir détails complets dans version précédente_
+```javascript
+export const PROGRESSION_EDUSCOL = {
+    CE1: {
+        figures: ["square", "rectangle", "disk"],
+        fractions: {
+            square: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+            ],
+            rectangle: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+                { denominator: 5, name: "cinquième", plural: "cinquièmes" },
+            ],
+            disk: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+            ],
+        },
+    },
+    CE2: {
+        figures: ["square", "rectangle", "disk"],
+        fractions: {
+            square: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+                { denominator: 8, name: "huitième", plural: "huitièmes" },
+            ],
+            rectangle: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+                { denominator: 5, name: "cinquième", plural: "cinquièmes" },
+                { denominator: 6, name: "sixième", plural: "sixièmes" },
+                { denominator: 8, name: "huitième", plural: "huitièmes" },
+                { denominator: 10, name: "dixième", plural: "dixièmes" },
+            ],
+            disk: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+                { denominator: 8, name: "huitième", plural: "huitièmes" },
+            ],
+        },
+    },
+    CM1: {
+        figures: ["square", "rectangle", "disk", "house"],
+        fractions: {
+            square: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+                { denominator: 8, name: "huitième", plural: "huitièmes" },
+            ],
+            rectangle: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+                { denominator: 8, name: "huitième", plural: "huitièmes" },
+            ],
+            disk: [
+                { denominator: 2, name: "demi", plural: "demis" },
+                { denominator: 3, name: "tiers", plural: "tiers" },
+                { denominator: 4, name: "quart", plural: "quarts" },
+                { denominator: 8, name: "huitième", plural: "huitièmes" },
+            ],
+            house: [
+                { denominator: 5, name: "cinquième", plural: "cinquièmes" },
+                { denominator: 10, name: "dixième", plural: "dixièmes" },
+            ],
+        },
+    },
+};
+```
 
 ### 6.3 Configuration démonstration (Mode Collectif)
 
@@ -583,7 +745,7 @@ _Inchangé depuis SRS v2.0 - Voir détails complets dans version précédente_
 
 ### 7.2 Composants d'interface
 
-#### Sélecteur de mode (nouveau v0.4.0)
+#### Sélecteur de mode
 
 - 3 cartes horizontales côte à côte
 - Carte active : fond bleu, texte blanc, ombre portée, scale 105%
@@ -594,7 +756,13 @@ _Inchangé depuis SRS v2.0 - Voir détails complets dans version précédente_
 
 #### Mode Autonome - En-tête
 
-_Inchangé - Voir SRS v2.0_
+- Titre : "Les Fractions" (4xl, bold, centré)
+- Barre de progression :
+    - Numéro exercice / Total
+    - Type d'activité
+    - Pourcentage
+    - Barre visuelle (fond gris, remplissage bleu)
+    - Bouton "Recommencer" (texte gris, underline)
 
 #### Mode Collectif - Configuration
 
@@ -618,8 +786,6 @@ _Inchangé - Voir SRS v2.0_
 
 ### 8.1 Génération des exercices (Mode Autonome)
 
-_Inchangé depuis SRS v2.0_
-
 **RM-01** : Pour chaque fraction disponible au niveau CE1, générer 2 exercices (activité 1 et 2) pour chaque figure compatible  
 **RM-02** : Les variations visuelles sont générées aléatoirement  
 **RM-03** : Les angles et positions aléatoires utilisent Math.random() uniquement lors de la génération  
@@ -629,18 +795,18 @@ _Inchangé depuis SRS v2.0_
 
 ### 8.2 Configuration démonstration (Mode Collectif)
 
-**RM-07 (NOUVEAU)** : Les dénominateurs disponibles dépendent de la figure sélectionnée selon EDUSCOL  
-**RM-08 (NOUVEAU)** : Les types de fractionnement disponibles dépendent du dénominateur sélectionné  
-**RM-09 (NOUVEAU)** : Le nombre de morceaux est libre (1-10) sans contrainte pédagogique  
-**RM-10 (NOUVEAU)** : La génération n'utilise pas de variations aléatoires (rotation 0°, scale 1, etc.)  
-**RM-11 (NOUVEAU)** : Chaque ajout de morceau positionne le nouveau à (200, 200)
+**RM-07** : Les dénominateurs disponibles dépendent de la figure sélectionnée selon EDUSCOL  
+**RM-08** : Les types de fractionnement disponibles dépendent du dénominateur sélectionné  
+**RM-09** : Le nombre de morceaux est libre (1-10) sans contrainte pédagogique  
+**RM-10** : La génération n'utilise pas de variations aléatoires (rotation 0°, scale 1, etc.)  
+**RM-11** : Chaque ajout de morceau positionne le nouveau à (200, 200)
 
 ### 8.3 Manipulation
 
 **RM-12** : Le bouton flip n'est pas affiché pour les disques (symétrie radiale)  
 **RM-13** : Le drag & drop fonctionne à la fois avec souris et tactile (PointerEvents)  
-**RM-14 (NOUVEAU)** : En mode collectif, les contrôles sont toujours visibles (collectiveMode=true)  
-**RM-15 (NOUVEAU)** : En mode autonome, les contrôles disparaissent après 3s d'inactivité
+**RM-14** : En mode collectif, les contrôles sont toujours visibles (collectiveMode=true)  
+**RM-15** : En mode autonome, les contrôles disparaissent après 3s d'inactivité
 
 ### 8.4 Validation (Mode Autonome uniquement)
 
@@ -648,6 +814,19 @@ _Inchangé depuis SRS v2.0_
 **RM-17** : Pour l'activité 2, les validations sont séquentielles  
 **RM-18** : Une réponse correcte déclenche un délai avant passage automatique  
 **RM-19** : Une réponse incorrecte permet une nouvelle tentative immédiate
+
+### 8.5 Géométrie des fractionnements (v0.4.1)
+
+**RM-20** : Toutes les aires doivent être vérifiées mathématiquement  
+**RM-21** : Pour le carré 160×160 (25 600 px²) :
+
+- 1/2 = 12 800 px²
+- 1/4 = 6 400 px²
+- 1/8 = 3 200 px²
+
+**RM-22** : Triangle coin 1/4 : base 160px × hauteur 80px → (160×80)/2 = 6 400 px² ✓  
+**RM-23** : Triangle isocèle 1/8 : côtés 80px × 80px → (80×80)/2 = 3 200 px² ✓  
+**RM-24** : Triangle mince 1/8 : base 160px × hauteur 40px → (160×40)/2 = 3 200 px² ✓
 
 ---
 
@@ -719,19 +898,50 @@ _Inchangé depuis SRS v2.0_
 
 ### CU-04 : Démarrer un parcours autonome
 
-_Voir CU-01 du SRS v2.0 - Inchangé_
+**Acteur principal :** Élève  
+**Préconditions :** Application chargée, Mode Autonome sélectionné  
+**Postconditions :** Premier exercice affiché
+
+**Scénario nominal :**
+
+1. L'élève accède à l'application
+2. Le système charge la progression sauvegardée (ou démarre à 0)
+3. Le système affiche l'exercice correspondant à l'index sauvegardé
+4. L'élève visualise la barre de progression
+
+**Scénarios alternatifs :**
+
+- 2a. Pas de sauvegarde → Démarre à l'exercice 0
 
 ---
 
 ### CU-05 : Compléter un exercice de type 1
 
-_Voir CU-02 du SRS v2.0 - Inchangé_
+**Acteur principal :** Élève  
+**Préconditions :** Exercice d'activité 1 affiché  
+**Postconditions :** Validation effectuée, passage à l'exercice suivant si correct
+
+**Scénario nominal :**
+
+1. L'élève observe la figure complète et le morceau
+2. L'élève déplace/pivote le morceau pour comprendre
+3. L'élève saisit le nombre de morceaux nécessaires
+4. L'élève sélectionne le nom de la fraction
+5. L'élève clique sur "Valider"
+6. Le système vérifie les deux réponses
+7. Le système affiche un message de succès
+8. Après 1,5 seconde, le système passe à l'exercice suivant
+
+**Scénarios alternatifs :**
+
+- 6a. Réponse incorrecte → Message d'erreur, nouvelle tentative
+- 3a. L'élève manipule le morceau sans répondre → Pas de validation
 
 ---
 
 ## 10. Contraintes et limitations
 
-### 10.1 Limitations de la version 0.4.0
+### 10.1 Limitations de la version 0.4.1
 
 **L10-01 :** Pas de clippage automatique en mode collectif  
 **L10-02 :** Pas de mode plein écran pour projection optimale  
@@ -784,9 +994,8 @@ _Voir CU-02 du SRS v2.0 - Inchangé_
 
 **EV-M1 :** Fractionnements avancés
 
-- Triangles isocèles depuis le centre (1/4)
-- Fractionnements pour 1/8
-- Rectangle avec diagonales
+- Fractionnements pour rectangle (diagonales)
+- Fractionnements pour maison (variations)
 
 **EV-M2 :** Activité 2 avec fractions > 1 (CM1)  
 **EV-M3 :** Feedback sonore optionnel  
@@ -804,7 +1013,7 @@ _Voir CU-02 du SRS v2.0 - Inchangé_
 
 ## 12. Critères d'acceptation globaux
 
-### Phase Alpha (v0.4.0)
+### Phase Alpha (v0.4.1)
 
 ✅ **CA-A1 :** Le niveau CE1 fonctionne correctement (Mode Autonome)  
 ✅ **CA-A2 :** Les deux types d'activités fonctionnent (Mode Autonome)  
@@ -819,8 +1028,10 @@ _Voir CU-02 du SRS v2.0 - Inchangé_
 ✅ **CA-A11 :** Le Mode Collectif permet l'ajout/retrait de morceaux  
 ✅ **CA-A12 :** L'aide pédagogique affiche les calculs corrects  
 ✅ **CA-A13 :** Le basculement entre modes préserve les données  
-⬜ **CA-A14 :** Tests sur les 4 navigateurs cibles  
-⬜ **CA-A15 :** Accessibilité WCAG AA validée
+✅ **CA-A14 :** Triangle coin 1/4 affiche la géométrie correcte (160×80px)  
+✅ **CA-A15 :** Nouveaux triangles 1/8 disponibles dans le sélecteur  
+⬜ **CA-A16 :** Tests sur les 4 navigateurs cibles  
+⬜ **CA-A17 :** Accessibilité WCAG AA validée
 
 ### Phase Beta (v0.5.0+)
 
@@ -844,17 +1055,64 @@ _Voir CU-02 du SRS v2.0 - Inchangé_
 
 ### Annexe A : Correspondance fractions/noms
 
-_Inchangé depuis SRS v2.0_
+| Dénominateur | Singulier | Pluriel    |
+| ------------ | --------- | ---------- |
+| 2            | demi      | demis      |
+| 3            | tiers     | tiers      |
+| 4            | quart     | quarts     |
+| 5            | cinquième | cinquièmes |
+| 6            | sixième   | sixièmes   |
+| 8            | huitième  | huitièmes  |
+| 10           | dixième   | dixièmes   |
 
 ### Annexe B : Mapping figures/fractions par niveau
 
-_Inchangé depuis SRS v2.0_
+**CE1 (18 exercices)** :
+
+| Figure    | Fractions | Exercices |
+| --------- | --------- | --------- |
+| Carré     | 1/2, 1/4  | 4         |
+| Rectangle | 1/2 à 1/5 | 8         |
+| Disque    | 1/2 à 1/4 | 6         |
+
+**CE2 (28 exercices)** :
+
+| Figure    | Fractions            | Exercices |
+| --------- | -------------------- | --------- |
+| Carré     | 1/2, 1/4, 1/8        | 6         |
+| Rectangle | 1/2 à 1/6, 1/8, 1/10 | 14        |
+| Disque    | 1/2 à 1/4, 1/8       | 8         |
+
+**CM1 (26 exercices)** :
+
+| Figure    | Fractions      | Exercices |
+| --------- | -------------- | --------- |
+| Carré     | 1/2, 1/4, 1/8  | 6         |
+| Rectangle | 1/2 à 1/4, 1/8 | 8         |
+| Disque    | 1/2 à 1/4, 1/8 | 8         |
+| Maison    | 1/5, 1/10      | 4         |
 
 ### Annexe C : Algorithmes clés
 
 #### Ordre de génération (Mode Autonome)
 
-_Inchangé depuis SRS v2.0_
+```javascript
+// Ordre pédagogique des fractions
+const fractionOrder = [2, 4, 8, 3, 5, 10];
+
+// Pour chaque fraction (dans l'ordre pédagogique)
+fractionOrder.forEach((denominator) => {
+    // Pour chaque figure compatible
+    figures.forEach((figure) => {
+        if (hasFraction(figure, denominator)) {
+            // Générer Activité 1
+            exercises.push(generateActivity1(figure, denominator));
+            // Générer Activité 2
+            exercises.push(generateActivity2(figure, denominator));
+        }
+    });
+});
+```
 
 #### Configuration dynamique (Mode Collectif)
 
@@ -875,6 +1133,18 @@ const SPLITTING_CONFIG = {
             { id: "quarter-squares", component: "SquareQuarterSquareFraction" },
             { id: "cross-triangles", component: "SquareCrossFraction" },
         ],
+        8: [
+            { id: "vertical-rectangles", component: "SquareFraction" },
+            { id: "horizontal-rectangles", component: "SquareFraction" },
+            {
+                id: "isosceles-triangles",
+                component: "SquareIsoscelesTriangleFraction",
+            },
+            {
+                id: "thin-rectangle-triangles",
+                component: "SquareRectangleThin8thFraction",
+            },
+        ],
     },
     // ...
 };
@@ -887,9 +1157,51 @@ const availableSplittingTypes =
     SPLITTING_CONFIG[selectedFigure][selectedDenominator];
 ```
 
+#### Vérification géométrique des fractionnements (v0.4.1)
+
+**Triangle coin 1/4 (corrigé) :**
+
+```javascript
+// Carré : 160×160 = 25 600 px²
+// Triangle : base 160px × hauteur 80px
+// Aire = (160 × 80) / 2 = 6 400 px² = 1/4 ✓
+```
+
+**Triangle isocèle rectangle 1/8 :**
+
+```javascript
+// Deux côtés perpendiculaires : 80px × 80px
+// Aire = (80 × 80) / 2 = 3 200 px² = 1/8 ✓
+// Représentation : Carré divisé en 4, chaque petit carré coupé en diagonale
+```
+
+**Triangle rectangle mince 1/8 :**
+
+```javascript
+// Base 160px × hauteur 40px
+// Aire = (160 × 40) / 2 = 3 200 px² = 1/8 ✓
+// Représentation : Bandes minces le long des côtés
+```
+
 ### Annexe D : Références des documents EDUSCOL
 
-_Inchangé depuis SRS v2.0_
+**Programme cycle 2 (2025)** :
+
+- Fichier : `ensel135_annexe4.pdf`
+- URL : https://www.education.gouv.fr/sites/default/files/ensel135_annexe4.pdf
+- Section : Mathématiques - Nombres et calculs
+
+**Programme cycle 3 (2025)** :
+
+- Fichier : `ensel620_annexe2-v2.pdf`
+- URL : https://www.education.gouv.fr/sites/default/files/ensel620_annexe2-v2.pdf
+- Section : Mathématiques - Nombres et calculs
+
+**Ressources fractions cycle 3** :
+
+- Document : Fractions et nombres décimaux au cycle 3
+- URL : https://eduscol.education.fr/document/16510/download
+- Type : Guide pédagogique EDUSCOL
 
 ---
 
@@ -898,7 +1210,8 @@ _Inchangé depuis SRS v2.0_
 | 1.0     | 27/01/2026 | CPC Numérique | Création initiale - État Alpha v0.1.0                                        |
 | 2.0     | 28/01/2026 | CPC Numérique | Correction majeure configuration EDUSCOL + nouvelle progression pédagogique  |
 | 3.0     | 28/01/2026 | CPC Numérique | Ajout Mode Collectif - Outil de démonstration enseignant - État Alpha v0.4.0 |
+| 3.1     | 28/01/2026 | CPC Numérique | Correction géométrie triangle 1/4 + ajout triangles 1/8 - État Alpha v0.4.1  |
 
 ---
 
-**Fin du document SRS v3.0**
+**Fin du document SRS v3.1**

@@ -49,18 +49,17 @@ Parcours personnalisé par l'enseignant _(à venir)_
 
 Voir **[CHANGELOG.md](./CHANGELOG.md)** pour l'historique détaillé des modifications.
 
-### Dernière version : v0.4.0 (28/01/2026)
+### Dernière version : v0.4.1 (28/01/2026)
 
-**Mode Collectif** : Outil de démonstration enseignant
+**Corrections critiques :**
 
-- ✨ Sélecteur de mode (3 modes : Autonome, Collectif, Guidé)
-- ✨ Configuration libre : figure + fraction + type de fractionnement
-- ✨ Nombre de morceaux paramétrable (1-10)
-- ✨ Ajout/retrait morceaux à la volée
-- ✨ Contrôles permanents (pas de timer en mode collectif)
-- ✨ Aide pédagogique avec questions suggérées
-- ✨ Zone de manipulation 600×500px
-- 🔧 Préservation complète du mode autonome existant
+- 🐛 Correction géométrie triangle coin 1/4 (affichait 1/8)
+
+**Nouveaux fractionnements pour 1/8 :**
+
+- ✨ Triangle isocèle rectangle (demi-côté × demi-côté)
+- ✨ Triangle rectangle mince (côté × quart)
+- ✨ Ajout au sélecteur du Mode Collectif
 
 ---
 
@@ -122,29 +121,29 @@ pnpm lint
 fractions-app/
 ├── public/                    # Assets statiques
 ├── src/
-│   ├── modes/                 # ✨ NOUVEAU v0.4.0
+│   ├── modes/                 # ✨ v0.4.0
 │   │   └── CollectiveMode/
 │   │       ├── CollectiveMode.jsx
 │   │       ├── FigureSelector.jsx
 │   │       └── ManipulationZone.jsx
 │   ├── components/
-│   │   ├── ModeSelector.jsx   # ✨ NOUVEAU v0.4.0
+│   │   ├── ModeSelector.jsx   # ✨ v0.4.0
 │   │   ├── activities/        # Activités pédagogiques
 │   │   │   ├── ActivityOne.jsx
 │   │   │   └── ActivityTwo.jsx
 │   │   ├── shapes/
-│   │   │   ├── Piece.jsx      # Composant manipulable (modifié v0.4.0)
+│   │   │   ├── Piece.jsx      # Modifié v0.4.0/v0.4.1
 │   │   │   ├── figures/       # Figures complètes (4 formes)
-│   │   │   └── fractions/     # Morceaux de fractions (8 types)
+│   │   │   └── fractions/     # Morceaux de fractions (10 types) ✨ v0.4.1
 │   │   └── progression/       # (futurs) Composants de suivi
 │   ├── hooks/
 │   │   └── useLocalStorage.js # Persistance locale
 │   ├── utils/
 │   │   ├── fractionConfig.js  # Configuration EDUSCOL
-│   │   └── fractionTypes.js   # Types de fractionnements
+│   │   └── fractionTypes.js   # Types de fractionnements ✨ v0.4.1
 │   ├── data/
 │   │   └── progression.js     # Générateur d'exercices
-│   ├── App.jsx                # Composant racine (modifié v0.4.0)
+│   ├── App.jsx                # Composant racine
 │   ├── main.jsx
 │   └── index.css              # Styles Tailwind
 ├── index.html
@@ -199,7 +198,7 @@ La configuration est définie dans `src/utils/fractionConfig.js` :
 - **Max dénominateur** : 10
 - **Total exercices** : 26
 
-### Types de fractionnements (v0.3.0+)
+### Types de fractionnements
 
 La configuration est définie dans `src/utils/fractionTypes.js` :
 
@@ -211,9 +210,16 @@ La configuration est définie dans `src/utils/fractionTypes.js` :
 #### Carré 1/4 (4 types)
 
 - Rectangles verticaux (classique)
-- Triangles coins ⚠️ **Bug : affiche 1/8**
+- Triangles coins ✅ **Corrigé v0.4.1**
 - Petits carrés (1/4 de l'aire)
 - Triangles croix diagonale
+
+#### Carré 1/8 (4 types) ✨ **v0.4.1**
+
+- Rectangles verticaux
+- Rectangles horizontaux
+- **Triangles isocèles rectangles** (nouveau)
+- **Triangles rectangles minces** (nouveau)
 
 #### Rectangle 1/2 à 1/5 (2 types)
 
@@ -240,7 +246,7 @@ La configuration est définie dans `src/utils/fractionTypes.js` :
 - Échelle aléatoire (80%-120%)
 - Position de départ aléatoire des morceaux
 
-**Fractionnements multiples (v0.3.0+) :**
+**Fractionnements multiples :**
 
 - Sélection aléatoire d'un type de fractionnement
 - Évite l'association stéréotypée "fraction = une seule forme"
@@ -281,11 +287,20 @@ La configuration est définie dans `src/utils/fractionTypes.js` :
 
 ### Ajouter un nouveau type de fractionnement
 
-Voir la section complète dans la version précédente du README (v0.3.0).
+1. Créer le composant dans `src/components/shapes/fractions/`
+2. Vérifier la géométrie (aire = 1/n de la figure)
+3. Ajouter l'export dans `index.js`
+4. Ajouter dans `FRACTION_COMPONENTS` de `Piece.jsx`
+5. Configurer dans `fractionTypes.js`
+6. Ajouter le nom dans `FigureSelector.jsx`
 
-### Modifier la logique de génération
+**Exemple de vérification géométrique :**
 
-Le fichier `src/data/progression.js` contient toute la logique de génération d'exercices.
+```javascript
+// Carré 160×160 = 25 600 px²
+// Pour 1/4 : aire = 6 400 px²
+// Triangle rectangle coin : (160 × 80) / 2 = 6 400 ✓
+```
 
 ---
 
@@ -304,9 +319,9 @@ Le fichier `src/data/progression.js` contient toute la logique de génération d
 3. **Représentations variées** : 4 figures géométriques différentes
 4. **Progressivité** : Du simple (CE1, carré) au complexe (CM1, maison)
 5. **Non-prototypique** : Évite les représentations stéréotypées
-6. **Charge cognitive réduite** : Interface épurée (v0.1.0+)
-7. **Fractionnements multiples** : Généralisation du concept (v0.3.0+)
-8. **Démonstration enseignant** : Mode collectif pour manipulation collective (v0.4.0+)
+6. **Charge cognitive réduite** : Interface épurée
+7. **Fractionnements multiples** : Généralisation du concept
+8. **Démonstration enseignant** : Mode collectif pour manipulation collective
 
 ---
 
@@ -360,6 +375,12 @@ Avant chaque release, tester :
 - ✅ Aide pédagogique avec calculs corrects
 - ✅ Responsive (desktop + tablette)
 
+**Vérification géométrique (v0.4.1) :**
+
+- ✅ Triangle coin 1/4 : aire = 6 400 px²
+- ✅ Triangle isocèle 1/8 : aire = 3 200 px²
+- ✅ Triangle mince 1/8 : aire = 3 200 px²
+
 ### Navigateurs testés
 
 - ✅ Chrome 90+
@@ -384,7 +405,7 @@ Avant chaque release, tester :
 
 ## 🐛 Problèmes connus
 
-### v0.4.0 (Alpha)
+### v0.4.1 (Alpha)
 
 **Mode Collectif :**
 
@@ -393,7 +414,6 @@ Avant chaque release, tester :
 
 **Mode Autonome :**
 
-- **Triangle coin 1/4 affiche 1/8** : Le composant `SquareCornerTriangleFraction` génère un triangle trop petit (correction prévue v0.4.1)
 - Activité 2 limitée aux fractions < 1 (même en CM1)
 
 **Général :**
@@ -409,16 +429,11 @@ Voir le [CHANGELOG.md](./CHANGELOG.md) et le [SRS.md](./SRS.md) pour la liste co
 
 ## 🗺️ Roadmap
 
-### v0.4.1 (Priorité critique)
-
-- [ ] **Corriger le bug triangle 1/4** (affiche actuellement 1/8)
-
 ### v0.5.0 (Priorité haute)
 
 - [ ] Mode Collectif : Système de clippage automatique
 - [ ] Mode Collectif : Mode plein écran
-- [ ] Triangles isocèles depuis le centre (1/4)
-- [ ] Fractionnements avancés pour 1/8
+- [ ] Fractionnements avancés pour autres figures
 
 ### v0.6.0 (Priorité moyenne)
 
@@ -496,10 +511,10 @@ Département : Ardèche
 
 ## 📊 Statistiques
 
-![Version](https://img.shields.io/badge/Version-0.4.0--alpha-blue)
-![Lines of Code](https://img.shields.io/badge/LOC-~3800-blue)
-![Components](https://img.shields.io/badge/Composants-22-green)
-![Bundle Size](https://img.shields.io/badge/Bundle-~200KB-orange)
+![Version](https://img.shields.io/badge/Version-0.4.1--alpha-blue)
+![Lines of Code](https://img.shields.io/badge/LOC-~4000-blue)
+![Components](https://img.shields.io/badge/Composants-24-green)
+![Bundle Size](https://img.shields.io/badge/Bundle-~220KB-orange)
 
 ---
 
