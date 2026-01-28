@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Disk, Square, Rectangle, House } from "../shapes/figures";
 import Piece from "../shapes/Piece";
+import GlobalToolbar from "../shapes/GlobalToolbar";
 import { FIGURE_NAMES } from "../../utils/fractionConfig";
 
 const FIGURE_COMPONENTS = {
@@ -15,10 +16,21 @@ export default function ActivityOne({ exercise, onComplete }) {
     const [fractionAnswer, setFractionAnswer] = useState("");
     const [isCorrect, setIsCorrect] = useState(null);
 
+    const [piecePosition, setPiecePosition] = useState({ x: 50, y: 50 });
+    const [pieceRotation, setPieceRotation] = useState(
+        exercise.pieceRotation || 0
+    );
+    const [pieceIsFlipped, setPieceIsFlipped] = useState(false);
+    const [selectedPieceId, setSelectedPieceId] = useState(null);
+
     const FigureComponent = FIGURE_COMPONENTS[exercise.figure];
     const figureName = FIGURE_NAMES[exercise.figure];
     const correctAnswer = exercise.fraction.denominator;
     const correctFraction = exercise.fraction.name;
+
+    const rotationStep =
+        exercise.figure === "disk" ? 360 / exercise.fraction.denominator : 90;
+    const showFlipButton = exercise.figure !== "disk";
 
     const handleValidate = () => {
         const numAnswer = parseInt(answer);
@@ -29,6 +41,20 @@ export default function ActivityOne({ exercise, onComplete }) {
         if (correct) {
             setTimeout(() => onComplete?.(), 1500);
         }
+    };
+
+    const handleContainerClick = (e) => {
+        if (e.target === e.currentTarget) {
+            setSelectedPieceId(null);
+        }
+    };
+
+    const handleRotateSelected = () => {
+        setPieceRotation((prev) => prev + rotationStep);
+    };
+
+    const handleFlipSelected = () => {
+        setPieceIsFlipped((prev) => !prev);
     };
 
     return (
@@ -63,18 +89,39 @@ export default function ActivityOne({ exercise, onComplete }) {
                         <div
                             className="relative"
                             style={{ width: 300, height: 300 }}
+                            onPointerDown={handleContainerClick}
                         >
                             <Piece
+                                pieceId="activity1-piece"
                                 shape={exercise.figure}
                                 denominator={exercise.fraction.denominator}
                                 orientation={exercise.divisionOrientation}
                                 startAngle={exercise.startAngle || 0}
                                 index={exercise.pieceIndex || 0}
-                                initialPosition={{ x: 50, y: 50 }}
-                                initialRotation={exercise.pieceRotation || 0}
+                                position={piecePosition}
+                                rotation={pieceRotation}
+                                isFlipped={pieceIsFlipped}
+                                onPositionChange={setPiecePosition}
                                 proportions={exercise.proportions || {}}
                                 scale={exercise.scale || 1}
-                                splittingType={exercise.splittingType} // ← AJOUTÉ
+                                splittingType={exercise.splittingType}
+                                onSelect={setSelectedPieceId}
+                                collectiveMode={false}
+                                isSelected={
+                                    selectedPieceId === "activity1-piece"
+                                }
+                            />
+
+                            <GlobalToolbar
+                                isVisible={
+                                    selectedPieceId === "activity1-piece"
+                                }
+                                rotation={pieceRotation}
+                                isFlipped={pieceIsFlipped}
+                                showFlipButton={showFlipButton}
+                                onRotate={handleRotateSelected}
+                                onFlip={handleFlipSelected}
+                                position="top-right"
                             />
                         </div>
                     </div>

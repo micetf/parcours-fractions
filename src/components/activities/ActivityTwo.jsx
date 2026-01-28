@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Disk, Square, Rectangle, House } from "../shapes/figures";
 import Piece from "../shapes/Piece";
+import GlobalToolbar from "../shapes/GlobalToolbar";
 
 const FIGURE_COMPONENTS = {
     disk: Disk,
@@ -19,10 +20,30 @@ export default function ActivityTwo({ exercise, onComplete }) {
     });
     const [isCorrect, setIsCorrect] = useState(null);
 
+    const [pieces, setPieces] = useState(
+        () =>
+            exercise.piecesData?.map((pieceData, i) => ({
+                id: `activity2-piece-${i}`,
+                position: pieceData.position,
+                rotation: pieceData.rotation,
+                isFlipped: false,
+                startAngle: pieceData.startAngle,
+                index: pieceData.index,
+            })) || []
+    );
+
+    const [selectedPieceId, setSelectedPieceId] = useState(null);
+
     const FigureComponent = FIGURE_COMPONENTS[exercise.figure];
     const totalPieces = exercise.fraction.denominator;
     const givenPieces = exercise.givenPieces;
     const missingPieces = totalPieces - givenPieces;
+
+    const rotationStep =
+        exercise.figure === "disk" ? 360 / exercise.fraction.denominator : 90;
+    const showFlipButton = exercise.figure !== "disk";
+
+    const selectedPiece = pieces.find((p) => p.id === selectedPieceId);
 
     const handleAnswer = (field, value) => {
         setAnswers({ ...answers, [field]: value });
@@ -61,6 +82,46 @@ export default function ActivityTwo({ exercise, onComplete }) {
         }
     };
 
+    const handleContainerClick = (e) => {
+        if (e.target === e.currentTarget) {
+            setSelectedPieceId(null);
+        }
+    };
+
+    const handlePiecePositionChange = (pieceId, newPosition) => {
+        setPieces((prev) =>
+            prev.map((piece) =>
+                piece.id === pieceId
+                    ? { ...piece, position: newPosition }
+                    : piece
+            )
+        );
+    };
+
+    const handleRotateSelected = () => {
+        if (!selectedPieceId) return;
+
+        setPieces((prev) =>
+            prev.map((piece) =>
+                piece.id === selectedPieceId
+                    ? { ...piece, rotation: piece.rotation + rotationStep }
+                    : piece
+            )
+        );
+    };
+
+    const handleFlipSelected = () => {
+        if (!selectedPieceId) return;
+
+        setPieces((prev) =>
+            prev.map((piece) =>
+                piece.id === selectedPieceId
+                    ? { ...piece, isFlipped: !piece.isFlipped }
+                    : piece
+            )
+        );
+    };
+
     return (
         <div className="max-w-4xl mx-auto p-6">
             <h2 className="text-2xl font-bold text-center mb-8 text-gray-800">
@@ -93,22 +154,41 @@ export default function ActivityTwo({ exercise, onComplete }) {
                         <div
                             className="relative"
                             style={{ width: 400, height: 300 }}
+                            onPointerDown={handleContainerClick}
                         >
-                            {exercise.piecesData?.map((pieceData, i) => (
+                            {pieces.map((piece) => (
                                 <Piece
-                                    key={i}
+                                    key={piece.id}
+                                    pieceId={piece.id}
                                     shape={exercise.figure}
                                     denominator={exercise.fraction.denominator}
                                     orientation={exercise.divisionOrientation}
-                                    startAngle={pieceData.startAngle}
-                                    index={pieceData.index}
-                                    initialPosition={pieceData.position}
-                                    initialRotation={pieceData.rotation}
+                                    startAngle={piece.startAngle}
+                                    index={piece.index}
+                                    position={piece.position}
+                                    rotation={piece.rotation}
+                                    isFlipped={piece.isFlipped}
+                                    onPositionChange={(pos) =>
+                                        handlePiecePositionChange(piece.id, pos)
+                                    }
                                     proportions={exercise.proportions || {}}
                                     scale={exercise.scale || 1}
-                                    splittingType={exercise.splittingType} // ← AJOUTÉ
+                                    splittingType={exercise.splittingType}
+                                    onSelect={setSelectedPieceId}
+                                    collectiveMode={false}
+                                    isSelected={selectedPieceId === piece.id}
                                 />
                             ))}
+
+                            <GlobalToolbar
+                                isVisible={!!selectedPieceId}
+                                rotation={selectedPiece?.rotation || 0}
+                                isFlipped={selectedPiece?.isFlipped || false}
+                                showFlipButton={showFlipButton}
+                                onRotate={handleRotateSelected}
+                                onFlip={handleFlipSelected}
+                                position="top-right"
+                            />
                         </div>
                     </div>
                 </div>

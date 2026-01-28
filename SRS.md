@@ -2,10 +2,10 @@
 
 ## Application Web d'Apprentissage des Fractions
 
-**Version :** 3.1  
+**Version :** 3.2  
 **Date :** 28 janvier 2026  
 **Auteur :** Conseiller Pédagogique de Circonscription Numérique  
-**Statut :** En développement - Alpha v0.4.1
+**Statut :** En développement - Alpha v0.4.2
 
 ---
 
@@ -17,6 +17,7 @@
 | 2.0     | 28/01/2026 | CPC Numérique | Correction configuration EDUSCOL + nouvelle progression                     |
 | 3.0     | 28/01/2026 | CPC Numérique | Ajout Mode Collectif - État Alpha v0.4.0                                    |
 | 3.1     | 28/01/2026 | CPC Numérique | Correction géométrie triangle 1/4 + ajout triangles 1/8 - État Alpha v0.4.1 |
+| 3.2     | 28/01/2026 | CPC Numérique | Architecture contrôlée + rotation continue - État Alpha v0.4.2              |
 
 ---
 
@@ -26,7 +27,7 @@
 
 Ce document spécifie les exigences fonctionnelles et non-fonctionnelles de l'application web d'apprentissage des fractions destinée aux élèves de cycle 2 et cycle 3 de l'école primaire française, ainsi qu'aux enseignants pour la démonstration collective.
 
-**Note importante** : La version 3.1 corrige la géométrie du triangle coin 1/4 et ajoute deux nouveaux types de fractionnement pour 1/8.
+**Note importante** : La version 3.2 introduit une architecture de composant contrôlé pour résoudre les problèmes de manipulation (boutons actifs et rotation continue).
 
 ### 1.2 Contexte du projet
 
@@ -53,12 +54,16 @@ L'application s'inscrit dans le cadre des programmes de mathématiques 2025 de l
 - **Mode Collectif** : Mode de démonstration pour l'enseignant devant la classe
 - **Mode Autonome** : Mode d'apprentissage individuel pour l'élève
 - **Mode Guidé** : Mode d'apprentissage avec parcours personnalisé (à venir)
+- **Composant contrôlé** : Composant React dont l'état est géré par le parent
+- **Closure stale** : Fonction capturant des valeurs d'état obsolètes
+- **Rotation continue** : Incrémentation de rotation sans modulo (0, 90, 180, 270, 360, 450...)
 
 ### 1.5 Références
 
 - **Programmes 2025** : BO du 31 octobre 2024
 - **Ressources EDUSCOL** : Fractions et nombres décimaux au cycle 3 (document 16510)
 - **Livrets d'accompagnement** : CE1, CE2 (documents 67770, 65186)
+- **React Documentation** : Controlled Components
 
 ---
 
@@ -103,11 +108,28 @@ L'enseignant manipule des morceaux devant la classe avec :
 - Ajout/retrait de morceaux à la volée
 - Aide pédagogique avec questions suggérées
 
-#### F6 - Manipulation des morceaux
+#### F6 - Manipulation des morceaux (v0.4.2) ⭐
+
+**Architecture contrôlée** :
+
+- Composant `Piece.jsx` purement présentatif
+- État géré par les parents (ManipulationZone, ActivityOne, ActivityTwo)
+- Props contrôlées : `position`, `rotation`, `isFlipped`
+- Callbacks : `onPositionChange`, `onSelect`
+
+**Manipulation** :
 
 - Déplacement (drag & drop)
-- Rotation (adaptée à la forme)
+- Rotation adaptée à la forme, **continue sans retour**
 - Retournement (flip) pour formes non-circulaires
+- Toolbar fixe (coin haut-droit)
+
+**Comportements** :
+
+- Boutons actifs indéfiniment (callbacks stables)
+- Rotation continue : 0 → 90 → 180 → 270 → 360 → 450...
+- Affichage normalisé : `rotation % 360`
+- Transition désactivée pendant rotation
 
 #### F7 - Progression et suivi (Mode Autonome)
 
@@ -140,6 +162,7 @@ L'enseignant manipule des morceaux devant la classe avec :
 - Présentation non-prototypique obligatoire
 - Respect de la progressivité des apprentissages
 - Mode Collectif : interface adaptée à la projection
+- Architecture prévisible pour manipulation fluide
 
 #### Contraintes techniques
 
@@ -147,6 +170,7 @@ L'enseignant manipule des morceaux devant la classe avec :
 - Pas de TypeScript (choix explicite)
 - Composants fonctionnels uniquement
 - Pas de bibliothèque de manipulation (drag natif)
+- Architecture contrôlée pour état prévisible
 
 ---
 
@@ -177,7 +201,7 @@ L'enseignant manipule des morceaux devant la classe avec :
 
 ---
 
-### 3.2 Mode Autonome (préexistant v0.1-0.3)
+### 3.2 Mode Autonome
 
 #### EF-02 : Niveau par défaut
 
@@ -209,9 +233,30 @@ Les fractions présentées respectent strictement les programmes EDUSCOL 2025.
 
 L'élève manipule un morceau pour déterminer le nombre nécessaire.
 
+**Déroulement** :
+
+1. Affichage figure complète + morceau unique
+2. Élève manipule le morceau (rotation, retournement, déplacement)
+3. Élève répond : "Il faut X morceaux"
+4. Élève sélectionne le nom de la fraction
+5. Validation simultanée des deux réponses
+
 #### EF-05 : Activité 2 - Observer les morceaux donnés
 
 L'élève répond à 4 questions progressives.
+
+**Questions** :
+
+1. Que représente un morceau ? (sélection nom fraction)
+2. Combien de morceaux a-t-on ? (saisie nombre)
+3. Combien faut-il pour faire la figure ? (saisie nombre)
+4. Combien manque-t-il ? (saisie nombre)
+
+**Comportement** :
+
+- Validation séquentielle (une question à la fois)
+- Passage automatique après bonne réponse
+- Questions précédentes affichées en grisé
 
 #### EF-06 : Alternance des activités
 
@@ -223,7 +268,7 @@ Sauvegarde de l'index de l'exercice courant dans localStorage (`fractions-autono
 
 ---
 
-### 3.3 Mode Collectif (nouveau v0.4.0)
+### 3.3 Mode Collectif
 
 #### EF-08 : Affichage du Mode Collectif
 
@@ -271,7 +316,11 @@ Sauvegarde de l'index de l'exercice courant dans localStorage (`fractions-autono
   denominator: 4,
   fractionName: "quart",
   fractionPlural: "quarts",
-  splittingType: { id: "quarter-squares", component: "SquareQuarterSquareFraction", props: {} },
+  splittingType: {
+    id: "quarter-squares",
+    component: "SquareQuarterSquareFraction",
+    props: {}
+  },
   pieceCount: 3,
   figureRotation: 0,
   proportions: {},
@@ -308,22 +357,27 @@ Sauvegarde de l'index de l'exercice courant dans localStorage (`fractions-autono
 - Retrait : suppression du dernier morceau
 - Compteur mis à jour en temps réel
 
-#### EF-11 : Manipulation des morceaux en mode collectif
+#### EF-11 : Manipulation des morceaux en mode collectif (v0.4.2)
 
 **Priorité :** Haute
 
-**Différences avec Mode Autonome :**
+**Architecture :**
 
 - Prop `collectiveMode={true}` passée au composant `Piece`
 - **Contrôles permanents** : Pas de timer de désélection
-- Boutons ↻ et ⇄ toujours visibles
+- Boutons ↻ et ⇄ toujours visibles quand morceau sélectionné
 - Feedback visuel identique (bordure bleue si sélectionné)
 
 **Actions disponibles :**
 
 - Déplacement : drag & drop
-- Rotation : bouton ↻ (angle adapté)
-- Retournement : bouton ⇄ (sauf disque)
+- Rotation : bouton ↻ (angle adapté), **actif indéfiniment**
+- Retournement : bouton ⇄ (sauf disque), **actif indéfiniment**
+
+**Différences avec Mode Autonome :**
+
+- Mode Autonome : timer 3s de désélection automatique
+- Mode Collectif : toolbar permanente tant que sélectionné
 
 #### EF-12 : Aide pédagogique
 
@@ -368,9 +422,245 @@ Questions affichées :
 
 ---
 
-### 3.4 Types de fractionnements (v0.3.0 + v0.4.1)
+### 3.4 Manipulation des morceaux (v0.4.2) ⭐
 
-#### EF-14 : Fractionnements du carré
+#### EF-14 : Architecture composant contrôlé
+
+**Priorité :** Critique  
+**Problème résolu** : Boutons inactifs après premier clic (closure stale)
+
+**Solution : Composant contrôlé**
+
+**Piece.jsx** - Composant présentatif pur :
+
+```jsx
+export default function Piece({
+    // Props contrôlées (état géré par parent)
+    position = { x: 0, y: 0 },
+    rotation = 0,
+    isFlipped = false,
+
+    // Callbacks
+    onPositionChange,  // Appelé lors du drag
+    onSelect,          // Appelé lors du clic
+
+    // Métadonnées
+    pieceId,
+    isSelected,
+
+    // Configuration visuelle
+    shape,
+    denominator,
+    splittingType,
+    proportions,
+    scale,
+    // ...
+})
+```
+
+**Parent (ManipulationZone / ActivityOne / ActivityTwo)** - Gestion état :
+
+```jsx
+// État centralisé
+const [pieces, setPieces] = useState([
+    {
+        id: 'piece-1',
+        position: { x: 100, y: 100 },
+        rotation: 0,
+        isFlipped: false,
+    }
+]);
+
+const [selectedPieceId, setSelectedPieceId] = useState(null);
+
+// Callbacks stables
+const handleRotateSelected = () => {
+    if (!selectedPieceId) return;
+
+    setPieces(prev => prev.map(piece =>
+        piece.id === selectedPieceId
+            ? { ...piece, rotation: piece.rotation + rotationStep }
+            : piece
+    ));
+};
+
+const handleFlipSelected = () => {
+    if (!selectedPieceId) return;
+
+    setPieces(prev => prev.map(piece =>
+        piece.id === selectedPieceId
+            ? { ...piece, isFlipped: !piece.isFlipped }
+            : piece
+    ));
+};
+
+// Rendu
+<Piece
+    pieceId={piece.id}
+    position={piece.position}
+    rotation={piece.rotation}
+    isFlipped={piece.isFlipped}
+    onPositionChange={(pos) => handlePositionChange(piece.id, pos)}
+    onSelect={setSelectedPieceId}
+    isSelected={selectedPieceId === piece.id}
+/>
+
+<GlobalToolbar
+    isVisible={!!selectedPieceId}
+    rotation={selectedPiece?.rotation || 0}
+    isFlipped={selectedPiece?.isFlipped || false}
+    showFlipButton={showFlipButton}
+    onRotate={handleRotateSelected}
+    onFlip={handleFlipSelected}
+/>
+```
+
+**GlobalToolbar.jsx** - Callbacks directs :
+
+```jsx
+export default function GlobalToolbar({
+    isVisible,
+    rotation,
+    isFlipped,
+    showFlipButton,
+    onRotate,
+    onFlip,
+    position = "top-right",
+}) {
+    if (!isVisible) return null;
+
+    return (
+        <div className="fixed top-4 right-4 z-50 bg-white rounded-xl shadow-2xl p-4">
+            <button onClick={onRotate}>↻ Pivoter</button>
+            {showFlipButton && <button onClick={onFlip}>⇄ Retourner</button>}
+            <div>Rotation: {rotation % 360}°</div>
+        </div>
+    );
+}
+```
+
+**Avantages de l'architecture** :
+
+- Source unique de vérité (état dans parent)
+- Callbacks toujours à jour (pas de closure stale)
+- Séparation présentation/logique
+- Testabilité améliorée
+- Boutons actifs indéfiniment
+
+#### EF-15 : Rotation continue dans le sens horaire
+
+**Priorité :** Critique  
+**Problème résolu** : Retour arrière désagréable (270° → 0°)
+
+**Solution : Incrémentation continue**
+
+**Principe** :
+
+- Rotation stockée sans modulo : 0, 90, 180, 270, 360, 450, 540...
+- CSS `rotate(450deg)` = rotation visuelle à 90° (450 % 360 = 90)
+- Affichage normalisé avec modulo uniquement dans la toolbar
+
+**Implémentation** :
+
+```jsx
+// Dans le parent
+const handleRotateSelected = () => {
+    setPieces(prev => prev.map(piece =>
+        piece.id === selectedPieceId
+            ? {
+                ...piece,
+                rotation: piece.rotation + rotationStep  // Pas de modulo !
+              }
+            : piece
+    ));
+};
+
+// Dans Piece.jsx
+const [isRotating, setIsRotating] = useState(false);
+
+useEffect(() => {
+    if (isRotating) {
+        const timer = setTimeout(() => setIsRotating(false), 100);
+        return () => clearTimeout(timer);
+    }
+}, [isRotating]);
+
+// Lors d'un clic sur rotation
+useEffect(() => {
+    setIsRotating(true);
+}, [rotation]);
+
+// Style
+style={{
+    transform: `translate(${position.x}px, ${position.y}px)
+                rotate(${rotation}deg)
+                scaleX(${isFlipped ? -1 : 1})`,
+    transition: isDragging || isRotating ? "none" : "transform 0.2s ease",
+}}
+
+// Dans GlobalToolbar - Affichage normalisé
+<div>Rotation: {rotation % 360}°</div>
+```
+
+**Comportement** :
+
+- Clic 1 : 0° → 90°
+- Clic 2 : 90° → 180°
+- Clic 3 : 180° → 270°
+- Clic 4 : 270° → 360° (affiché "0°")
+- Clic 5 : 360° → 450° (affiché "90°")
+- ...
+
+**Avantages** :
+
+- Rotation toujours dans le sens horaire
+- Pas d'animation de retour
+- Smooth et prévisible
+
+#### EF-16 : Boutons actifs en permanence
+
+**Priorité :** Critique  
+**Problème résolu** : Boutons inactifs après premier clic
+
+**Solution : Callbacks stables**
+
+Les callbacks `handleRotateSelected` et `handleFlipSelected` :
+
+- Lisent toujours l'état actuel via `setPieces(prev => ...)`
+- Ne capturent pas de valeurs dans une closure
+- Sont stables (même référence à chaque render)
+
+**Test de validation** :
+
+1. Sélectionner un morceau
+2. Cliquer "Pivoter" 20 fois
+3. Résultat attendu : 20 rotations successives (0° → 1800°)
+
+#### EF-17 : Toolbar fixe
+
+**Priorité :** Haute
+
+**Position** : Coin haut-droit de la zone de manipulation (position fixed)
+
+**Avantages** :
+
+- Position prévisible
+- Idéale pour projection (Mode Collectif)
+- Ne bouge pas avec les transformations CSS du morceau
+- Toujours accessible
+
+**Affichage** :
+
+- Visible uniquement si un morceau est sélectionné
+- Affiche rotation normalisée (0-359°)
+- Affiche état flip (Normal/Retourné)
+- Boutons grands (48×48px minimum) pour tactile
+
+---
+
+### 3.5 Types de fractionnements
+
+#### EF-18 : Fractionnements du carré
 
 **Priorité :** Haute
 
@@ -411,14 +701,14 @@ Questions affichées :
 // - Triangle rectangle mince : (160×40)/2 = 3 200 ✓
 ```
 
-#### EF-15 : Fractionnements du rectangle
+#### EF-19 : Fractionnements du rectangle
 
 **Rectangle 1/2 à 1/5 (2 types)** :
 
 - Rectangles verticaux
 - Rectangles horizontaux
 
-#### EF-16 : Fractionnements du disque
+#### EF-20 : Fractionnements du disque
 
 **Disque (1 type)** :
 
@@ -433,37 +723,42 @@ Questions affichées :
 **ENF-01 :** Temps de chargement initial < 3 secondes (connexion standard)  
 **ENF-02 :** Transitions et animations fluides (60 fps)  
 **ENF-03 :** Réactivité du drag < 16ms (1 frame)  
-**ENF-04 :** Basculement entre modes < 200ms
+**ENF-04 :** Basculement entre modes < 200ms  
+**ENF-05 :** Rotation sans saccade (transition désactivée pendant rotation)
 
 ### 4.2 Utilisabilité
 
-**ENF-05 :** Interface adaptée aux jeunes lecteurs (taille police ≥ 16px)  
-**ENF-06 :** Boutons tactiles ≥ 44×44 pixels  
-**ENF-07 :** Feedback immédiat pour toute action utilisateur  
-**ENF-08 :** Palette de couleurs non-agressive (tons pastels)  
-**ENF-09 :** Mode Collectif : Interface adaptée à la projection (contrastes, tailles)
+**ENF-06 :** Interface adaptée aux jeunes lecteurs (taille police ≥ 16px)  
+**ENF-07 :** Boutons tactiles ≥ 44×44 pixels  
+**ENF-08 :** Feedback immédiat pour toute action utilisateur  
+**ENF-09 :** Palette de couleurs non-agressive (tons pastels)  
+**ENF-10 :** Mode Collectif : Interface adaptée à la projection (contrastes, tailles)  
+**ENF-11 :** Toolbar fixe prévisible (coin haut-droit)  
+**ENF-12 :** Boutons actifs sans limite de clics
 
 ### 4.3 Accessibilité
 
-**ENF-10 :** Contraste WCAG AA minimum (4.5:1)  
-**ENF-11 :** Navigation clavier complète  
-**ENF-12 :** Attributs ARIA sur les boutons  
-**ENF-13 :** Support lecteurs d'écran (basique)
+**ENF-13 :** Contraste WCAG AA minimum (4.5:1)  
+**ENF-14 :** Navigation clavier complète  
+**ENF-15 :** Attributs ARIA sur les boutons  
+**ENF-16 :** Support lecteurs d'écran (basique)
 
 ### 4.4 Fiabilité
 
-**ENF-14 :** Pas de perte de données en cas de fermeture du navigateur  
-**ENF-15 :** Gestion des erreurs localStorage (mode dégradé)  
-**ENF-16 :** Génération déterministe des exercices (seed basé sur ID)  
-**ENF-17 :** Isolation des sauvegardes par mode (pas d'écrasement)
+**ENF-17 :** Pas de perte de données en cas de fermeture du navigateur  
+**ENF-18 :** Gestion des erreurs localStorage (mode dégradé)  
+**ENF-19 :** Génération déterministe des exercices (seed basé sur ID)  
+**ENF-20 :** Isolation des sauvegardes par mode (pas d'écrasement)  
+**ENF-21 :** Architecture prévisible (composant contrôlé, pas de closure stale)
 
 ### 4.5 Maintenabilité
 
-**ENF-18 :** Code modulaire avec composants réutilisables  
-**ENF-19 :** Séparation configuration / logique métier  
-**ENF-20 :** Documentation inline (JSDoc light)  
-**ENF-21 :** Nomenclature cohérente (français métier, anglais code)  
-**ENF-22 :** Architecture extensible pour nouveaux modes
+**ENF-22 :** Code modulaire avec composants réutilisables  
+**ENF-23 :** Séparation configuration / logique métier  
+**ENF-24 :** Documentation inline (JSDoc light)  
+**ENF-25 :** Nomenclature cohérente (français métier, anglais code)  
+**ENF-26 :** Architecture extensible pour nouveaux modes  
+**ENF-27 :** Composants contrôlés pour état prévisible
 
 ---
 
@@ -480,7 +775,7 @@ Questions affichées :
 | Package Manager | pnpm         | 8.0+     | Performance, économie d'espace               |
 | Langage         | JavaScript   | ES2022+  | Pas de TypeScript (choix projet)             |
 
-### 5.2 Structure des composants
+### 5.2 Structure des composants (v0.4.2)
 
 ```
 src/
@@ -488,28 +783,29 @@ src/
 │   └── CollectiveMode/
 │       ├── CollectiveMode.jsx
 │       ├── FigureSelector.jsx
-│       └── ManipulationZone.jsx
+│       └── ManipulationZone.jsx          # ⭐ État + callbacks
 ├── components/
 │   ├── ModeSelector.jsx
 │   ├── activities/
-│   │   ├── ActivityOne.jsx
-│   │   └── ActivityTwo.jsx
+│   │   ├── ActivityOne.jsx               # ⭐ État + callbacks
+│   │   └── ActivityTwo.jsx               # ⭐ État + callbacks
 │   ├── shapes/
-│   │   ├── Piece.jsx
+│   │   ├── Piece.jsx                     # ⭐ Composant contrôlé
+│   │   ├── GlobalToolbar.jsx             # ⭐ Callbacks directs
 │   │   ├── figures/
 │   │   │   ├── Disk.jsx
 │   │   │   ├── Square.jsx
 │   │   │   ├── Rectangle.jsx
 │   │   │   └── House.jsx
-│   │   └── fractions/                          (10 composants v0.4.1)
+│   │   └── fractions/                    # 10 composants v0.4.1
 │   │       ├── DiskFraction.jsx
 │   │       ├── SquareFraction.jsx
 │   │       ├── SquareDiagonalFraction.jsx
-│   │       ├── SquareCornerTriangleFraction.jsx      (✅ corrigé)
+│   │       ├── SquareCornerTriangleFraction.jsx      # ✅ corrigé
 │   │       ├── SquareQuarterSquareFraction.jsx
 │   │       ├── SquareCrossFraction.jsx
-│   │       ├── SquareIsoscelesTriangleFraction.jsx   (✨ nouveau)
-│   │       ├── SquareRectangleThin8thFraction.jsx    (✨ nouveau)
+│   │       ├── SquareIsoscelesTriangleFraction.jsx   # ✨ nouveau
+│   │       ├── SquareRectangleThin8thFraction.jsx    # ✨ nouveau
 │   │       ├── RectangleFraction.jsx
 │   │       └── HouseFraction.jsx
 ├── hooks/
@@ -522,20 +818,26 @@ src/
 └── App.jsx
 ```
 
-### 5.3 Flux de données
+### 5.3 Flux de données (v0.4.2)
 
-**Modèle :** Unidirectionnel (React standard)
+**Modèle :** Unidirectionnel (React standard) avec composants contrôlés
 
 **Mode Autonome :**
 
 ```
 App (état global)
   ↓ props
+ActivityOne / ActivityTwo (état local)
+  ↓ props (position, rotation, isFlipped)
+  ↓ callbacks (onPositionChange, onSelect)
+Piece (présentatif pur)
+  ↑ événements
 ActivityOne / ActivityTwo
-  ↓ props
-Piece, Figure
-  ↓ callbacks
-App (mise à jour état)
+  ↑ mise à jour état
+GlobalToolbar
+  ↑ callbacks (onRotate, onFlip)
+ActivityOne / ActivityTwo
+  ↑ mise à jour état
 ```
 
 **Mode Collectif :**
@@ -545,9 +847,17 @@ App (routage)
   ↓
 CollectiveMode (état local)
   ↓ props
-FigureSelector → onGenerate → ManipulationZone
-  ↓ props
-Piece (collectiveMode=true)
+FigureSelector → onGenerate → ManipulationZone (état local)
+  ↓ props (position, rotation, isFlipped)
+  ↓ callbacks (onPositionChange, onSelect)
+Piece (présentatif pur)
+  ↑ événements
+ManipulationZone
+  ↑ mise à jour état
+GlobalToolbar
+  ↑ callbacks (onRotate, onFlip)
+ManipulationZone
+  ↑ mise à jour état
 ```
 
 **État global (App.jsx) :**
@@ -568,7 +878,23 @@ Piece (collectiveMode=true)
 
 ## 6. Modèle de données
 
-### 6.1 Structure d'un exercice (Mode Autonome)
+### 6.1 État des morceaux (v0.4.2)
+
+```javascript
+// Dans le parent (ManipulationZone, ActivityOne, ActivityTwo)
+const [pieces, setPieces] = useState([
+    {
+        id: string, // "piece-1"
+        position: { x, y }, // { x: 100, y: 100 }
+        rotation: number, // 0, 90, 180, 270, 360, 450... (continu)
+        isFlipped: boolean, // false
+    },
+]);
+
+const [selectedPieceId, setSelectedPieceId] = useState(null);
+```
+
+### 6.2 Structure d'un exercice (Mode Autonome)
 
 ```javascript
 {
@@ -606,7 +932,7 @@ Piece (collectiveMode=true)
 }
 ```
 
-### 6.2 Configuration EDUSCOL (Mode Autonome)
+### 6.3 Configuration EDUSCOL (Mode Autonome)
 
 ```javascript
 export const PROGRESSION_EDUSCOL = {
@@ -684,7 +1010,7 @@ export const PROGRESSION_EDUSCOL = {
 };
 ```
 
-### 6.3 Configuration démonstration (Mode Collectif)
+### 6.4 Configuration démonstration (Mode Collectif)
 
 ```javascript
 {
@@ -706,7 +1032,7 @@ export const PROGRESSION_EDUSCOL = {
 }
 ```
 
-### 6.4 Données sauvegardées (localStorage)
+### 6.5 Données sauvegardées (localStorage)
 
 ```javascript
 {
@@ -741,7 +1067,7 @@ export const PROGRESSION_EDUSCOL = {
 
 - Grille Tailwind (4px de base)
 - Marges généreuses pour aération
-- Padding confortable sur boutons
+- Padding confortable sur boutons (≥ 12px)
 
 ### 7.2 Composants d'interface
 
@@ -780,53 +1106,105 @@ export const PROGRESSION_EDUSCOL = {
 - Contrôles : 3 boutons centrés au-dessus de la zone
     - Vert (ajout) + Rouge (retrait) + Badge gris (compteur)
 
+#### GlobalToolbar (v0.4.2)
+
+- Position : fixed, top-4, right-4
+- Largeur : 200px
+- Padding : 16px
+- Fond : blanc
+- Bordure : 2px blue-400
+- Ombre : shadow-2xl
+- z-index : 50
+- Boutons : 48×48px minimum (tactile)
+- Icônes : 24×24px
+- Labels : 14px, bold
+- Animation entrée : `animate-controls-appear`
+
 ---
 
 ## 8. Règles métier
 
 ### 8.1 Génération des exercices (Mode Autonome)
 
-**RM-01** : Pour chaque fraction disponible au niveau CE1, générer 2 exercices (activité 1 et 2) pour chaque figure compatible  
-**RM-02** : Les variations visuelles sont générées aléatoirement  
-**RM-03** : Les angles et positions aléatoires utilisent Math.random() uniquement lors de la génération  
-**RM-04** : Pour l'activité 2, le nombre de morceaux donnés est : 1 ≤ n < dénominateur  
-**RM-05** : L'ordre de génération suit : Fraction → Figure → Activité  
+**RM-01** : Pour chaque fraction disponible au niveau CE1, générer 2 exercices (activité 1 et 2) pour chaque figure compatible
+
+**RM-02** : Les variations visuelles sont générées aléatoirement lors de la génération initiale
+
+**RM-03** : Les angles et positions aléatoires utilisent Math.random() uniquement lors de la génération
+
+**RM-04** : Pour l'activité 2, le nombre de morceaux donnés est : 1 ≤ n < dénominateur
+
+**RM-05** : L'ordre de génération suit : Fraction → Figure → Activité
+
 **RM-06** : L'ordre pédagogique des fractions est : 2, 4, 8, 3, 5, 10
 
 ### 8.2 Configuration démonstration (Mode Collectif)
 
-**RM-07** : Les dénominateurs disponibles dépendent de la figure sélectionnée selon EDUSCOL  
-**RM-08** : Les types de fractionnement disponibles dépendent du dénominateur sélectionné  
-**RM-09** : Le nombre de morceaux est libre (1-10) sans contrainte pédagogique  
-**RM-10** : La génération n'utilise pas de variations aléatoires (rotation 0°, scale 1, etc.)  
+**RM-07** : Les dénominateurs disponibles dépendent de la figure sélectionnée selon EDUSCOL
+
+**RM-08** : Les types de fractionnement disponibles dépendent du dénominateur sélectionné
+
+**RM-09** : Le nombre de morceaux est libre (1-10) sans contrainte pédagogique
+
+**RM-10** : La génération n'utilise pas de variations aléatoires (rotation 0°, scale 1, etc.)
+
 **RM-11** : Chaque ajout de morceau positionne le nouveau à (200, 200)
 
-### 8.3 Manipulation
+### 8.3 Manipulation (v0.4.2)
 
-**RM-12** : Le bouton flip n'est pas affiché pour les disques (symétrie radiale)  
-**RM-13** : Le drag & drop fonctionne à la fois avec souris et tactile (PointerEvents)  
-**RM-14** : En mode collectif, les contrôles sont toujours visibles (collectiveMode=true)  
+**RM-12** : Le bouton flip n'est pas affiché pour les disques (symétrie radiale)
+
+**RM-13** : Le drag & drop fonctionne à la fois avec souris et tactile (PointerEvents)
+
+**RM-14** : En mode collectif, les contrôles sont toujours visibles (collectiveMode=true)
+
 **RM-15** : En mode autonome, les contrôles disparaissent après 3s d'inactivité
 
-### 8.4 Validation (Mode Autonome uniquement)
+**RM-16** : Les boutons "Pivoter" et "Retourner" sont actifs indéfiniment
 
-**RM-16** : Pour l'activité 1, la validation est simultanée sur les deux champs  
-**RM-17** : Pour l'activité 2, les validations sont séquentielles  
-**RM-18** : Une réponse correcte déclenche un délai avant passage automatique  
-**RM-19** : Une réponse incorrecte permet une nouvelle tentative immédiate
+**RM-17** : La rotation est continue (0, 90, 180, 270, 360, 450...) sans modulo
 
-### 8.5 Géométrie des fractionnements (v0.4.1)
+**RM-18** : L'affichage de la rotation dans la toolbar est normalisé avec modulo (0-359°)
 
-**RM-20** : Toutes les aires doivent être vérifiées mathématiquement  
-**RM-21** : Pour le carré 160×160 (25 600 px²) :
+**RM-19** : La transition CSS est désactivée pendant la rotation pour éviter l'animation de retour
+
+### 8.4 Architecture (v0.4.2)
+
+**RM-20** : Piece.jsx est un composant purement contrôlé, sans état local pour rotation/flip
+
+**RM-21** : Les parents (ManipulationZone, ActivityOne, ActivityTwo) gèrent tout l'état des morceaux
+
+**RM-22** : Les callbacks passés à GlobalToolbar sont stables et lisent toujours l'état actuel
+
+**RM-23** : L'état des morceaux est la source unique de vérité
+
+**RM-24** : Les callbacks utilisent `setPieces(prev => ...)` pour éviter les closures stales
+
+### 8.5 Validation (Mode Autonome uniquement)
+
+**RM-25** : Pour l'activité 1, la validation est simultanée sur les deux champs
+
+**RM-26** : Pour l'activité 2, les validations sont séquentielles
+
+**RM-27** : Une réponse correcte déclenche un délai avant passage automatique
+
+**RM-28** : Une réponse incorrecte permet une nouvelle tentative immédiate
+
+### 8.6 Géométrie des fractionnements (v0.4.1)
+
+**RM-29** : Toutes les aires doivent être vérifiées mathématiquement
+
+**RM-30** : Pour le carré 160×160 (25 600 px²) :
 
 - 1/2 = 12 800 px²
 - 1/4 = 6 400 px²
 - 1/8 = 3 200 px²
 
-**RM-22** : Triangle coin 1/4 : base 160px × hauteur 80px → (160×80)/2 = 6 400 px² ✓  
-**RM-23** : Triangle isocèle 1/8 : côtés 80px × 80px → (80×80)/2 = 3 200 px² ✓  
-**RM-24** : Triangle mince 1/8 : base 160px × hauteur 40px → (160×40)/2 = 3 200 px² ✓
+**RM-31** : Triangle coin 1/4 : base 160px × hauteur 80px → (160×80)/2 = 6 400 px² ✓
+
+**RM-32** : Triangle isocèle 1/8 : côtés 80px × 80px → (80×80)/2 = 3 200 px² ✓
+
+**RM-33** : Triangle mince 1/8 : base 160px × hauteur 40px → (160×40)/2 = 3 200 px² ✓
 
 ---
 
@@ -874,7 +1252,7 @@ export const PROGRESSION_EDUSCOL = {
 
 ---
 
-### CU-03 : Manipuler en démonstration (Mode Collectif)
+### CU-03 : Manipuler en démonstration (Mode Collectif) - v0.4.2
 
 **Acteur principal :** Enseignant  
 **Préconditions :** Démonstration générée  
@@ -882,17 +1260,24 @@ export const PROGRESSION_EDUSCOL = {
 
 **Scénario nominal :**
 
-1. L'enseignant déplace un morceau par drag & drop
-2. Le système met à jour la position
-3. L'enseignant clique sur le bouton rotation
-4. Le système pivote le morceau de l'angle adapté
-5. L'enseignant pose les questions suggérées aux élèves
-6. Les élèves répondent oralement
+1. L'enseignant clique sur un morceau
+2. Le système sélectionne le morceau (bordure bleue)
+3. Le système affiche la toolbar fixe (coin haut-droit)
+4. L'enseignant déplace le morceau par drag & drop
+5. Le système met à jour la position
+6. L'enseignant clique sur le bouton "Pivoter"
+7. Le système pivote le morceau de l'angle adapté
+8. L'enseignant clique à nouveau sur "Pivoter" (5 fois)
+9. Le système pivote à chaque clic (rotation continue)
+10. L'enseignant pose les questions suggérées aux élèves
+11. Les élèves répondent oralement
 
 **Scénarios alternatifs :**
 
-- 3a. L'enseignant clique sur "Ajouter un morceau" → Nouveau morceau apparaît
-- 3b. L'enseignant clique sur "Retirer un morceau" → Dernier morceau disparaît
+- 6a. L'enseignant clique sur "Ajouter un morceau" → Nouveau morceau apparaît
+- 6b. L'enseignant clique sur "Retirer un morceau" → Dernier morceau disparaît
+- 6c. L'enseignant clique sur "Retourner" → Morceau se retourne
+- 6d. L'enseignant clique à côté → Désélection, toolbar disparaît
 
 ---
 
@@ -915,7 +1300,7 @@ export const PROGRESSION_EDUSCOL = {
 
 ---
 
-### CU-05 : Compléter un exercice de type 1
+### CU-05 : Compléter un exercice de type 1 - v0.4.2
 
 **Acteur principal :** Élève  
 **Préconditions :** Exercice d'activité 1 affiché  
@@ -924,24 +1309,53 @@ export const PROGRESSION_EDUSCOL = {
 **Scénario nominal :**
 
 1. L'élève observe la figure complète et le morceau
-2. L'élève déplace/pivote le morceau pour comprendre
-3. L'élève saisit le nombre de morceaux nécessaires
-4. L'élève sélectionne le nom de la fraction
-5. L'élève clique sur "Valider"
-6. Le système vérifie les deux réponses
-7. Le système affiche un message de succès
-8. Après 1,5 seconde, le système passe à l'exercice suivant
+2. L'élève clique sur le morceau
+3. Le système sélectionne le morceau et affiche la toolbar
+4. L'élève clique sur "Pivoter" plusieurs fois pour comprendre
+5. Le système pivote à chaque clic (rotation continue)
+6. Après 3s sans interaction, la toolbar disparaît
+7. L'élève saisit le nombre de morceaux nécessaires
+8. L'élève sélectionne le nom de la fraction
+9. L'élève clique sur "Valider"
+10. Le système vérifie les deux réponses
+11. Le système affiche un message de succès
+12. Après 1,5 seconde, le système passe à l'exercice suivant
+
+**Scénarios alternatifs :**
+
+- 10a. Réponse incorrecte → Message d'erreur, nouvelle tentative
+- 4a. L'élève manipule le morceau sans répondre → Pas de validation
+
+---
+
+### CU-06 : Compléter un exercice de type 2 - v0.4.2
+
+**Acteur principal :** Élève  
+**Préconditions :** Exercice d'activité 2 affiché  
+**Postconditions :** 4 questions validées, passage à l'exercice suivant
+
+**Scénario nominal :**
+
+1. L'élève observe les morceaux donnés
+2. L'élève clique sur un morceau
+3. Le système sélectionne le morceau et affiche la toolbar
+4. L'élève explore en pivotant et retournant
+5. Le système exécute chaque action (boutons actifs)
+6. L'élève répond à la question 1
+7. Le système valide, affiche la question 2
+8. L'élève répond aux questions 2, 3, 4 successivement
+9. Le système valide chaque étape
+10. Après la question 4 correcte, passage à l'exercice suivant
 
 **Scénarios alternatifs :**
 
 - 6a. Réponse incorrecte → Message d'erreur, nouvelle tentative
-- 3a. L'élève manipule le morceau sans répondre → Pas de validation
 
 ---
 
 ## 10. Contraintes et limitations
 
-### 10.1 Limitations de la version 0.4.1
+### 10.1 Limitations de la version 0.4.2
 
 **L10-01 :** Pas de clippage automatique en mode collectif  
 **L10-02 :** Pas de mode plein écran pour projection optimale  
@@ -951,14 +1365,17 @@ export const PROGRESSION_EDUSCOL = {
 **L10-06 :** Pas d'export des résultats  
 **L10-07 :** Pas de support multi-utilisateurs  
 **L10-08 :** Pas de mode hors-ligne progressif (PWA)  
-**L10-09 :** Activité 2 limitée aux fractions < 1 (même en CM1)
+**L10-09 :** Activité 2 limitée aux fractions < 1 (même en CM1)  
+**L10-10 :** Pas d'historique undo/redo des manipulations  
+**L10-11 :** Pas d'animation fluide lors de rotations rapides successives
 
 ### 10.2 Contraintes techniques
 
 **C10-01 :** Nécessite un navigateur moderne (ES2022+)  
 **C10-02 :** Données limitées à 5-10 MB (localStorage)  
 **C10-03 :** Pas de synchronisation multi-appareils  
-**C10-04 :** Dépendance à Google Fonts (si réseau coupé après chargement initial)
+**C10-04 :** Dépendance à Google Fonts (si réseau coupé après chargement initial)  
+**C10-05 :** Architecture contrôlée impose structure parent/enfant stricte
 
 ---
 
@@ -990,6 +1407,12 @@ export const PROGRESSION_EDUSCOL = {
 - Suivi de progression
 - Feedback adapté
 
+**EV-H5 :** Historique des manipulations
+
+- Boutons undo/redo
+- Historique des 10 dernières actions
+- Replay automatique
+
 ### 11.2 Priorité moyenne
 
 **EV-M1 :** Fractionnements avancés
@@ -1000,7 +1423,8 @@ export const PROGRESSION_EDUSCOL = {
 **EV-M2 :** Activité 2 avec fractions > 1 (CM1)  
 **EV-M3 :** Feedback sonore optionnel  
 **EV-M4 :** Export des résultats (PDF, CSV)  
-**EV-M5 :** Mode hors-ligne complet (PWA)
+**EV-M5 :** Mode hors-ligne complet (PWA)  
+**EV-M6 :** Animation fluide rotations rapides
 
 ### 11.3 Priorité basse
 
@@ -1013,7 +1437,7 @@ export const PROGRESSION_EDUSCOL = {
 
 ## 12. Critères d'acceptation globaux
 
-### Phase Alpha (v0.4.1)
+### Phase Alpha (v0.4.2)
 
 ✅ **CA-A1 :** Le niveau CE1 fonctionne correctement (Mode Autonome)  
 ✅ **CA-A2 :** Les deux types d'activités fonctionnent (Mode Autonome)  
@@ -1030,8 +1454,12 @@ export const PROGRESSION_EDUSCOL = {
 ✅ **CA-A13 :** Le basculement entre modes préserve les données  
 ✅ **CA-A14 :** Triangle coin 1/4 affiche la géométrie correcte (160×80px)  
 ✅ **CA-A15 :** Nouveaux triangles 1/8 disponibles dans le sélecteur  
-⬜ **CA-A16 :** Tests sur les 4 navigateurs cibles  
-⬜ **CA-A17 :** Accessibilité WCAG AA validée
+✅ **CA-A16 :** Architecture composant contrôlé fonctionnelle  
+✅ **CA-A17 :** Rotation continue sans retour arrière  
+✅ **CA-A18 :** Boutons actifs indéfiniment (pas de closure stale)  
+✅ **CA-A19 :** Toolbar fixe position prévisible (coin haut-droit)  
+⬜ **CA-A20 :** Tests sur les 4 navigateurs cibles  
+⬜ **CA-A21 :** Accessibilité WCAG AA validée
 
 ### Phase Beta (v0.5.0+)
 
@@ -1040,7 +1468,8 @@ export const PROGRESSION_EDUSCOL = {
 ⬜ **CA-B3 :** Corrections des bugs remontés  
 ⬜ **CA-B4 :** Optimisations de performance si nécessaire  
 ⬜ **CA-B5 :** Documentation utilisateur (guide enseignant)  
-⬜ **CA-B6 :** Implémentation du clippage automatique (Mode Collectif)
+⬜ **CA-B6 :** Implémentation du clippage automatique (Mode Collectif)  
+⬜ **CA-B7 :** Implémentation historique undo/redo
 
 ### Phase Release
 
@@ -1114,47 +1543,73 @@ fractionOrder.forEach((denominator) => {
 });
 ```
 
-#### Configuration dynamique (Mode Collectif)
+#### Architecture composant contrôlé (v0.4.2)
 
 ```javascript
-// Exemple de mapping dynamique
-const SPLITTING_CONFIG = {
-    square: {
-        2: [
-            { id: "vertical-rectangles", component: "SquareFraction" },
-            { id: "diagonal-triangles", component: "SquareDiagonalFraction" },
-        ],
-        4: [
-            { id: "vertical-rectangles", component: "SquareFraction" },
-            {
-                id: "corner-triangles",
-                component: "SquareCornerTriangleFraction",
-            },
-            { id: "quarter-squares", component: "SquareQuarterSquareFraction" },
-            { id: "cross-triangles", component: "SquareCrossFraction" },
-        ],
-        8: [
-            { id: "vertical-rectangles", component: "SquareFraction" },
-            { id: "horizontal-rectangles", component: "SquareFraction" },
-            {
-                id: "isosceles-triangles",
-                component: "SquareIsoscelesTriangleFraction",
-            },
-            {
-                id: "thin-rectangle-triangles",
-                component: "SquareRectangleThin8thFraction",
-            },
-        ],
-    },
-    // ...
+// Parent (ManipulationZone, ActivityOne, ActivityTwo)
+const [pieces, setPieces] = useState([
+    { id: 'piece-1', position: {x, y}, rotation: 0, isFlipped: false }
+]);
+
+const [selectedPieceId, setSelectedPieceId] = useState(null);
+
+const handleRotateSelected = () => {
+    if (!selectedPieceId) return;
+
+    setPieces(prev => prev.map(piece =>
+        piece.id === selectedPieceId
+            ? { ...piece, rotation: piece.rotation + rotationStep }
+            : piece
+    ));
 };
 
-// Sélection figure → Dénominateurs disponibles
-const availableDenominators = Object.keys(SPLITTING_CONFIG[selectedFigure]);
+// Rendu
+<Piece
+    pieceId={piece.id}
+    position={piece.position}
+    rotation={piece.rotation}
+    isFlipped={piece.isFlipped}
+    onPositionChange={(pos) => handlePositionChange(piece.id, pos)}
+    onSelect={setSelectedPieceId}
+    isSelected={selectedPieceId === piece.id}
+/>
 
-// Sélection dénominateur → Types disponibles
-const availableSplittingTypes =
-    SPLITTING_CONFIG[selectedFigure][selectedDenominator];
+<GlobalToolbar
+    isVisible={!!selectedPieceId}
+    rotation={selectedPiece?.rotation || 0}
+    isFlipped={selectedPiece?.isFlipped || false}
+    onRotate={handleRotateSelected}
+    onFlip={handleFlipSelected}
+/>
+```
+
+#### Rotation continue (v0.4.2)
+
+```javascript
+// Incrémentation sans modulo
+const handleRotate = () => {
+    setPieces(prev => prev.map(piece =>
+        piece.id === selectedId
+            ? { ...piece, rotation: piece.rotation + rotationStep }
+            : piece
+    ));
+};
+
+// Désactivation transition pendant rotation
+const [isRotating, setIsRotating] = useState(false);
+
+useEffect(() => {
+    if (isRotating) {
+        const timer = setTimeout(() => setIsRotating(false), 100);
+        return () => clearTimeout(timer);
+    }
+}, [isRotating]);
+
+// Dans le style
+transition: isDragging || isRotating ? "none" : "transform 0.2s ease"
+
+// Affichage normalisé dans toolbar
+<div>Rotation: {rotation % 360}°</div>
 ```
 
 #### Vérification géométrique des fractionnements (v0.4.1)
@@ -1203,15 +1658,15 @@ const availableSplittingTypes =
 - URL : https://eduscol.education.fr/document/16510/download
 - Type : Guide pédagogique EDUSCOL
 
----
+**React Documentation** :
 
-| Version | Date       | Auteur        | Modifications                                                                |
-| ------- | ---------- | ------------- | ---------------------------------------------------------------------------- |
-| 1.0     | 27/01/2026 | CPC Numérique | Création initiale - État Alpha v0.1.0                                        |
-| 2.0     | 28/01/2026 | CPC Numérique | Correction majeure configuration EDUSCOL + nouvelle progression pédagogique  |
-| 3.0     | 28/01/2026 | CPC Numérique | Ajout Mode Collectif - Outil de démonstration enseignant - État Alpha v0.4.0 |
-| 3.1     | 28/01/2026 | CPC Numérique | Correction géométrie triangle 1/4 + ajout triangles 1/8 - État Alpha v0.4.1  |
+- Controlled Components : https://react.dev/learn/sharing-state-between-components
+- useState : https://react.dev/reference/react/useState
 
 ---
 
-**Fin du document SRS v3.1**
+**Fin du document SRS v3.2 - COMPLET**
+
+| Version | Date       | Auteur        | Modifications                                             |
+| ------- | ---------- | ------------- | --------------------------------------------------------- |
+| 3.2     | 28/01/2026 | CPC Numérique | Architecture contrôlée + rotation continue - Alpha v0.4.2 |

@@ -6,6 +6,7 @@ import {
     House,
 } from "../../components/shapes/figures";
 import Piece from "../../components/shapes/Piece";
+import GlobalToolbar from "../../components/shapes/GlobalToolbar";
 
 const FIGURE_COMPONENTS = {
     disk: Disk,
@@ -16,7 +17,6 @@ const FIGURE_COMPONENTS = {
 
 export default function ManipulationZone({ config }) {
     const [pieces, setPieces] = useState(() => {
-        // Initialiser les morceaux avec positions aléatoires
         return Array.from({ length: config.pieceCount }).map((_, i) => ({
             id: `piece-${i}`,
             position: {
@@ -25,23 +25,48 @@ export default function ManipulationZone({ config }) {
             },
             rotation: 0,
             isFlipped: false,
-            isSnapped: false, // Pour le système de clippage
-            snapPosition: null,
         }));
     });
 
+    const [selectedPieceId, setSelectedPieceId] = useState(null);
+
     const FigureComponent = FIGURE_COMPONENTS[config.figure];
 
-    const handlePieceTransform = (pieceId, transform) => {
+    const rotationStep =
+        config.figure === "disk" ? 360 / config.denominator : 90;
+    const showFlipButton = config.figure !== "disk";
+
+    const selectedPiece = pieces.find((p) => p.id === selectedPieceId);
+
+    const handlePiecePositionChange = (pieceId, newPosition) => {
         setPieces((prev) =>
             prev.map((piece) =>
                 piece.id === pieceId
-                    ? {
-                          ...piece,
-                          position: transform.position,
-                          rotation: transform.rotation,
-                          isFlipped: transform.isFlipped,
-                      }
+                    ? { ...piece, position: newPosition }
+                    : piece
+            )
+        );
+    };
+
+    const handleRotateSelected = () => {
+        if (!selectedPieceId) return;
+
+        setPieces((prev) =>
+            prev.map((piece) =>
+                piece.id === selectedPieceId
+                    ? { ...piece, rotation: piece.rotation + rotationStep }
+                    : piece
+            )
+        );
+    };
+
+    const handleFlipSelected = () => {
+        if (!selectedPieceId) return;
+
+        setPieces((prev) =>
+            prev.map((piece) =>
+                piece.id === selectedPieceId
+                    ? { ...piece, isFlipped: !piece.isFlipped }
                     : piece
             )
         );
@@ -53,21 +78,28 @@ export default function ManipulationZone({ config }) {
             position: { x: 200, y: 200 },
             rotation: 0,
             isFlipped: false,
-            isSnapped: false,
-            snapPosition: null,
         };
         setPieces([...pieces, newPiece]);
     };
 
     const handleRemovePiece = () => {
         if (pieces.length > 0) {
+            const removedPieceId = pieces[pieces.length - 1].id;
             setPieces(pieces.slice(0, -1));
+            if (selectedPieceId === removedPieceId) {
+                setSelectedPieceId(null);
+            }
+        }
+    };
+
+    const handleContainerClick = (e) => {
+        if (e.target === e.currentTarget) {
+            setSelectedPieceId(null);
         }
     };
 
     return (
         <div className="bg-white rounded-xl shadow-lg p-8">
-            {/* Contrôles d'ajout/retrait */}
             <div className="flex justify-center gap-4 mb-6">
                 <button
                     onClick={handleAddPiece}
@@ -87,9 +119,7 @@ export default function ManipulationZone({ config }) {
                 </div>
             </div>
 
-            {/* Zone de travail */}
             <div className="flex justify-around items-start gap-8">
-                {/* Figure de référence */}
                 <div className="text-center">
                     <h3 className="text-xl font-semibold mb-4 text-gray-700">
                         Figure complète
@@ -113,7 +143,6 @@ export default function ManipulationZone({ config }) {
                     </p>
                 </div>
 
-                {/* Zone de manipulation */}
                 <div className="flex-1">
                     <h3 className="text-xl font-semibold mb-4 text-gray-700 text-center">
                         Morceaux à manipuler
@@ -121,38 +150,51 @@ export default function ManipulationZone({ config }) {
                     <div
                         className="relative bg-amber-50 rounded-lg border-2 border-dashed border-amber-300"
                         style={{ width: "600px", height: "500px" }}
+                        onPointerDown={handleContainerClick}
                     >
                         {pieces.map((piece, index) => (
                             <Piece
                                 key={piece.id}
+                                pieceId={piece.id}
                                 shape={config.figure}
                                 denominator={config.denominator}
                                 orientation={config.divisionOrientation}
                                 startAngle={0}
                                 index={index % config.denominator}
-                                initialPosition={piece.position}
-                                initialRotation={piece.rotation}
+                                position={piece.position}
+                                rotation={piece.rotation}
+                                isFlipped={piece.isFlipped}
+                                onPositionChange={(pos) =>
+                                    handlePiecePositionChange(piece.id, pos)
+                                }
                                 proportions={config.proportions || {}}
                                 scale={config.scale || 1}
                                 splittingType={config.splittingType}
-                                onTransform={(transform) =>
-                                    handlePieceTransform(piece.id, transform)
-                                }
-                                collectiveMode={true} // Désactiver le timer de désélection
+                                collectiveMode={true}
+                                onSelect={setSelectedPieceId}
+                                isSelected={selectedPieceId === piece.id}
                             />
                         ))}
 
-                        {/* Indicateur si aucun morceau */}
                         {pieces.length === 0 && (
-                            <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-lg">
+                            <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-lg pointer-events-none">
                                 Cliquez sur "Ajouter un morceau" pour commencer
                             </div>
                         )}
+
+                        <GlobalToolbar
+                            isVisible={!!selectedPieceId}
+                            rotation={selectedPiece?.rotation || 0}
+                            isFlipped={selectedPiece?.isFlipped || false}
+                            showFlipButton={showFlipButton}
+                            onRotate={handleRotateSelected}
+                            onFlip={handleFlipSelected}
+                            position="top-right"
+                        />
                     </div>
                 </div>
             </div>
 
-            {/* Aide pédagogique */}
             <div className="mt-8 p-4 bg-blue-50 rounded-lg">
                 <h4 className="font-semibold text-gray-800 mb-2">
                     💡 Questions suggérées :
