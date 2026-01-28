@@ -26,6 +26,7 @@ export default function RectangleFraction({
                     fill={fill}
                     stroke="#000"
                     strokeWidth="2"
+                    style={{ pointerEvents: "auto" }}
                 />
             </svg>
         );
@@ -43,6 +44,7 @@ export default function RectangleFraction({
                     fill={fill}
                     stroke="#000"
                     strokeWidth="2"
+                    style={{ pointerEvents: "auto" }}
                 />
             </svg>
         );

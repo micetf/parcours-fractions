@@ -31,6 +31,7 @@ export default function SquareQuarterSquareFraction({
                 fill={fill}
                 stroke="#000"
                 strokeWidth="2"
+                style={{ pointerEvents: "auto" }}
             />
         </svg>
     );

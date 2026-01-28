@@ -21,6 +21,7 @@ export default function DiskFraction({
                 fill={fill}
                 stroke="#000"
                 strokeWidth="2"
+                style={{ pointerEvents: "auto" }}
             />
         </svg>
     );

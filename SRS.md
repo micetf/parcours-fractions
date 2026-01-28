@@ -2,10 +2,10 @@
 
 ## Application Web d'Apprentissage des Fractions
 
-**Version :** 3.2  
+**Version :** 3.3  
 **Date :** 28 janvier 2026  
 **Auteur :** Conseiller Pédagogique de Circonscription Numérique  
-**Statut :** En développement - Alpha v0.4.2
+**Statut :** En développement - Alpha v0.4.3
 
 ---
 
@@ -18,6 +18,7 @@
 | 3.0     | 28/01/2026 | CPC Numérique | Ajout Mode Collectif - État Alpha v0.4.0                                    |
 | 3.1     | 28/01/2026 | CPC Numérique | Correction géométrie triangle 1/4 + ajout triangles 1/8 - État Alpha v0.4.1 |
 | 3.2     | 28/01/2026 | CPC Numérique | Architecture contrôlée + rotation continue - État Alpha v0.4.2              |
+| 3.3     | 28/01/2026 | CPC Numérique | Optimisation fractionnements + UX sélection - Alpha v0.4.3                  |
 
 ---
 
@@ -678,10 +679,10 @@ Les callbacks `handleRotateSelected` et `handleFlipSelected` :
 
 **Carré 1/8 (4 types)** (✨ v0.4.1) :
 
-- Rectangles verticaux (classique)
-- Rectangles horizontaux (classique)
-- **Triangles isocèles rectangles** (nouveau) : 80×80px
-- **Triangles rectangles minces** (nouveau) : 160×40px
+- Rectangles verticaux (classique) - 20×160 px
+- **Rectangles demi-quart** (nouveau) - 80×40 px
+- Triangles isocèles rectangles - 80×80 px
+- Triangles rectangles minces - 160×40 px
 
 **Vérifications géométriques** :
 
@@ -696,7 +697,7 @@ Les callbacks `handleRotateSelected` et `handleFlipSelected` :
 
 // 1/8 (3 200 px²) :
 // - Rectangle vertical : 20×160 = 3 200 ✓
-// - Rectangle horizontal : 160×20 = 3 200 ✓
+// - Rectangle demi-quart : 80×40 = 3 200 ✓
 // - Triangle isocèle rectangle : (80×80)/2 = 3 200 ✓
 // - Triangle rectangle mince : (160×40)/2 = 3 200 ✓
 ```
@@ -759,6 +760,8 @@ Les callbacks `handleRotateSelected` et `handleFlipSelected` :
 **ENF-25 :** Nomenclature cohérente (français métier, anglais code)  
 **ENF-26 :** Architecture extensible pour nouveaux modes  
 **ENF-27 :** Composants contrôlés pour état prévisible
+**ENF-28 :** Zone cliquable restreinte à la forme réelle (pas d'enveloppe morte)
+**ENF-29 :** Contour de sélection suit la forme (drop-shadow SVG)
 
 ---
 
@@ -1637,6 +1640,77 @@ transition: isDragging || isRotating ? "none" : "transform 0.2s ease"
 // Aire = (160 × 40) / 2 = 3 200 px² = 1/8 ✓
 // Représentation : Bandes minces le long des côtés
 ```
+
+#### Configuration des fractionnements du carré (v0.4.3)
+
+```javascript
+export const SQUARE_SPLITTING_TYPES = {
+    // 1/2 : 2 types possibles
+    2: [
+        {
+            id: "vertical-rectangles",
+            component: "SquareFraction",
+            props: { orientation: "vertical" },
+        },
+        {
+            id: "diagonal-triangles",
+            component: "SquareDiagonalFraction",
+            props: {},
+        },
+    ],
+
+    // 1/4 : 4 types possibles
+    4: [
+        {
+            id: "vertical-rectangles",
+            component: "SquareFraction",
+            props: { orientation: "vertical" },
+        },
+        {
+            id: "corner-triangles",
+            component: "SquareCornerTriangleFraction",
+            props: {},
+        },
+        {
+            id: "quarter-squares",
+            component: "SquareQuarterSquareFraction",
+            props: {},
+        },
+        {
+            id: "cross-triangles",
+            component: "SquareCrossFraction",
+            props: {},
+        },
+    ],
+
+    // 1/8 : 5 types (v0.4.3)
+    8: [
+        {
+            id: "vertical-rectangles",
+            component: "SquareFraction",
+            props: { orientation: "vertical" },
+        },
+        // ❌ Supprimé v0.4.3 : "horizontal-rectangles" (redondant avec rotation)
+        {
+            id: "half-quarter-rectangles", // ✨ Nouveau v0.4.3
+            component: "SquareHalfRectangle8thFraction",
+            props: {},
+        },
+        {
+            id: "isosceles-triangles",
+            component: "SquareIsoscelesTriangleFraction",
+            props: {},
+        },
+        {
+            id: "thin-rectangle-triangles",
+            component: "SquareRectangleThin8thFraction",
+            props: {},
+        },
+    ],
+};
+```
+
+\```
 
 ### Annexe D : Références des documents EDUSCOL
 

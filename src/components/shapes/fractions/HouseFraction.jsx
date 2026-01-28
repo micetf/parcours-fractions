@@ -38,6 +38,7 @@ export default function HouseFraction({
                 fill={fill}
                 stroke="#000"
                 strokeWidth="2"
+                style={{ pointerEvents: "auto" }}
             />
             {/* Partie du triangle */}
             <path
@@ -45,6 +46,7 @@ export default function HouseFraction({
                 fill={fill}
                 stroke="#000"
                 strokeWidth="2"
+                style={{ pointerEvents: "auto" }}
             />
         </svg>
     );

@@ -8,6 +8,7 @@ import {
     SquareCrossFraction,
     SquareIsoscelesTriangleFraction,
     SquareRectangleThin8thFraction,
+    SquareHalfRectangle8thFraction,
     RectangleFraction,
     HouseFraction,
 } from "./fractions";
@@ -21,6 +22,7 @@ const FRACTION_COMPONENTS = {
     SquareCrossFraction,
     SquareIsoscelesTriangleFraction,
     SquareRectangleThin8thFraction,
+    SquareHalfRectangle8thFraction,
     RectangleFraction,
     HouseFraction,
 };
@@ -141,24 +143,16 @@ export default function Piece({
                 transition:
                     isDragging || isRotating ? "none" : "transform 0.2s ease",
                 zIndex: isDragging || isSelected ? 50 : 10,
+                pointerEvents: "none",
+                // ✨ NOUVEAU : Filtre drop-shadow qui suit la forme
+                filter: isSelected
+                    ? "drop-shadow(0 0 8px rgba(59, 130, 246, 0.8)) drop-shadow(0 0 16px rgba(59, 130, 246, 0.4))"
+                    : "none",
             }}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
         >
-            {isSelected && (
-                <div
-                    className="absolute inset-0 border-4 border-blue-400 rounded-lg pointer-events-none animate-selection-pulse"
-                    style={{
-                        width: "200px",
-                        height: "200px",
-                        left: "50%",
-                        top: "50%",
-                        transform: "translate(-50%, -50%)",
-                    }}
-                />
-            )}
-
             <FractionComponent
                 denominator={denominator}
                 orientation={orientation}

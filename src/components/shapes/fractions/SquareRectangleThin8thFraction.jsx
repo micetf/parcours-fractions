@@ -21,7 +21,13 @@ export default function SquareRectangleThin8thFraction({
 
     return (
         <svg width="200" height="200" viewBox="0 0 200 200">
-            <path d={paths[index]} fill={fill} stroke="#000" strokeWidth="2" />
+            <path
+                d={paths[index]}
+                fill={fill}
+                stroke="#000"
+                strokeWidth="2"
+                style={{ pointerEvents: "auto" }}
+            />
         </svg>
     );
 }

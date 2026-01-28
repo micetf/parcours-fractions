@@ -18,6 +18,7 @@ export default function SquareFraction({
                     fill={fill}
                     stroke="#000"
                     strokeWidth="2"
+                    style={{ pointerEvents: "auto" }}
                 />
             </svg>
         );
@@ -35,6 +36,7 @@ export default function SquareFraction({
                     fill={fill}
                     stroke="#000"
                     strokeWidth="2"
+                    style={{ pointerEvents: "auto" }}
                 />
             </svg>
         );

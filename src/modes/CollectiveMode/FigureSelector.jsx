@@ -27,6 +27,7 @@ const SPLITTING_NAMES = {
     "cross-triangles": "Triangles croix",
     "isosceles-triangles": "Triangles isocèles",
     "thin-rectangle-triangles": "Triangles rectangles minces",
+    "half-quarter-rectangles": "Rectangles demi-quart",
     sectors: "Secteurs",
     default: "Standard",
 };

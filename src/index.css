@@ -65,3 +65,16 @@ body {
 .animate-controls-disappear {
     animation: controls-disappear 0.2s ease-in;
 }
+
+/* Animation de pulsation pour le filtre */
+@keyframes filter-pulse {
+    0%,
+    100% {
+        filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8))
+            drop-shadow(0 0 16px rgba(59, 130, 246, 0.4));
+    }
+    50% {
+        filter: drop-shadow(0 0 12px rgba(59, 130, 246, 1))
+            drop-shadow(0 0 24px rgba(59, 130, 246, 0.6));
+    }
+}

@@ -19,6 +19,53 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
+## [0.4.3] - 2026-01-28
+
+### Fixed
+
+#### Redondance fractionnements carré
+
+**Problème** : Pour le carré, "rectangles horizontaux" et "rectangles verticaux" sont redondants (même forme obtenue par rotation 90°).
+
+**Solution** : Suppression de "horizontal-rectangles" dans `SQUARE_SPLITTING_TYPES[8]`.
+
+### Added
+
+#### Nouveau fractionnement 1/8 de carré
+
+**Type "Rectangles demi-quart"** : Rectangle de 80×40 px (moitié du côté × quart du côté).
+
+- 8 positions possibles (2 par côté)
+- Aire = 3 200 px² = 1/8 ✓
+- Composant : `SquareHalfRectangle8thFraction.jsx`
+
+### Improved
+
+#### Zone cliquable restreinte à la forme
+
+**Avant** : Zone cliquable = enveloppe rectangulaire 200×200 px (coins morts pour triangles/disques).
+
+**Après** : Zone cliquable = forme réelle du morceau (`pointer-events: auto` sur SVG).
+
+#### Contour de sélection suit la forme
+
+**Avant** : Bordure rectangulaire bleue fixe.
+
+**Après** : Filtre `drop-shadow` SVG qui épouse la forme réelle (triangles, secteurs, rectangles).
+
+### Technical Details
+
+**Fichiers modifiés** : 13
+
+- `src/utils/fractionTypes.js`
+- `src/components/shapes/Piece.jsx`
+- `src/components/shapes/fractions/SquareHalfRectangle8thFraction.jsx` (nouveau)
+- `src/components/shapes/fractions/index.js`
+- `src/modes/CollectiveMode/FigureSelector.jsx`
+- 10 composants de fractions (ajout `pointerEvents: 'auto'`)
+
+**Lignes de code** : ~200
+
 ## [0.4.2] - 2026-01-28
 
 ### Fixed

@@ -50,11 +50,6 @@ export const SQUARE_SPLITTING_TYPES = {
             props: { orientation: "vertical" },
         },
         {
-            id: "horizontal-rectangles",
-            component: "SquareFraction",
-            props: { orientation: "horizontal" },
-        },
-        {
             id: "isosceles-triangles",
             component: "SquareIsoscelesTriangleFraction",
             props: {},
@@ -62,6 +57,11 @@ export const SQUARE_SPLITTING_TYPES = {
         {
             id: "thin-rectangle-triangles",
             component: "SquareRectangleThin8thFraction",
+            props: {},
+        },
+        {
+            id: "half-quarter-rectangles",
+            component: "SquareHalfRectangle8thFraction",
             props: {},
         },
     ],

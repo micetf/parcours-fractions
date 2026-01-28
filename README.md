@@ -6,7 +6,7 @@ Application web éducative pour l'apprentissage des fractions à l'école primai
 [![Vite](https://img.shields.io/badge/Vite-5.4-646cff?logo=vite)](https://vitejs.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?logo=tailwindcss)](https://tailwindcss.com)
 [![EDUSCOL](https://img.shields.io/badge/Conforme-EDUSCOL%202025-green)](https://eduscol.education.fr)
-![Version](https://img.shields.io/badge/Version-0.4.2--alpha-blue)
+![Version](https://img.shields.io/badge/Version-0.4.3--alpha-blue)
 
 ---
 
@@ -54,19 +54,16 @@ Application sur **http://localhost:5173**
 
 ---
 
-## 📝 Dernière version : v0.4.2 (28/01/2026)
+## 📝 Dernière version : v0.4.3 (28/01/2026)
 
-**Corrections critiques :**
+**Améliorations UX :**
 
-- 🐛 **Boutons actifs indéfiniment** : Architecture composant contrôlé
-- 🐛 **Rotation continue horaire** : Plus de retour arrière (270° → 0°)
-- ⚡ **État centralisé** : Parents gèrent tout
+- ✨ **Nouveau fractionnement 1/8** : Rectangle 80×40 px
+- 🐛 **Suppression redondance** : Horizontal/vertical carré
+- ⚡ **Zone cliquable précise** : Restreinte à la forme réelle
+- ⚡ **Contour adaptatif** : Suit la forme (drop-shadow SVG)
 
-**Détails** : Voir [CHANGELOG.md](./CHANGELOG.md)
-
----
-
-## ⚙️ Configuration EDUSCOL 2025
+**Détails** : Voir [CHANGELOG.md](./CHANGELOG.md)## ⚙️ Configuration EDUSCOL 2025
 
 ### CE1 (18 exercices)
 
@@ -91,7 +88,7 @@ Application sur **http://localhost:5173**
 
 - **1/2** (2 types) : Rectangles verticaux, Triangles diagonaux
 - **1/4** (4 types) : Rectangles, Triangles coins, Petits carrés, Croix
-- **1/8** (4 types) : Rectangles V/H, Triangles isocèles, Triangles minces
+- **1/8** (5 types) : Rectangles verticaux, **Rectangles demi-quart**, Triangles isocèles, Triangles minces
 
 ### Rectangle
 
