@@ -3,14 +3,21 @@ import ActivityOne from "./components/activities/ActivityOne";
 import ActivityTwo from "./components/activities/ActivityTwo";
 import { generateProgression } from "./data/progression";
 import { useLocalStorage } from "./hooks/useLocalStorage";
+import ModeSelector from "./components/ModeSelector";
+import CollectiveMode from "./modes/CollectiveMode/CollectiveMode";
 
 function App() {
-    // Niveau fixe CE1 par défaut (non affiché à l'utilisateur)
-    const defaultLevel = "CE1";
+    // Sélection du mode (sauvegardé séparément)
+    const [currentMode, setCurrentMode] = useLocalStorage(
+        "fractions-mode",
+        "autonomous"
+    ); // autonomous, collective, guided
 
+    // ===== MODE AUTONOME (code existant) =====
+    const defaultLevel = "CE1";
     const [exercises] = useState(() => generateProgression(defaultLevel));
     const [currentIndex, setCurrentIndex] = useLocalStorage(
-        "fractions-index",
+        "fractions-autonomous-index",
         0
     );
 
@@ -29,12 +36,51 @@ function App() {
         }
     };
 
+    // ===== RENDU SELON LE MODE =====
+    if (currentMode === "collective") {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 py-8">
+                <ModeSelector
+                    currentMode={currentMode}
+                    onModeChange={setCurrentMode}
+                />
+                <CollectiveMode />
+            </div>
+        );
+    }
+
+    if (currentMode === "guided") {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 py-8">
+                <ModeSelector
+                    currentMode={currentMode}
+                    onModeChange={setCurrentMode}
+                />
+                <div className="max-w-4xl mx-auto p-6 text-center">
+                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                        Mode Guidé
+                    </h2>
+                    <p className="text-gray-600">
+                        Fonctionnalité à venir dans une prochaine version
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    // Mode Autonome (par défaut, code existant)
     const currentExercise = exercises[currentIndex];
     const ActivityComponent =
         currentExercise.activity === 1 ? ActivityOne : ActivityTwo;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 py-8">
+            {/* Sélecteur de mode */}
+            <ModeSelector
+                currentMode={currentMode}
+                onModeChange={setCurrentMode}
+            />
+
             {/* Header */}
             <header className="max-w-4xl mx-auto mb-8 px-6">
                 <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">

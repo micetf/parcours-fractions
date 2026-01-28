@@ -12,10 +12,138 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 ### À venir
 
 - Correction du bug triangle 1/4 (actuellement 1/8)
+- Mode Collectif : Système de clippage automatique
+- Mode Collectif : Mode plein écran
+- Mode Guidé : Interface enseignant et élève
 - Triangles isocèles depuis le centre (1/4)
 - Fractionnements pour 1/8 avancés
-- Mode enseignant basique
 - Feedback sonore optionnel
+
+---
+
+## [0.4.0] - 2026-01-28
+
+### Added
+
+#### Mode Collectif - Outil de démonstration enseignant ✨
+
+**Concept** : L'enseignant peut manipuler des morceaux de fractions devant la classe sur écran projeté, avec configuration libre de la démonstration.
+
+**Sélecteur de mode** :
+
+- 3 modes disponibles : Autonome (🎯), Collectif (👨‍🏫), Guidé (📝)
+- Sauvegarde du mode sélectionné dans localStorage
+- Mode Guidé affiché mais désactivé (badge "Bientôt disponible")
+- Navigation fluide entre les modes
+
+**Configuration de la démonstration** :
+
+- Sélection de la figure : Carré, Rectangle, Disque, Maison
+- Sélection du dénominateur : Dynamique selon la figure sélectionnée
+- Sélection du type de fractionnement : Dynamique selon le dénominateur
+    - Carré 1/2 : Rectangles verticaux, Triangles diagonaux
+    - Carré 1/4 : Rectangles verticaux, Triangles coins, Petits carrés, Triangles croix
+    - Rectangle : Rectangles verticaux, Rectangles horizontaux
+    - Disque : Secteurs
+    - Maison : Standard
+- Nombre de morceaux : 1 à 10 (paramétrable)
+- Bouton "Générer la démonstration"
+
+**Zone de manipulation** :
+
+- Figure de référence à gauche (200×200px)
+- Zone de travail à droite (600×500px avec fond ambré)
+- Affichage dynamique des morceaux
+- Boutons d'ajout/retrait de morceaux :
+    - ➕ "Ajouter un morceau" (bouton vert)
+    - ➖ "Retirer un morceau" (bouton rouge, désactivé si 0 morceau)
+- Compteur de morceaux en temps réel
+- Bouton "Réinitialiser" pour recommencer la démonstration
+
+**Manipulation des morceaux** :
+
+- Contrôles permanents (pas de timer de désélection)
+- Drag & drop fonctionnel
+- Rotation adaptée à la forme
+- Retournement (sauf disque)
+- Position initiale intelligente (grille automatique)
+
+**Aide pédagogique** :
+
+- Encart bleu avec questions suggérées
+- Calculs automatiques selon la configuration :
+    - "On a X [pluriel de la fraction]"
+    - "Il faut Y [pluriel] pour faire le [nom de la figure]"
+    - "Il manque Z [pluriel]"
+- Questions génériques pour la verbalisation
+
+**Objectif pédagogique** : Permettre à l'enseignant de :
+
+- Démontrer visuellement les concepts de fractions
+- Poser les questions canoniques (Que représente ce morceau ? Combien en faut-il ?)
+- Tester les différents fractionnements avant de les utiliser avec les élèves
+- Vérifier la manipulabilité des morceaux
+
+#### Nouveaux composants
+
+- `src/components/ModeSelector.jsx` - Sélecteur visuel des 3 modes avec icônes
+- `src/modes/CollectiveMode/CollectiveMode.jsx` - Composant principal du Mode Collectif
+- `src/modes/CollectiveMode/FigureSelector.jsx` - Configuration de la démonstration
+- `src/modes/CollectiveMode/ManipulationZone.jsx` - Zone de manipulation avec morceaux
+
+#### Architecture
+
+- Structure `src/modes/` créée pour organiser les différents modes
+- Exports ajoutés dans `src/components/shapes/fractions/index.js`
+- Exports ajoutés dans `src/components/shapes/figures/index.js`
+
+### Changed
+
+#### App.jsx - Gestion des modes
+
+- Ajout du routage entre les 3 modes (Autonome, Collectif, Guidé)
+- Sauvegarde du mode dans localStorage (`fractions-mode`)
+- Séparation de la sauvegarde de la progression autonome (`fractions-autonomous-index`)
+- Préservation complète du code existant du mode autonome
+- Le mode autonome reste le mode par défaut
+
+#### Piece.jsx - Support mode collectif
+
+- Ajout de la prop `collectiveMode` (boolean)
+- Désactivation du timer de désélection automatique en mode collectif
+- Contrôles permanents affichés quand `collectiveMode={true}`
+- Rétrocompatibilité totale avec le mode autonome
+
+### Technical Details
+
+**Fichiers créés** : 4
+
+- `src/components/ModeSelector.jsx`
+- `src/modes/CollectiveMode/CollectiveMode.jsx`
+- `src/modes/CollectiveMode/FigureSelector.jsx`
+- `src/modes/CollectiveMode/ManipulationZone.jsx`
+
+**Fichiers modifiés** : 2
+
+- `src/App.jsx` (routage des modes)
+- `src/components/shapes/Piece.jsx` (ajout prop collectiveMode)
+
+**Fichiers exports créés** : 2
+
+- `src/components/shapes/fractions/index.js`
+- `src/components/shapes/figures/index.js`
+
+**Lignes de code ajoutées** : ~800
+
+### Known Issues
+
+⚠️ **Bug triangle coin 1/4** (existant depuis v0.3.0) : Le composant `SquareCornerTriangleFraction` génère un triangle représentant 1/8 au lieu de 1/4. À corriger dans v0.4.1.
+
+**Mode Collectif** :
+
+- Pas de système de clippage automatique (prévu v0.5.0)
+- Pas de mode plein écran (prévu v0.5.0)
+- Les morceaux ne se "collent" pas à la figure de référence
 
 ---
 
@@ -94,7 +222,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Known Issues
 
-⚠️ **Bug identifié** : Le composant `SquareCornerTriangleFraction` génère un triangle représentant 1/8 au lieu de 1/4. À corriger dans v0.3.1.
+⚠️ **Bug identifié** : Le composant `SquareCornerTriangleFraction` génère un triangle représentant 1/8 au lieu de 1/4. À corriger dans v0.4.1.
 
 ---
 
@@ -144,9 +272,6 @@ CE1: {
 
 **Source** : Programme cycle 2 EDUSCOL 2025 (BO 31/10/2024)
 
-> "Les fractions rencontrées au CE1 ont un dénominateur égal à 2, 3, 4, 5, 6, 8 ou 10."
-> "L'élève sait partager une bande de papier en un nombre donné de parts égales."
-
 **Changements détaillés par niveau** :
 
 **CE1** :
@@ -187,71 +312,12 @@ CE1: {
 
 - Nouvelle fonction `generateProgression()` avec logique Fraction → Figure → Activité
 - Ordre de tri explicite : `const fractionOrder = [2, 4, 8, 3, 5, 10];`
-- Boucle imbriquée modifiée :
-
-```javascript
-sortedFractions.forEach((fraction) => {
-    config.figures.forEach((figure) => {
-        // Activité 1
-        // Activité 2
-    });
-});
-```
 
 **`src/App.jsx`** :
 
-- Suppression complète du sélecteur de niveau (lignes 8-10, 14-30)
+- Suppression complète du sélecteur de niveau
 - Niveau fixe : `const defaultLevel = "CE1";`
-- Suppression de la fonction `handleLevelChange()`
 - Suppression de la sauvegarde `fractions-level` dans localStorage
-
-**`src/hooks/useLocalStorage.js`** :
-
-- Aucune modification (toujours utilisé pour `fractions-index`)
-
-#### Impact sur la génération d'exercices
-
-**Avant (v0.1.0)** :
-
-```
-Disque 1/2 Act.1
-Disque 1/2 Act.2
-Disque 1/4 Act.1
-Disque 1/4 Act.2
-Disque 1/8 Act.1
-Disque 1/8 Act.2
-```
-
-**Après (v0.2.0)** :
-
-```
-Carré 1/2 Act.1
-Carré 1/2 Act.2
-Rectangle 1/2 Act.1
-Rectangle 1/2 Act.2
-Disque 1/2 Act.1
-Disque 1/2 Act.2
-Carré 1/4 Act.1
-Carré 1/4 Act.2
-...
-```
-
-### Rationale pédagogique
-
-**Pourquoi Carré → Rectangle → Disque ?**
-
-| Figure    | Complexité                                      | Ancrage concret              |
-| --------- | ----------------------------------------------- | ---------------------------- |
-| Carré     | Symétrique, division simple (2 ou 4)            | Serviette, gaufre            |
-| Rectangle | Asymétrique, plus de possibilités (3, 4, 5)     | Tablette de chocolat         |
-| Disque    | Division angulaire, rotation autour d'un centre | Pizza, gâteau d'anniversaire |
-
-**Pourquoi Fraction → Figure ?**
-
-- Principe didactique : **Transfert immédiat du concept**
-- L'élève construit la notion de "un demi" sur 3 représentations consécutives
-- Évite l'association stéréotypée "fraction = disque uniquement"
-- Conforme au principe EDUSCOL de "présentation non-prototypique"
 
 ---
 
@@ -284,56 +350,18 @@ const [isSelected, setIsSelected] = useState(false);
 const inactivityTimerRef = useRef(null);
 ```
 
-**Logique de sélection :**
-
-- La pièce devient active au `pointerDown` (sauf si clic sur bouton)
-- Une bordure bleue pulsante indique visuellement l'état sélectionné
-- Les boutons de contrôle glissent depuis le bas avec une animation de 0.2s
-
-**Timer d'inactivité :**
-
-```javascript
-const resetInactivityTimer = () => {
-    if (inactivityTimerRef.current) {
-        clearTimeout(inactivityTimerRef.current);
-    }
-    inactivityTimerRef.current = setTimeout(() => {
-        setIsSelected(false);
-    }, 3000); // Désélection après 3 secondes
-};
-```
-
 #### Fichier `index.css`
 
 **Animation de pulsation (bordure de sélection)** :
 
 ```css
-@keyframes selection-pulse {
-    0%,
-    100% {
-        opacity: 1;
-        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
-    }
-    50% {
-        opacity: 0.8;
-        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
-    }
-}
+@keyframes selection-pulse { ... }
 ```
 
 **Animation d'apparition des contrôles** :
 
 ```css
-@keyframes controls-appear {
-    from {
-        opacity: 0;
-        transform: translate(-50%, 8px);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, 0);
-    }
-}
+@keyframes controls-appear { ... }
 ```
 
 ---
@@ -376,4 +404,4 @@ const resetInactivityTimer = () => {
 
 ---
 
-**Dernière mise à jour :** 27 janvier 2026
+**Dernière mise à jour :** 28 janvier 2026

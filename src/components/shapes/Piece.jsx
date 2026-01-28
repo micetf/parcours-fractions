@@ -32,8 +32,8 @@ export default function Piece({
     initialPosition = { x: 0, y: 0 },
     initialRotation = 0,
     onTransform,
-    // NOUVEAU : type de fractionnement
     splittingType = null,
+    collectiveMode = false, // NOUVEAU : mode collectif
 }) {
     const [position, setPosition] = useState(initialPosition);
     const [rotation, setRotation] = useState(initialRotation);
@@ -49,8 +49,10 @@ export default function Piece({
     const rotationStep = shape === "disk" ? 360 / denominator : 90;
     const showFlipButton = shape !== "disk";
 
-    // Timer de désélection automatique après 3 secondes d'inactivité
+    // Timer de désélection automatique (SAUF en mode collectif)
     const resetInactivityTimer = () => {
+        if (collectiveMode) return; // Pas de timer en mode collectif
+
         if (inactivityTimerRef.current) {
             clearTimeout(inactivityTimerRef.current);
         }
@@ -130,8 +132,8 @@ export default function Piece({
         FractionComponent = legacyMapping[shape];
     }
 
-    // Afficher les boutons si la pièce est sélectionnée ou en cours de drag
-    const showControls = isSelected || isDragging;
+    // Afficher les boutons si la pièce est sélectionnée, en drag, OU en mode collectif
+    const showControls = isSelected || isDragging || collectiveMode;
 
     return (
         <div

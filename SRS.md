@@ -2,10 +2,10 @@
 
 ## Application Web d'Apprentissage des Fractions
 
-**Version :** 2.0  
+**Version :** 3.0  
 **Date :** 28 janvier 2026  
 **Auteur :** Conseiller Pédagogique de Circonscription Numérique  
-**Statut :** En développement - Alpha v0.2.0
+**Statut :** En développement - Alpha v0.4.0
 
 ---
 
@@ -15,6 +15,7 @@
 | ------- | ---------- | ------------- | ------------------------------------------------------- |
 | 1.0     | 27/01/2026 | CPC Numérique | Création initiale - État Alpha v0.1.0                   |
 | 2.0     | 28/01/2026 | CPC Numérique | Correction configuration EDUSCOL + nouvelle progression |
+| 3.0     | 28/01/2026 | CPC Numérique | Ajout Mode Collectif - État Alpha v0.4.0                |
 
 ---
 
@@ -22,9 +23,9 @@
 
 ### 1.1 Objectif du document
 
-Ce document spécifie les exigences fonctionnelles et non-fonctionnelles de l'application web d'apprentissage des fractions destinée aux élèves de cycle 2 et cycle 3 de l'école primaire française.
+Ce document spécifie les exigences fonctionnelles et non-fonctionnelles de l'application web d'apprentissage des fractions destinée aux élèves de cycle 2 et cycle 3 de l'école primaire française, ainsi qu'aux enseignants pour la démonstration collective.
 
-**Note importante** : La version 1.0 de ce document contenait une erreur majeure dans la configuration des fractions par niveau, ne respectant pas les programmes EDUSCOL 2025. Cette version 2.0 corrige cette erreur suite à la consultation du document officiel `ensel135_annexe4.pdf`.
+**Note importante** : La version 3.0 ajoute le Mode Collectif permettant aux enseignants de manipuler des fractions devant la classe avec configuration libre.
 
 ### 1.2 Contexte du projet
 
@@ -33,9 +34,12 @@ L'application s'inscrit dans le cadre des programmes de mathématiques 2025 de l
 ### 1.3 Portée
 
 **Nom du produit :** Parcours Fractions  
-**Public cible :** Élèves de CE1, CE2, CM1  
-**Domaine d'application :** Enseignement des mathématiques - Fractions  
-**Type :** Application web éducative monopage (SPA)
+**Public cible :**
+
+- Élèves de CE1, CE2, CM1 (Mode Autonome)
+- Enseignants du primaire (Mode Collectif)
+  **Domaine d'application :** Enseignement des mathématiques - Fractions  
+  **Type :** Application web éducative monopage (SPA)
 
 ### 1.4 Définitions et acronymes
 
@@ -44,6 +48,9 @@ L'application s'inscrit dans le cadre des programmes de mathématiques 2025 de l
 - **Fraction unitaire** : Fraction avec numérateur égal à 1 (ex: 1/2, 1/4)
 - **Présentation prototypique** : Présentation stéréotypée d'une figure (ex: disque divisé à partir du haut)
 - **Présentation non-prototypique** : Présentation variée évitant les stéréotypes
+- **Mode Collectif** : Mode de démonstration pour l'enseignant devant la classe
+- **Mode Autonome** : Mode d'apprentissage individuel pour l'élève
+- **Mode Guidé** : Mode d'apprentissage avec parcours personnalisé (à venir)
 
 ### 1.5 Références
 
@@ -61,25 +68,46 @@ Application web autonome ne nécessitant aucune connexion serveur après le char
 
 ### 2.2 Fonctionnalités principales
 
-#### F1 - Sélection du niveau
+#### F1 - Sélection du mode d'utilisation
 
-L'utilisateur peut choisir parmi trois niveaux : CE1, CE2, CM1.
+L'utilisateur peut choisir parmi trois modes :
 
-#### F2 - Activité 1 : Compléter pour faire la figure
+- **Mode Autonome (🎯)** : Parcours EDUSCOL préétabli pour les élèves
+- **Mode Collectif (👨‍🏫)** : Outil de démonstration pour l'enseignant
+- **Mode Guidé (📝)** : Parcours personnalisé (à venir)
+
+#### F2 - Mode Autonome : Activité 1
 
 L'élève manipule un morceau de fraction pour déterminer combien il en faut pour reconstituer la figure complète.
 
-#### F3 - Activité 2 : Observer les morceaux donnés
+#### F3 - Mode Autonome : Activité 2
 
 L'élève répond à une série de questions progressives sur des morceaux de fraction déjà présents.
 
-#### F4 - Manipulation des morceaux
+#### F4 - Mode Collectif : Configuration démonstration
+
+L'enseignant configure librement :
+
+- Figure (Carré, Rectangle, Disque, Maison)
+- Dénominateur (dynamique selon la figure)
+- Type de fractionnement (dynamique selon le dénominateur)
+- Nombre de morceaux (1-10)
+
+#### F5 - Mode Collectif : Manipulation collective
+
+L'enseignant manipule des morceaux devant la classe avec :
+
+- Contrôles permanents (pas de timer)
+- Ajout/retrait de morceaux à la volée
+- Aide pédagogique avec questions suggérées
+
+#### F6 - Manipulation des morceaux
 
 - Déplacement (drag & drop)
 - Rotation (adaptée à la forme)
 - Retournement (flip) pour formes non-circulaires
 
-#### F5 - Progression et suivi
+#### F7 - Progression et suivi (Mode Autonome)
 
 - Barre de progression visuelle
 - Sauvegarde automatique dans le navigateur
@@ -87,12 +115,12 @@ L'élève répond à une série de questions progressives sur des morceaux de fr
 
 ### 2.3 Classes et caractéristiques des utilisateurs
 
-| Classe     | Âge      | Compétences      | Besoins spécifiques                 |
-| ---------- | -------- | ---------------- | ----------------------------------- |
-| Élève CE1  | 7-8 ans  | Lecture en cours | Interface très simple, guidage fort |
-| Élève CE2  | 8-9 ans  | Lecture acquise  | Autonomie progressive               |
-| Élève CM1  | 9-10 ans | Autonome         | Défis plus complexes                |
-| Enseignant | Adulte   | Expert métier    | Pas d'interface dédiée (v1.0)       |
+| Classe     | Âge      | Compétences      | Besoins spécifiques                 | Mode(s)          |
+| ---------- | -------- | ---------------- | ----------------------------------- | ---------------- |
+| Élève CE1  | 7-8 ans  | Lecture en cours | Interface très simple, guidage fort | Autonome         |
+| Élève CE2  | 8-9 ans  | Lecture acquise  | Autonomie progressive               | Autonome         |
+| Élève CM1  | 9-10 ans | Autonome         | Défis plus complexes                | Autonome         |
+| Enseignant | Adulte   | Expert métier    | Configuration libre, manipulation   | Collectif, Guidé |
 
 ### 2.4 Environnement d'exploitation
 
@@ -100,6 +128,7 @@ L'élève répond à une série de questions progressives sur des morceaux de fr
 - **Appareils** : Ordinateurs de bureau, tablettes (≥10 pouces recommandé)
 - **Résolution minimale** : 1024×768 pixels
 - **Connexion** : Requise uniquement pour le chargement initial
+- **Projection** : Mode Collectif optimisé pour projection en classe
 
 ### 2.5 Contraintes de conception et d'implémentation
 
@@ -108,6 +137,7 @@ L'élève répond à une série de questions progressives sur des morceaux de fr
 - Conformité stricte aux programmes EDUSCOL 2025
 - Présentation non-prototypique obligatoire
 - Respect de la progressivité des apprentissages
+- Mode Collectif : interface adaptée à la projection
 
 #### Contraintes techniques
 
@@ -120,298 +150,229 @@ L'élève répond à une série de questions progressives sur des morceaux de fr
 
 ## 3. Exigences fonctionnelles détaillées
 
-### 3.1 Gestion des niveaux
+### 3.1 Gestion des modes
 
-#### EF-01 : Niveau par défaut
+#### EF-01 : Sélection du mode
 
 **Priorité :** Haute  
-**Description :** L'application démarre directement au niveau CE1 sans sélection visible de l'utilisateur.
+**Description :** L'utilisateur peut basculer entre 3 modes via un sélecteur visuel.
 
 **Critères d'acceptation :**
 
-- Aucun bouton de sélection de niveau n'est affiché dans l'interface
-- Le niveau CE1 est utilisé par défaut
-- La progression générée correspond au niveau CE1
-- Le niveau n'est pas sauvegardé dans localStorage (suppression de `fractions-level`)
+- 3 boutons visuels avec icônes (🎯 Autonome, 👨‍🏫 Collectif, 📝 Guidé)
+- Mode sélectionné mis en évidence (fond bleu, ombre)
+- Mode Guidé désactivé avec badge "Bientôt disponible"
+- Sauvegarde du mode dans localStorage (`fractions-mode`)
+- Basculement fluide entre modes sans perte de données
 
 **Dépendances :** Aucune
 
 **Rationale** :
 
-- Simplification de l'interface (réduction de la charge cognitive)
-- Évite la stigmatisation par le niveau scolaire
-- Possibilité future d'adaptation automatique de la difficulté
+- Permet aux enseignants d'utiliser l'outil en démonstration
+- Sépare les usages pédagogiques (élève vs enseignant)
+- Évolutivité pour ajouter le Mode Guidé
 
 ---
 
-### 3.2 Configuration des fractions par niveau
+### 3.2 Mode Autonome (préexistant v0.1-0.3)
 
-#### EF-02 : Fractions disponibles selon le niveau
+_Voir sections 3.3 à 3.5 du SRS v2.0 pour les détails complets_
 
-**Priorité :** Haute  
-**Description :** Les fractions présentées doivent respecter strictement les programmes EDUSCOL 2025.
+#### EF-02 : Niveau par défaut
 
-**Source officielle** : Programme cycle 2, BO du 31 octobre 2024 (`ensel135_annexe4.pdf`)
+Le mode autonome démarre au niveau CE1 sans sélection visible.
 
-**Citation textuelle** :
+#### EF-03 : Configuration des fractions par niveau
 
-> "Les fractions rencontrées au CE1 ont un dénominateur égal à 2, 3, 4, 5, 6, 8 ou 10."
-> "L'élève sait partager une bande de papier en un nombre donné de parts égales, en s'appuyant éventuellement sur un quadrillage. L'élève sait repérer une partie correspondant à une fraction comme 1/2, 1/3 ou 1/6."
+Les fractions présentées respectent strictement les programmes EDUSCOL 2025 (voir section détaillée SRS v2.0).
 
-**Règles métier :**
+#### EF-04 : Activité 1 - Compléter pour faire la figure
 
-**CE1 :**
+L'élève manipule un morceau pour déterminer le nombre nécessaire.
 
-- **Figures** : Carré, Rectangle, Disque
-- **Ordre de présentation** : Carré → Rectangle → Disque
-- **Dénominateurs par figure** :
-    - **Carré** : 2, 4
-    - **Rectangle** : 2, 3, 4, 5
-    - **Disque** : 2, 3, 4
-- **Maximum dénominateur** : 5
-- **Fractions > 1** : Non (toutes ≤ 1)
+#### EF-05 : Activité 2 - Observer les morceaux donnés
 
-**Rationale ordre des figures** :
+L'élève répond à 4 questions progressives.
 
-1. **Carré** : Symétrique, division simple, ancrage concret (serviette, gaufre)
-2. **Rectangle** : Asymétrique, plus de possibilités, familier (tablette de chocolat)
-3. **Disque** : Division angulaire (rotation), plus abstrait, mais ancrage émotionnel fort (pizza, gâteau)
+#### EF-06 : Alternance des activités
 
-**CE2 :**
+Pour chaque combinaison (fraction, figure), générer 1 exercice d'activité 1 puis 1 d'activité 2.
 
-- **Figures** : Carré, Rectangle, Disque
-- **Ordre** : Carré → Rectangle → Disque
-- **Dénominateurs par figure** :
-    - **Carré** : 2, 4, 8
-    - **Rectangle** : 2, 3, 4, 5, 6, 8, 10
-    - **Disque** : 2, 3, 4, 8
-- **Maximum dénominateur** : 10
-- **Fractions > 1** : Non (toutes ≤ 1)
+#### EF-07 : Sauvegarde de la progression
 
-**CM1 :**
-
-- **Figures** : Carré, Rectangle, Disque, Maison
-- **Ordre** : Carré → Rectangle → Disque → Maison
-- **Dénominateurs par figure** :
-    - **Carré** : 2, 4, 8
-    - **Rectangle** : 2, 3, 4, 8
-    - **Disque** : 2, 3, 4, 8
-    - **Maison** : 5, 10
-- **Maximum dénominateur** : 10
-- **Fractions > 1** : Oui (activité 2 uniquement - prévu pour v0.3.0)
-
-**Source** : Document EDUSCOL `ensel135_annexe4.pdf`, consultation directe du 28/01/2026
-
-**Correction par rapport à SRS v1.0** :
-
-| Niveau | V1.0 (Erroné)               | V2.0 (Conforme EDUSCOL 2025)                        |
-| ------ | --------------------------- | --------------------------------------------------- |
-| CE1    | Disque uniquement (2, 4, 8) | Carré (2, 4) + Rectangle (2,3,4,5) + Disque (2,3,4) |
-| CE2    | Disque, Carré, Rectangle    | ✓ Ordre modifié + ajout dénominateurs               |
-| CM1    | Idem CE2 + Maison           | ✓ Ajustements dénominateurs                         |
+Sauvegarde de l'index de l'exercice courant dans localStorage (`fractions-autonomous-index`).
 
 ---
 
-### 3.3 Activité 1 - Compléter pour faire la figure
+### 3.3 Mode Collectif (nouveau v0.4.0)
 
-#### EF-03 : Affichage de l'exercice
+#### EF-08 : Affichage du Mode Collectif
 
 **Priorité :** Haute
 
 **Éléments affichés :**
 
-1. Figure complète (référence)
-2. Un morceau de fraction manipulable
-3. Zone de réponse avec phrase à compléter
-
-**Variations non-prototypiques :**
-
-- Figure : rotation aléatoire (0°, 90°, 180°, 270°)
-- Figure : proportions aléatoires (rectangles, toits de maison)
-- Figure : échelle aléatoire (0.8 à 1.2)
-- Morceau : position de départ aléatoire dans la figure
-    - Disque : angle de départ aléatoire (0-360°)
-    - Autres : index de bande aléatoire (0 à n-1)
-- Morceau : rotation initiale aléatoire
-- Morceau : orientation de division aléatoire (horizontal/vertical)
-
-#### EF-04 : Manipulation du morceau
-
-**Priorité :** Haute
-
-**Actions disponibles :**
-
-- **Déplacement** : drag & drop avec souris ou tactile
-- **Rotation** : bouton avec angle adapté
-    - Disque : rotation de 360°/n (ex: 90° pour quart)
-    - Autres formes : rotation de 90°
-- **Retournement** : bouton flip (sauf disque)
+1. Titre : "Mode Collectif - Démonstration"
+2. Sous-titre : "Sélectionnez une figure et un fractionnement..."
+3. Carte de configuration (fond blanc, ombre)
+4. Zone de manipulation (si générée)
+5. Bouton "Réinitialiser"
 
 **Comportements :**
 
-- Feedback visuel pendant le drag (z-index supérieur)
-- Transitions fluides
-- Support tactile et souris
+- Interface épurée pour projection
+- Contrastes adaptés à la projection
+- Tailles de police lisibles à distance
 
-#### EF-05 : Saisie et validation de la réponse
-
-**Priorité :** Haute
-
-**Phrase à compléter :**
-
-> Il faut [INPUT] morceau(x) pour faire le [FIGURE].  
-> C'est donc un [SELECT] du [FIGURE].
-
-**Validations :**
-
-- Input nombre : 1-20
-- Select : demi, tiers, quart, cinquième, huitième, dixième
-- Bouton "Valider" désactivé si incomplet
-
-**Feedback :**
-
-- Correct : message vert "✓ Bravo !" + passage automatique (1.5s)
-- Incorrect : message rouge "✗ Réessaie encore"
-
----
-
-### 3.4 Activité 2 - Observer les morceaux donnés
-
-#### EF-06 : Présentation de l'exercice
+#### EF-09 : Configuration de la démonstration
 
 **Priorité :** Haute
 
-**Éléments affichés :**
+**Champs de configuration :**
 
-1. Figure complète (référence)
-2. n morceaux identiques présentés séparément (n < dénominateur)
-3. Série de 4 questions progressives
+| Champ                   | Type     | Valeurs                                         | Dynamique                     |
+| ----------------------- | -------- | ----------------------------------------------- | ----------------------------- |
+| Figure                  | Dropdown | Carré, Rectangle, Disque, Maison                | -                             |
+| Fraction (dénominateur) | Dropdown | 2, 3, 4, 5, 6, 8, 10 (selon figure)             | Change si figure change       |
+| Type de fractionnement  | Dropdown | Rectangles verticaux, Triangles diagonaux, etc. | Change si dénominateur change |
+| Nombre de morceaux      | Input    | 1-10                                            | -                             |
 
-**Variations :** Identiques à l'activité 1
+**Bouton "Générer la démonstration"** :
 
-#### EF-07 : Questions progressives
+- Désactivé si aucune sélection
+- Génère la configuration
+- Affiche la zone de manipulation
 
-**Priorité :** Haute
+**Exemple de configuration** :
 
-**Question 1 :** "Que représente un de ces morceaux ?"
-
-- Type : menu déroulant
-- Réponse attendue : nom de la fraction
-
-**Question 2 :** "Combien de morceaux a-t-on ?"
-
-- Type : input numérique
-- Format : "On a [INPUT] [pluriel]"
-
-**Question 3 :** "Combien de [pluriel] faut-il pour faire la figure ?"
-
-- Type : input numérique
-- Format : "Il faut [INPUT] [pluriel]"
-
-**Question 4 :** "Combien de morceaux manque-t-il ?"
-
-- Type : input numérique
-- Format : "Il manque [INPUT] [pluriel]"
-
-**Comportement :**
-
-- Les questions apparaissent séquentiellement
-- Une question validée devient grisée et non-modifiable
-- Affichage de la réponse validée avec ✓
-
----
-
-### 3.5 Progression et navigation
-
-#### EF-08 : Alternance des activités
-
-**Priorité :** Haute
-
-**Règle :** Pour chaque combinaison (fraction, figure), générer :
-
-1. Un exercice d'activité 1
-2. Un exercice d'activité 2
-
-**Ordre de génération** :
-
-```
-Pour chaque fraction (1/2, 1/4, 1/8, 1/3, 1/5, 1/10) :
-    Pour chaque figure (carré, rectangle, disque, maison) :
-        Si cette fraction existe pour cette figure :
-            Créer exercice activité 1
-            Créer exercice activité 2
+```javascript
+{
+  figure: "square",
+  figureName: "carré",
+  denominator: 4,
+  fractionName: "quart",
+  fractionPlural: "quarts",
+  splittingType: { id: "quarter-squares", component: "SquareQuarterSquareFraction", props: {} },
+  pieceCount: 3,
+  figureRotation: 0,
+  proportions: {},
+  scale: 1,
+  divisionOrientation: "vertical"
+}
 ```
 
-**Exemple de séquence CE1** :
+#### EF-10 : Zone de manipulation
 
-| #   | Fraction | Figure    | Activité |
-| --- | -------- | --------- | -------- |
-| 1   | 1/2      | Carré     | 1        |
-| 2   | 1/2      | Carré     | 2        |
-| 3   | 1/2      | Rectangle | 1        |
-| 4   | 1/2      | Rectangle | 2        |
-| 5   | 1/2      | Disque    | 1        |
-| 6   | 1/2      | Disque    | 2        |
-| 7   | 1/4      | Carré     | 1        |
-| 8   | 1/4      | Carré     | 2        |
-| 9   | 1/4      | Rectangle | 1        |
-| 10  | 1/4      | Rectangle | 2        |
-| 11  | 1/4      | Disque    | 1        |
-| 12  | 1/4      | Disque    | 2        |
-| 13  | 1/3      | Rectangle | 1        |
-| 14  | 1/3      | Rectangle | 2        |
-| 15  | 1/3      | Disque    | 1        |
-| 16  | 1/3      | Disque    | 2        |
-| 17  | 1/5      | Rectangle | 1        |
-| 18  | 1/5      | Rectangle | 2        |
+**Priorité :** Haute
 
-**Total CE1** : 18 exercices
+**Structure :**
 
-**Rationale pédagogique** :
+- **Colonne gauche** : Figure de référence
+    - Titre : "Figure complète"
+    - Figure dans un cadre gris
+    - Légende : "Fraction : 1/X (nom)"
+- **Colonne droite** : Zone de travail
+    - Titre : "Morceaux à manipuler"
+    - Zone 600×500px fond ambré, bordure pointillée
+    - N morceaux manipulables
+    - Message si 0 morceau : "Cliquez sur 'Ajouter un morceau'..."
 
-- **Transfert immédiat** : Le concept de "un demi" est renforcé sur 3 figures consécutives
-- **Variété cognitive** : Maintien de l'attention par changement de figure tous les 2 exercices
-- **Généralisation** : Évite l'association stéréotypée "fraction = une seule forme"
-- **Conforme EDUSCOL** : Principe de "présentation non-prototypique"
+**Contrôles d'ajout/retrait :**
 
-**Changement par rapport à v1.0** :
+- Bouton vert ➕ "Ajouter un morceau"
+- Bouton rouge ➖ "Retirer un morceau" (désactivé si 0)
+- Badge compteur : "X morceau(x)" (fond gris)
 
-- Ancienne logique : Figure → Fraction → Activité (monotonie, transfert retardé)
-- Nouvelle logique : Fraction → Figure → Activité (transfert immédiat)
+**Comportements :**
 
-#### EF-09 : Barre de progression
+- Ajout : nouveau morceau à position (200, 200)
+- Retrait : suppression du dernier morceau
+- Compteur mis à jour en temps réel
+
+#### EF-11 : Manipulation des morceaux en mode collectif
+
+**Priorité :** Haute
+
+**Différences avec Mode Autonome :**
+
+- Prop `collectiveMode={true}` passée au composant `Piece`
+- **Contrôles permanents** : Pas de timer de désélection
+- Boutons ↻ et ⇄ toujours visibles
+- Feedback visuel identique (bordure bleue si sélectionné)
+
+**Actions disponibles :**
+
+- Déplacement : drag & drop
+- Rotation : bouton ↻ (angle adapté)
+- Retournement : bouton ⇄ (sauf disque)
+
+#### EF-12 : Aide pédagogique
 
 **Priorité :** Moyenne
 
 **Affichage :**
 
-- Numéro de l'exercice courant / total
-- Numéro de l'activité (1 ou 2)
-- Pourcentage de complétion
-- Barre visuelle animée
+- Encart bleu (bg-blue-50) sous la zone de manipulation
+- Titre : "💡 Questions suggérées :"
+- 4 questions avec calculs automatiques
 
-**Note** : Le niveau (CE1/CE2/CM1) n'est plus affiché
+**Questions :**
 
-#### EF-10 : Sauvegarde de la progression
+1. "Que représente un de ces morceaux pour la figure ?"
+2. "Combien de morceaux a-t-on ? On a X [pluriel]"
+3. "Combien de [pluriel] faut-il pour faire le [figure] complet ?"
+4. "Combien de morceaux manque-t-il ? Il manque Y [pluriel]"
 
-**Priorité :** Moyenne
+**Calculs automatiques :**
 
-**Données sauvegardées :**
+- X = nombre de morceaux actuels
+- Y = dénominateur - nombre de morceaux actuels
 
-- Index de l'exercice courant : `fractions-index`
+**Exemple concret** :
 
-**Données supprimées (v0.2.0)** :
+```
+Configuration : Carré, 1/4 (quarts), 3 morceaux
 
-- ~~Niveau sélectionné : `fractions-level`~~ (niveau fixe CE1)
+Questions affichées :
+• Que représente un de ces morceaux pour la figure ?
+• Combien de morceaux a-t-on ? On a 3 quarts
+• Combien de quarts faut-il pour faire le carré complet ?
+• Combien de morceaux manque-t-il ? Il manque 1 quart
+```
 
-**Mécanisme :** localStorage du navigateur
-
-#### EF-11 : Recommencer
+#### EF-13 : Réinitialisation
 
 **Priorité :** Basse
 
-**Action :** Bouton "Recommencer" avec confirmation  
-**Effet :** Retour à l'exercice 0 du niveau CE1
+**Action :** Bouton "Réinitialiser" gris en haut à droite  
+**Effet :** Confirmation puis retour à l'état initial (aucune configuration)
+
+---
+
+### 3.4 Configuration des fractions par niveau (Mode Autonome)
+
+_Voir section détaillée SRS v2.0 - Pas de changement en v0.4.0_
+
+**CE1** :
+
+- Figures : Carré, Rectangle, Disque
+- Dénominateurs : 2, 3, 4, 5 (selon figure)
+- Total : 18 exercices
+
+**CE2** :
+
+- Figures : Carré, Rectangle, Disque
+- Dénominateurs : 2, 3, 4, 5, 6, 8, 10 (selon figure)
+- Total : 28 exercices
+
+**CM1** :
+
+- Figures : Carré, Rectangle, Disque, Maison
+- Dénominateurs : 2, 3, 4, 5, 8, 10 (selon figure)
+- Total : 26 exercices
+
+---
 
 ## 4. Exigences non-fonctionnelles
 
@@ -419,34 +380,38 @@ Pour chaque fraction (1/2, 1/4, 1/8, 1/3, 1/5, 1/10) :
 
 **ENF-01 :** Temps de chargement initial < 3 secondes (connexion standard)  
 **ENF-02 :** Transitions et animations fluides (60 fps)  
-**ENF-03 :** Réactivité du drag < 16ms (1 frame)
+**ENF-03 :** Réactivité du drag < 16ms (1 frame)  
+**ENF-04 :** Basculement entre modes < 200ms
 
 ### 4.2 Utilisabilité
 
 **ENF-04 :** Interface adaptée aux jeunes lecteurs (taille police ≥ 16px)  
 **ENF-05 :** Boutons tactiles ≥ 44×44 pixels  
 **ENF-06 :** Feedback immédiat pour toute action utilisateur  
-**ENF-07 :** Palette de couleurs non-agressive (tons pastels)
+**ENF-07 :** Palette de couleurs non-agressive (tons pastels)  
+**ENF-08 :** Mode Collectif : Interface adaptée à la projection (contrastes, tailles)
 
 ### 4.3 Accessibilité
 
-**ENF-08 :** Contraste WCAG AA minimum (4.5:1)  
-**ENF-09 :** Navigation clavier complète  
-**ENF-10 :** Attributs ARIA sur les boutons  
-**ENF-11 :** Support lecteurs d'écran (basique)
+**ENF-09 :** Contraste WCAG AA minimum (4.5:1)  
+**ENF-10 :** Navigation clavier complète  
+**ENF-11 :** Attributs ARIA sur les boutons  
+**ENF-12 :** Support lecteurs d'écran (basique)
 
 ### 4.4 Fiabilité
 
-**ENF-12 :** Pas de perte de données en cas de fermeture du navigateur  
-**ENF-13 :** Gestion des erreurs localStorage (mode dégradé)  
-**ENF-14 :** Génération déterministe des exercices (seed basé sur ID)
+**ENF-13 :** Pas de perte de données en cas de fermeture du navigateur  
+**ENF-14 :** Gestion des erreurs localStorage (mode dégradé)  
+**ENF-15 :** Génération déterministe des exercices (seed basé sur ID)  
+**ENF-16 :** Isolation des sauvegardes par mode (pas d'écrasement)
 
 ### 4.5 Maintenabilité
 
-**ENF-15 :** Code modulaire avec composants réutilisables  
-**ENF-16 :** Séparation configuration / logique métier  
-**ENF-17 :** Documentation inline (JSDoc light)  
-**ENF-18 :** Nomenclature cohérente (français métier, anglais code)
+**ENF-17 :** Code modulaire avec composants réutilisables  
+**ENF-18 :** Séparation configuration / logique métier  
+**ENF-19 :** Documentation inline (JSDoc light)  
+**ENF-20 :** Nomenclature cohérente (français métier, anglais code)  
+**ENF-21 :** Architecture extensible pour nouveaux modes
 
 ---
 
@@ -467,12 +432,18 @@ Pour chaque fraction (1/2, 1/4, 1/8, 1/3, 1/5, 1/10) :
 
 ```
 src/
+├── modes/                         # ✨ NOUVEAU v0.4.0
+│   └── CollectiveMode/
+│       ├── CollectiveMode.jsx
+│       ├── FigureSelector.jsx
+│       └── ManipulationZone.jsx
 ├── components/
+│   ├── ModeSelector.jsx           # ✨ NOUVEAU v0.4.0
 │   ├── activities/
 │   │   ├── ActivityOne.jsx
 │   │   └── ActivityTwo.jsx
 │   ├── shapes/
-│   │   ├── Piece.jsx
+│   │   ├── Piece.jsx              # MODIFIÉ v0.4.0 (collectiveMode)
 │   │   ├── figures/
 │   │   │   ├── Disk.jsx
 │   │   │   ├── Square.jsx
@@ -481,20 +452,27 @@ src/
 │   │   └── fractions/
 │   │       ├── DiskFraction.jsx
 │   │       ├── SquareFraction.jsx
+│   │       ├── SquareDiagonalFraction.jsx
+│   │       ├── SquareCornerTriangleFraction.jsx
+│   │       ├── SquareQuarterSquareFraction.jsx
+│   │       ├── SquareCrossFraction.jsx
 │   │       ├── RectangleFraction.jsx
 │   │       └── HouseFraction.jsx
 ├── hooks/
 │   └── useLocalStorage.js
 ├── utils/
-│   └── fractionConfig.js     # Configuration EDUSCOL (CORRIGÉE v2.0)
+│   ├── fractionConfig.js
+│   └── fractionTypes.js
 ├── data/
-│   └── progression.js         # Générateur (MODIFIÉ v2.0)
-└── App.jsx                    # (MODIFIÉ v2.0 - pas de sélecteur niveau)
+│   └── progression.js
+└── App.jsx                        # MODIFIÉ v0.4.0 (routage modes)
 ```
 
 ### 5.3 Flux de données
 
 **Modèle :** Unidirectionnel (React standard)
+
+**Mode Autonome :**
 
 ```
 App (état global)
@@ -506,107 +484,72 @@ Piece, Figure
 App (mise à jour état)
 ```
 
+**Mode Collectif :**
+
+```
+App (routage)
+  ↓
+CollectiveMode (état local)
+  ↓ props
+FigureSelector → onGenerate → ManipulationZone
+  ↓ props
+Piece (collectiveMode=true)
+```
+
 **État global (App.jsx) :**
 
-- `level` : niveau actuel (CE1/CE2/CM1)
-- `exercises` : tableau d'exercices générés
-- `currentIndex` : position dans la progression
+- `currentMode` : mode actuel (autonomous/collective/guided)
+- Mode Autonome :
+    - `level` : niveau CE1 (fixe)
+    - `exercises` : tableau d'exercices générés
+    - `currentIndex` : position dans la progression
+- Mode Collectif : État local dans `CollectiveMode.jsx`
 
-**Persistance :** Hook `useLocalStorage` synchronise avec localStorage
+**Persistance :**
+
+- `fractions-mode` : Mode sélectionné
+- `fractions-autonomous-index` : Progression mode autonome
 
 ---
 
 ## 6. Modèle de données
 
-### 6.1 Structure d'un exercice
+### 6.1 Structure d'un exercice (Mode Autonome)
+
+_Inchangé depuis SRS v2.0 - Voir détails complets dans version précédente_
+
+### 6.2 Configuration EDUSCOL (Mode Autonome)
+
+_Inchangé depuis SRS v2.0 - Voir détails complets dans version précédente_
+
+### 6.3 Configuration démonstration (Mode Collectif)
 
 ```javascript
 {
-  id: string,                    // Identifiant unique
   figure: 'disk'|'square'|'rectangle'|'house',
-  fraction: {
-    denominator: number,         // 2, 3, 4, 5, 8, 10...
-    name: string,                // 'demi', 'tiers'...
-    plural: string               // 'demis', 'tiers'...
+  figureName: string,                // "carré", "rectangle"...
+  denominator: number,               // 2, 3, 4, 5, 8, 10
+  fractionName: string,              // "demi", "tiers"...
+  fractionPlural: string,            // "demis", "tiers"...
+  splittingType: {
+    id: string,                      // "quarter-squares"...
+    component: string,               // "SquareQuarterSquareFraction"
+    props: object                    // {}
   },
-  activity: 1|2,                 // Numéro d'activité
-
-  // Variations visuelles
-  figureRotation: number,        // 0, 90, 180, 270
-  proportions: object,           // {width, height} ou {roofHeight}
-  scale: number,                 // 0.8 à 1.2
-  divisionOrientation: 'horizontal'|'vertical',
-
-  // Activité 1
-  startAngle: number,            // Disque: 0-360°, Autres: 0
-  pieceIndex: number,            // Bande à afficher (non-disque)
-  pieceRotation: number,         // Rotation initiale du morceau
-
-  // Activité 2
-  givenPieces: number,           // Nombre de morceaux donnés
-  piecesData: [                  // Configuration de chaque morceau
-    {
-      startAngle: number,
-      index: number,
-      position: {x, y},
-      rotation: number
-    }
-  ]
+  pieceCount: number,                // 1-10
+  figureRotation: number,            // 0
+  proportions: object,               // {}
+  scale: number,                     // 1
+  divisionOrientation: string        // "vertical"
 }
 ```
 
-### 6.2 Configuration EDUSCOL
-
-```javascript
-PROGRESSION_EDUSCOL = {
-  [niveau]: {
-    figures: string[],          // ["square", "rectangle", "disk"] (CE1)
-    fractions: {
-      [figure]: [
-        {
-          denominator: number,
-          name: string,
-          plural: string
-        }
-      ]
-    }
-  }
-}
-```
-
-**Exemple concret (CE1)** :
-
-```javascript
-PROGRESSION_EDUSCOL = {
-    CE1: {
-        figures: ["square", "rectangle", "disk"],
-        fractions: {
-            square: [
-                { denominator: 2, name: "demi", plural: "demis" },
-                { denominator: 4, name: "quart", plural: "quarts" },
-            ],
-            rectangle: [
-                { denominator: 2, name: "demi", plural: "demis" },
-                { denominator: 3, name: "tiers", plural: "tiers" },
-                { denominator: 4, name: "quart", plural: "quarts" },
-                { denominator: 5, name: "cinquième", plural: "cinquièmes" },
-            ],
-            disk: [
-                { denominator: 2, name: "demi", plural: "demis" },
-                { denominator: 3, name: "tiers", plural: "tiers" },
-                { denominator: 4, name: "quart", plural: "quarts" },
-            ],
-        },
-    },
-};
-```
-
-### 6.3 Données sauvegardées (localStorage)
+### 6.4 Données sauvegardées (localStorage)
 
 ```javascript
 {
-  'fractions-index': number  // Index de l'exercice courant
-  // 'fractions-level' SUPPRIMÉ en v0.2.0
+  'fractions-mode': 'autonomous'|'collective'|'guided',
+  'fractions-autonomous-index': number  // 0-17 (CE1)
 }
 ```
 
@@ -640,139 +583,165 @@ PROGRESSION_EDUSCOL = {
 
 ### 7.2 Composants d'interface
 
-#### En-tête
+#### Sélecteur de mode (nouveau v0.4.0)
 
-- **Titre** : "Les Fractions" (text-4xl)
-- **~~Sélecteur de niveau~~** : SUPPRIMÉ en v0.2.0
-- **Barre de progression** : Fond gris, remplissage bleu animé
-    - Affichage : "Exercice X / Y" | "Activité N" | "Z%"
-    - Bouton "Recommencer"
+- 3 cartes horizontales côte à côte
+- Carte active : fond bleu, texte blanc, ombre portée, scale 105%
+- Carte inactive : fond gris, texte gris foncé, hover gris clair
+- Carte désactivée : fond gris clair, texte gris, cursor not-allowed
+- Icônes : 3xl (48px)
+- Texte : Titre (lg, bold) + Description (sm)
 
-**Changement v0.2.0** : Interface épurée sans sélection de niveau
+#### Mode Autonome - En-tête
 
-#### Zone d'activité
+_Inchangé - Voir SRS v2.0_
 
-- Carte blanche avec ombre et bordures arrondies
-- Deux colonnes : figure de référence | zone de travail
+#### Mode Collectif - Configuration
 
-#### Contrôles de manipulation
+- Carte blanche, ombre portée
+- Titre : "Configuration de la démonstration" (2xl, bold)
+- Grille 4 colonnes (responsive : 1 col mobile, 2 tablette, 4 desktop)
+- Champs : Label (sm, semibold) + Dropdown/Input (lg, border-2)
+- Bouton génération : Bleu, pleine largeur, xl, bold, ombre
 
-- Boutons arrondis (rounded-lg)
-- Ombre portée (shadow-lg)
-- Effet de pression (active:scale-95)
+#### Mode Collectif - Zone de manipulation
 
-#### Zone de réponse
-
-- Carte blanche séparée
-- Inputs avec bordure épaisse (border-2)
-- Focus : bordure bleue
+- 2 colonnes : Figure référence (gauche) + Zone travail (droite)
+- Figure : Cadre gris clair, padding généreux
+- Zone travail : 600×500px, fond ambré, bordure pointillée ambrée
+- Contrôles : 3 boutons centrés au-dessus de la zone
+    - Vert (ajout) + Rouge (retrait) + Badge gris (compteur)
 
 ---
 
 ## 8. Règles métier
 
-### 8.1 Génération des exercices
+### 8.1 Génération des exercices (Mode Autonome)
 
-**RM-01** : Pour chaque fraction disponible au niveau CE1, générer 2 exercices (activité 1 et 2) pour chaque figure compatible
+_Inchangé depuis SRS v2.0_
 
-**RM-02** : Les variations visuelles sont générées aléatoirement à chaque nouvelle génération de progression
+**RM-01** : Pour chaque fraction disponible au niveau CE1, générer 2 exercices (activité 1 et 2) pour chaque figure compatible  
+**RM-02** : Les variations visuelles sont générées aléatoirement  
+**RM-03** : Les angles et positions aléatoires utilisent Math.random() uniquement lors de la génération  
+**RM-04** : Pour l'activité 2, le nombre de morceaux donnés est : 1 ≤ n < dénominateur  
+**RM-05** : L'ordre de génération suit : Fraction → Figure → Activité  
+**RM-06** : L'ordre pédagogique des fractions est : 2, 4, 8, 3, 5, 10
 
-**RM-03** : Les angles et positions aléatoires utilisent Math.random() uniquement lors de la génération de la progression (pas en render)
+### 8.2 Configuration démonstration (Mode Collectif)
 
-**RM-04** : Pour l'activité 2, le nombre de morceaux donnés est : 1 ≤ n < dénominateur
+**RM-07 (NOUVEAU)** : Les dénominateurs disponibles dépendent de la figure sélectionnée selon EDUSCOL  
+**RM-08 (NOUVEAU)** : Les types de fractionnement disponibles dépendent du dénominateur sélectionné  
+**RM-09 (NOUVEAU)** : Le nombre de morceaux est libre (1-10) sans contrainte pédagogique  
+**RM-10 (NOUVEAU)** : La génération n'utilise pas de variations aléatoires (rotation 0°, scale 1, etc.)  
+**RM-11 (NOUVEAU)** : Chaque ajout de morceau positionne le nouveau à (200, 200)
 
-**RM-05 (NOUVEAU)** : L'ordre de génération suit : Fraction (ordre pédagogique) → Figure (carré → rectangle → disque) → Activité (1 puis 2)
+### 8.3 Manipulation
 
-**RM-06 (NOUVEAU)** : L'ordre pédagogique des fractions est : 2, 4, 8, 3, 5, 10 (puissances de 2 puis autres)
+**RM-12** : Le bouton flip n'est pas affiché pour les disques (symétrie radiale)  
+**RM-13** : Le drag & drop fonctionne à la fois avec souris et tactile (PointerEvents)  
+**RM-14 (NOUVEAU)** : En mode collectif, les contrôles sont toujours visibles (collectiveMode=true)  
+**RM-15 (NOUVEAU)** : En mode autonome, les contrôles disparaissent après 3s d'inactivité
 
-### 8.2 Manipulation
+### 8.4 Validation (Mode Autonome uniquement)
 
-**RM-07 :** Le bouton flip n'est pas affiché pour les disques (symétrie radiale)
-
-**RM-08 :** Le drag & drop fonctionne à la fois avec souris et tactile (PointerEvents)
-
-### 8.3 Validation
-
-**RM-09 :** Pour l'activité 1, la validation est simultanée sur les deux champs (nombre ET nom de fraction)
-
-**RM-10 :** Pour l'activité 2, les validations sont séquentielles (question par question)
-
-**RM-11 :** Une réponse correcte déclenche un délai de 1s (activité 1) ou 1.5s (activité 2) avant passage automatique
-
-**RM-12 :** Une réponse incorrecte permet une nouvelle tentative immédiate
+**RM-16** : Pour l'activité 1, la validation est simultanée sur les deux champs  
+**RM-17** : Pour l'activité 2, les validations sont séquentielles  
+**RM-18** : Une réponse correcte déclenche un délai avant passage automatique  
+**RM-19** : Une réponse incorrecte permet une nouvelle tentative immédiate
 
 ---
 
 ## 9. Cas d'utilisation
 
-### CU-01 : Démarrer un parcours
+### CU-01 : Basculer entre modes
 
-**Acteur principal :** Élève  
+**Acteur principal :** Utilisateur (enseignant ou élève)  
 **Préconditions :** Application chargée  
-**Postconditions :** Progression initialisée au niveau CE1
+**Postconditions :** Mode sélectionné sauvegardé
 
 **Scénario nominal :**
 
-1. L'application démarre directement au niveau CE1 (pas de sélection)
-2. Le système génère la liste des 18 exercices (CE1)
-3. Le système affiche le premier exercice (Carré 1/2 Activité 1)
-4. La progression est sauvegardée dans localStorage (`fractions-index`)
+1. L'utilisateur clique sur un des 3 boutons de mode
+2. Le système sauvegarde le choix dans localStorage
+3. Le système affiche l'interface du mode sélectionné
+4. Le système préserve les données des autres modes
 
 **Scénarios alternatifs :**
 
-- 1a. Une progression existe déjà → Le système reprend où l'élève s'était arrêté
-
-**Changement v0.2.0** : Plus de sélection de niveau
+- 1a. Mode Guidé cliqué → Message "Bientôt disponible"
 
 ---
 
-### CU-02 : Compléter un exercice de type 1
+### CU-02 : Configurer une démonstration (Mode Collectif)
 
-**Acteur principal :** Élève  
-**Préconditions :** Exercice activité 1 affiché
+**Acteur principal :** Enseignant  
+**Préconditions :** Mode Collectif sélectionné  
+**Postconditions :** Démonstration générée
 
 **Scénario nominal :**
 
-1. L'élève observe la figure complète et le morceau
-2. L'élève manipule le morceau (déplace, pivote, retourne)
-3. L'élève détermine le nombre de morceaux nécessaires
-4. L'élève saisit sa réponse dans les deux champs
-5. L'élève clique sur "Valider"
-6. Le système affiche "Bravo !" et passe automatiquement à l'exercice suivant après 1.5s
+1. L'enseignant sélectionne une figure (ex: Carré)
+2. Le système met à jour les dénominateurs disponibles
+3. L'enseignant sélectionne un dénominateur (ex: 1/4)
+4. Le système met à jour les types de fractionnement
+5. L'enseignant sélectionne un type (ex: Petits carrés)
+6. L'enseignant saisit le nombre de morceaux (ex: 3)
+7. L'enseignant clique sur "Générer la démonstration"
+8. Le système affiche la zone de manipulation avec 3 morceaux
 
 **Scénarios alternatifs :**
 
-- 6a. Réponse incorrecte → Le système affiche "Réessaie encore" et permet une nouvelle tentative
+- 7a. Type de fractionnement non sélectionné → Alert "Veuillez sélectionner..."
 
 ---
 
-### CU-03 : Recommencer le parcours
+### CU-03 : Manipuler en démonstration (Mode Collectif)
 
-**Acteur principal :** Élève ou enseignant  
-**Préconditions :** Au moins un exercice complété
+**Acteur principal :** Enseignant  
+**Préconditions :** Démonstration générée  
+**Postconditions :** État de la manipulation mis à jour
 
 **Scénario nominal :**
 
-1. L'utilisateur clique sur "Recommencer"
-2. Le système affiche une demande de confirmation
-3. L'utilisateur confirme
-4. Le système revient au premier exercice du niveau actuel
-5. La progression est réinitialisée
+1. L'enseignant déplace un morceau par drag & drop
+2. Le système met à jour la position
+3. L'enseignant clique sur le bouton rotation
+4. Le système pivote le morceau de l'angle adapté
+5. L'enseignant pose les questions suggérées aux élèves
+6. Les élèves répondent oralement
+
+**Scénarios alternatifs :**
+
+- 3a. L'enseignant clique sur "Ajouter un morceau" → Nouveau morceau apparaît
+- 3b. L'enseignant clique sur "Retirer un morceau" → Dernier morceau disparaît
+
+---
+
+### CU-04 : Démarrer un parcours autonome
+
+_Voir CU-01 du SRS v2.0 - Inchangé_
+
+---
+
+### CU-05 : Compléter un exercice de type 1
+
+_Voir CU-02 du SRS v2.0 - Inchangé_
 
 ---
 
 ## 10. Contraintes et limitations
 
-### 10.1 Limitations de la version 1.0
+### 10.1 Limitations de la version 0.4.0
 
-**L10-01 :** Pas de sélection de niveau (fixe CE1)  
-**L10-02 :** Pas d'interface enseignant pour personnaliser les exercices  
-**L10-03 :** Pas de suivi détaillé des erreurs par élève  
-**L10-04 :** Pas d'export des résultats  
-**L10-05 :** Pas de support multi-utilisateurs  
-**L10-06 :** Pas de mode hors-ligne progressif (PWA)  
-**L10-07 :** Activité 2 limitée aux fractions < 1 (même en CM1)  
-**L10-08 :** Rectangle = bande simple (pas de fractionnements complexes)
+**L10-01 :** Pas de clippage automatique en mode collectif  
+**L10-02 :** Pas de mode plein écran pour projection optimale  
+**L10-03 :** Mode Guidé non implémenté  
+**L10-04 :** Pas d'interface enseignant pour personnaliser le mode autonome  
+**L10-05 :** Pas de suivi détaillé des erreurs par élève  
+**L10-06 :** Pas d'export des résultats  
+**L10-07 :** Pas de support multi-utilisateurs  
+**L10-08 :** Pas de mode hors-ligne progressif (PWA)  
+**L10-09 :** Activité 2 limitée aux fractions < 1 (même en CM1)
 
 ### 10.2 Contraintes techniques
 
@@ -787,51 +756,42 @@ PROGRESSION_EDUSCOL = {
 
 ### 11.1 Priorité haute
 
-**EV-H1 :** Adaptation automatique du niveau selon la progression de l'élève
+**EV-H1 :** Mode Collectif : Système de clippage automatique
 
-- Démarrage CE1 pour tous
-- Montée en niveau automatique (CE2, CM1) selon taux de réussite
-- Algorithme de détection du niveau optimal
+- Détection proximité morceau ↔ figure
+- Snap automatique si distance < 50px
+- Feedback visuel (bordure verte)
 
-**EV-H2 :** Composant `Band` distinct du rectangle
+**EV-H2 :** Mode Collectif : Mode plein écran
 
-- Bande prototypique (étroite, horizontale/verticale)
-- Rectangle non-prototypique (inclinaisons, diagonales)
+- Bouton "Mode présentation"
+- Masquer les contrôles de configuration
+- Maximiser la zone de manipulation
 
-**EV-H3 :** Activité 2 avec fractions > 1 (CM1)
+**EV-H3 :** Mode Guidé : Interface enseignant
 
-- "On a plus d'une figure ! Combien de morceaux en plus ?"
-- "L'ensemble fait une figure + x nèmes"
-
-**EV-H4 :** Mode enseignant
-
-- Sélection manuelle du niveau
-- Sélection manuelle des exercices
+- Sélection des exercices à inclure
 - Paramétrage des variations
-- Consultation des résultats
+- Export de la configuration
+
+**EV-H4 :** Mode Guidé : Interface élève
+
+- Parcours personnalisé par l'enseignant
+- Suivi de progression
+- Feedback adapté
 
 ### 11.2 Priorité moyenne
 
 **EV-M1 :** Fractionnements avancés
 
-- Carré avec diagonales (triangles)
-- Rectangle avec formes en L
+- Triangles isocèles depuis le centre (1/4)
+- Fractionnements pour 1/8
+- Rectangle avec diagonales
 
-**EV-M2 :** Export des résultats (PDF, CSV)  
-**EV-M3 :** Mode hors-ligne complet (PWA)  
-**EV-M4 :** Feedback sonore optionnel
-**EV-M5 :** Export des résultats (PDF, CSV)  
-**EV-M6 :** Mode hors-ligne complet (PWA)  
-**EV-M7 :** Activités complémentaires :
-
-- Comparaison de fractions
-- Fractions sur droite graduée
-- Calculs simples (addition de fractions même dénominateur)
-
-**EV-M8 :** Personnalisation visuelle
-
-- Choix des couleurs
-- Mode sombre
+**EV-M2 :** Activité 2 avec fractions > 1 (CM1)  
+**EV-M3 :** Feedback sonore optionnel  
+**EV-M4 :** Export des résultats (PDF, CSV)  
+**EV-M5 :** Mode hors-ligne complet (PWA)
 
 ### 11.3 Priorité basse
 
@@ -844,26 +804,32 @@ PROGRESSION_EDUSCOL = {
 
 ## 12. Critères d'acceptation globaux
 
-### Phase Alpha (v0.2.0)
+### Phase Alpha (v0.4.0)
 
-✅ **CA-A1 :** Le niveau CE1 fonctionne correctement  
-✅ **CA-A2 :** Les deux types d'activités fonctionnent  
-✅ **CA-A3 :** Les fractions respectent la configuration EDUSCOL 2025 (corrigée)  
+✅ **CA-A1 :** Le niveau CE1 fonctionne correctement (Mode Autonome)  
+✅ **CA-A2 :** Les deux types d'activités fonctionnent (Mode Autonome)  
+✅ **CA-A3 :** Les fractions respectent la configuration EDUSCOL 2025  
 ✅ **CA-A4 :** Les figures sont présentées de manière non-prototypique  
 ✅ **CA-A5 :** La manipulation fonctionne sur desktop et tablette  
-✅ **CA-A6 :** La progression est sauvegardée et restaurée  
+✅ **CA-A6 :** La progression est sauvegardée et restaurée (Mode Autonome)  
 ✅ **CA-A7 :** La progression suit l'ordre Fraction → Figure → Activité  
 ✅ **CA-A8 :** L'ordre des figures est Carré → Rectangle → Disque  
-⬜ **CA-A9 :** Tests sur les 4 navigateurs cibles  
-⬜ **CA-A10 :** Accessibilité WCAG AA validée
+✅ **CA-A9 :** Le Mode Collectif permet la configuration libre  
+✅ **CA-A10 :** Le Mode Collectif affiche les contrôles permanents  
+✅ **CA-A11 :** Le Mode Collectif permet l'ajout/retrait de morceaux  
+✅ **CA-A12 :** L'aide pédagogique affiche les calculs corrects  
+✅ **CA-A13 :** Le basculement entre modes préserve les données  
+⬜ **CA-A14 :** Tests sur les 4 navigateurs cibles  
+⬜ **CA-A15 :** Accessibilité WCAG AA validée
 
-### Phase Beta (v0.3.0+)
+### Phase Beta (v0.5.0+)
 
-⬜ **CA-B1 :** Tests utilisateurs avec 3 classes (CE1, CE2, CM1)  
-⬜ **CA-B2 :** Corrections des bugs remontés  
-⬜ **CA-B3 :** Optimisations de performance si nécessaire  
-⬜ **CA-B4 :** Documentation utilisateur (guide enseignant)  
-⬜ **CA-B5 :** Implémentation de l'adaptation automatique de niveau
+⬜ **CA-B1 :** Tests utilisateurs enseignants avec Mode Collectif  
+⬜ **CA-B2 :** Tests utilisateurs avec 3 classes (CE1, CE2, CM1) en Mode Autonome  
+⬜ **CA-B3 :** Corrections des bugs remontés  
+⬜ **CA-B4 :** Optimisations de performance si nécessaire  
+⬜ **CA-B5 :** Documentation utilisateur (guide enseignant)  
+⬜ **CA-B6 :** Implémentation du clippage automatique (Mode Collectif)
 
 ### Phase Release
 
@@ -876,97 +842,63 @@ PROGRESSION_EDUSCOL = {
 
 ## 13. Annexes
 
-| Dénominateur | Nom singulier | Nom pluriel | CE1 | CE2 | CM1 |
-| ------------ | ------------- | ----------- | --- | --- | --- |
-| 2            | demi          | demis       | ✓   | ✓   | ✓   |
-| 3            | tiers         | tiers       | ✓   | ✓   | ✓   |
-| 4            | quart         | quarts      | ✓   | ✓   | ✓   |
-| 5            | cinquième     | cinquièmes  | ✓   | ✓   | ✓   |
-| 6            | sixième       | sixièmes    | ✗   | ✓   | ✗   |
-| 8            | huitième      | huitièmes   | ✗   | ✓   | ✓   |
-| 10           | dixième       | dixièmes    | ✗   | ✓   | ✓   |
+### Annexe A : Correspondance fractions/noms
 
-### Annexe B : Mapping figures/fractions par niveau (v2.0)
+_Inchangé depuis SRS v2.0_
 
-#### CE1 (18 exercices)
+### Annexe B : Mapping figures/fractions par niveau
 
-| Figure    | Dénominateurs | Nb exercices |
-| --------- | ------------- | ------------ |
-| Carré     | 2, 4          | 4 (2×2)      |
-| Rectangle | 2, 3, 4, 5    | 8 (4×2)      |
-| Disque    | 2, 3, 4       | 6 (3×2)      |
-| **Total** |               | **18**       |
-
-**Séquence complète** :
-1-2: Carré 1/2 | 3-4: Rectangle 1/2 | 5-6: Disque 1/2  
-7-8: Carré 1/4 | 9-10: Rectangle 1/4 | 11-12: Disque 1/4  
-13-14: Rectangle 1/3 | 15-16: Disque 1/3  
-17-18: Rectangle 1/5
-
-#### CE2 (34 exercices)
-
-| Figure    | Dénominateurs        | Nb exercices |
-| --------- | -------------------- | ------------ |
-| Carré     | 2, 4, 8              | 6 (3×2)      |
-| Rectangle | 2, 3, 4, 5, 6, 8, 10 | 14 (7×2)     |
-| Disque    | 2, 3, 4, 8           | 8 (4×2)      |
-| **Total** |                      | **28**       |
-
-#### CM1 (32 exercices)
-
-| Figure    | Dénominateurs | Nb exercices |
-| --------- | ------------- | ------------ |
-| Carré     | 2, 4, 8       | 6 (3×2)      |
-| Rectangle | 2, 3, 4, 8    | 8 (4×2)      |
-| Disque    | 2, 3, 4, 8    | 8 (4×2)      |
-| Maison    | 5, 10         | 4 (2×2)      |
-| **Total** |               | **26**       |
+_Inchangé depuis SRS v2.0_
 
 ### Annexe C : Algorithmes clés
 
-#### Ordre de génération (v2.0)
+#### Ordre de génération (Mode Autonome)
+
+_Inchangé depuis SRS v2.0_
+
+#### Configuration dynamique (Mode Collectif)
 
 ```javascript
-// Ordre pédagogique des fractions
-const fractionOrder = [2, 4, 8, 3, 5, 10];
+// Exemple de mapping dynamique
+const SPLITTING_CONFIG = {
+    square: {
+        2: [
+            { id: "vertical-rectangles", component: "SquareFraction" },
+            { id: "diagonal-triangles", component: "SquareDiagonalFraction" },
+        ],
+        4: [
+            { id: "vertical-rectangles", component: "SquareFraction" },
+            {
+                id: "corner-triangles",
+                component: "SquareCornerTriangleFraction",
+            },
+            { id: "quarter-squares", component: "SquareQuarterSquareFraction" },
+            { id: "cross-triangles", component: "SquareCrossFraction" },
+        ],
+    },
+    // ...
+};
 
-// Ordre des figures
-const figureOrder = ["square", "rectangle", "disk", "house"];
+// Sélection figure → Dénominateurs disponibles
+const availableDenominators = Object.keys(SPLITTING_CONFIG[selectedFigure]);
 
-// Génération
-for each fraction in fractionOrder:
-    for each figure in figureOrder:
-        if fraction exists for figure:
-            generate activity 1
-            generate activity 2
+// Sélection dénominateur → Types disponibles
+const availableSplittingTypes =
+    SPLITTING_CONFIG[selectedFigure][selectedDenominator];
 ```
 
 ### Annexe D : Références des documents EDUSCOL
 
-1. **Programme cycle 2 (2025)** - BO 31/10/2024
-
-    - URL : https://www.education.gouv.fr/sites/default/files/ensel135_annexe4.pdf
-    - **Consulté le** : 28/01/2026
-    - **Section** : "Les fractions" (CE1), page 17-18
-
-2. **Ressources fractions cycle 3**
-
-    - URL : https://eduscol.education.fr/document/16510/download
-
-3. **Livret CE1 mathématiques**
-
-    - URL : https://eduscol.education.fr/document/67770/download
-
-4. **Programme cycle 3 (2025)**
-    - URL : https://www.education.gouv.fr/sites/default/files/ensel620_annexe2-v2.pdf
+_Inchangé depuis SRS v2.0_
 
 ---
 
-| Version | Date       | Auteur        | Modifications                                                               |
-| ------- | ---------- | ------------- | --------------------------------------------------------------------------- |
-| 1.0     | 27/01/2026 | CPC Numérique | Création initiale - État Alpha v0.1.0                                       |
-| 2.0     | 28/01/2026 | CPC Numérique | Correction majeure configuration EDUSCOL + nouvelle progression pédagogique |
+| Version | Date       | Auteur        | Modifications                                                                |
+| ------- | ---------- | ------------- | ---------------------------------------------------------------------------- |
+| 1.0     | 27/01/2026 | CPC Numérique | Création initiale - État Alpha v0.1.0                                        |
+| 2.0     | 28/01/2026 | CPC Numérique | Correction majeure configuration EDUSCOL + nouvelle progression pédagogique  |
+| 3.0     | 28/01/2026 | CPC Numérique | Ajout Mode Collectif - Outil de démonstration enseignant - État Alpha v0.4.0 |
 
 ---
 
-**Fin du document SRS v2.0**
+**Fin du document SRS v3.0**
