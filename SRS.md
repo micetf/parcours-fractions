@@ -20,6 +20,7 @@
 | 3.2     | 28/01/2026 | CPC Numérique | Architecture contrôlée + rotation continue - État Alpha v0.4.2              |
 | 3.3     | 28/01/2026 | CPC Numérique | Optimisation fractionnements + UX sélection - Alpha v0.4.3                  |
 | 3.4     | 28/01/2026 | CPC Numérique | Ajout fractionnements triangle rectangle - État Alpha v0.4.4                |
+| 3.5     | 29/01/2026 | CPC Numérique | Refonte UX Mode Collectif pédagogique - État Alpha v0.4.6                   |
 
 ---
 
@@ -299,31 +300,27 @@ Sauvegarde de l'index de l'exercice courant dans localStorage (`fractions-autono
 | Champ                   | Type     | Valeurs                                         | Dynamique                     |
 | ----------------------- | -------- | ----------------------------------------------- | ----------------------------- |
 | Figure                  | Dropdown | Carré, Rectangle, Disque, Maison                | -                             |
-| Fraction (dénominateur) | Dropdown | 2, 3, 4, 5, 6, 8, 10 (selon figure)             | Change si figure change       |
+| Fraction (dénominateur) | Dropdown | En 2 parties, En 3 parties, ... En 10 parties   | Change si figure change       |
 | Type de fractionnement  | Dropdown | Rectangles verticaux, Triangles diagonaux, etc. | Change si dénominateur change |
-| Nombre de morceaux      | Input    | 1-10                                            | -                             |
 
-**Bouton "Générer la démonstration"** :
+**Comportement automatique :** :
 
-- Désactivé si aucune sélection
-- Génère la configuration
-- Affiche la zone de manipulation
+- Émission automatique de la configuration à chaque changement (useEffect)
+- Pas de bouton "Générer" : la zone de manipulation apparaît automatiquement
+- Affichage masquable des informations enseignant (bouton Afficher/Masquer)
 
-**Exemple de configuration** :
+**Structure de la configuration émise** :
 
 ```javascript
 {
   figure: "square",
   figureName: "carré",
   denominator: 4,
-  fractionName: "quart",
-  fractionPlural: "quarts",
   splittingType: {
     id: "quarter-squares",
     component: "SquareQuarterSquareFraction",
     props: {}
   },
-  pieceCount: 3,
   figureRotation: 0,
   proportions: {},
   scale: 1,
@@ -331,7 +328,9 @@ Sauvegarde de l'index de l'exercice courant dans localStorage (`fractions-autono
 }
 ```
 
-#### EF-10 : Zone de manipulation
+**Note importante** : Les informations `fractionName` et `fractionPlural` ne sont PAS incluses dans la configuration pour éviter leur affichage involontaire aux élèves.
+
+### EF-10 : Zone de manipulation
 
 **Priorité :** Haute
 
@@ -340,26 +339,31 @@ Sauvegarde de l'index de l'exercice courant dans localStorage (`fractions-autono
 - **Colonne gauche** : Figure de référence
     - Titre : "Figure complète"
     - Figure dans un cadre gris
-    - Légende : "Fraction : 1/X (nom)"
+    - ❌ SUPPRIMÉ : Légende "Fraction : 1/X (nom)"
 - **Colonne droite** : Zone de travail
     - Titre : "Morceaux à manipuler"
     - Zone 600×500px fond ambré, bordure pointillée
-    - N morceaux manipulables
+    - Morceaux manipulables (commence à 0)
     - Message si 0 morceau : "Cliquez sur 'Ajouter un morceau'..."
 
 **Contrôles d'ajout/retrait :**
 
 - Bouton vert ➕ "Ajouter un morceau"
 - Bouton rouge ➖ "Retirer un morceau" (désactivé si 0)
+- Bouton gris 🗑️ "Tout retirer" (désactivé si 0, avec confirmation)
 - Badge compteur : "X morceau(x)" (fond gris)
 
 **Comportements :**
 
+- Démarrage : 0 morceau (pas de props `pieceCount`)
 - Ajout : nouveau morceau à position (200, 200)
 - Retrait : suppression du dernier morceau
+- Tout retirer : suppression de tous les morceaux avec confirmation
 - Compteur mis à jour en temps réel
 
-#### EF-11 : Manipulation des morceaux en mode collectif (v0.4.2)
+---
+
+### EF-11 : Manipulation des morceaux en mode collectif (v0.4.2)
 
 **Priorité :** Haute
 
@@ -381,46 +385,83 @@ Sauvegarde de l'index de l'exercice courant dans localStorage (`fractions-autono
 - Mode Autonome : timer 3s de désélection automatique
 - Mode Collectif : toolbar permanente tant que sélectionné
 
-#### EF-12 : Aide pédagogique
+---
+
+### EF-12 : Aide pédagogique
 
 **Priorité :** Moyenne
 
 **Affichage :**
 
 - Encart bleu (bg-blue-50) sous la zone de manipulation
-- Titre : "💡 Questions suggérées :"
-- 4 questions avec calculs automatiques
+- Titre : "💡 Questions suggérées (à poser oralement) :"
+- 4 questions avec compteurs dynamiques uniquement
 
-**Questions :**
+**Questions (sans révéler les noms de fractions) :**
 
 1. "Que représente un de ces morceaux pour la figure ?"
-2. "Combien de morceaux a-t-on ? On a X [pluriel]"
-3. "Combien de [pluriel] faut-il pour faire le [figure] complet ?"
-4. "Combien de morceaux manque-t-il ? Il manque Y [pluriel]"
+2. "Combien de morceaux a-t-on actuellement ? (X)" → X = nombre actuel
+3. "Combien de morceaux identiques faut-il pour faire la figure complète ?"
+4. "Combien de morceaux manque-t-il ? (Y)" → Y = dénominateur - nombre actuel
 
 **Calculs automatiques :**
 
-- X = nombre de morceaux actuels
-- Y = dénominateur - nombre de morceaux actuels
+- X = `pieces.length`
+- Y = `Math.max(0, config.denominator - pieces.length)`
 
 **Exemple concret** :
 
 ```
-Configuration : Carré, 1/4 (quarts), 3 morceaux
+Configuration : Carré, En 4 parties (quarts), 3 morceaux
 
 Questions affichées :
 - Que représente un de ces morceaux pour la figure ?
-- Combien de morceaux a-t-on ? On a 3 quarts
-- Combien de quarts faut-il pour faire le carré complet ?
-- Combien de morceaux manque-t-il ? Il manque 1 quart
+- Combien de morceaux a-t-on actuellement ? (3)
+- Combien de morceaux identiques faut-il pour faire la figure complète ?
+- Combien de morceaux manque-t-il ? (1)
+
 ```
 
-#### EF-13 : Réinitialisation
+**Panneau enseignant (masquable) :**
 
-**Priorité :** Basse
+- Fond jaune (bg-yellow-50), bordure jaune
+- Bouton "👁️ Afficher / 👁️ Masquer" dans l'en-tête
+- Contenu (si affiché) :
+    - Fraction : 1/X (un nom)
+    - Pluriel : noms
+    - Total nécessaire : X morceaux
+    - Actuellement affichés : Y morceau(x)
+    - Manquants : Z morceau(x)
 
-**Action :** Bouton "Réinitialiser" gris en haut à droite  
-**Effet :** Confirmation puis retour à l'état initial (aucune configuration)
+---
+
+#### EF-13 : Boutons de masquage (v0.4.6)
+
+**Priorité :** Moyenne
+
+**Emplacement 1 : FigureSelector**
+
+- Position : Sous les champs de configuration
+- Encart bleu (bg-blue-50)
+- Ligne avec titre + bouton
+- Texte : "📋 Info enseignant : Fraction 1/X (nom)" (si affiché)
+- Bouton : "👁️ Masquer / 👁️‍🗨️ Afficher"
+
+**Emplacement 2 : ManipulationZone**
+
+- Position : Sous les questions suggérées
+- Encart jaune (bg-yellow-50)
+- Section repliable avec bouton
+- Titre : "📋 Informations enseignant"
+- Bouton : "👁️ Masquer / 👁️‍🗨️ Afficher"
+- Contenu : 5 lignes d'informations détaillées
+
+**Comportement :**
+
+- État local (showTeacherInfo) dans chaque composant
+- Par défaut : masqué (false)
+- Bascule au clic sur le bouton
+- Icône change selon l'état
 
 ---
 
@@ -428,7 +469,7 @@ Questions affichées :
 
 #### EF-14 : Architecture composant contrôlé
 
-**Priorité :** Critique  
+**Priorité :** Critique
 **Problème résolu** : Boutons inactifs après premier clic (closure stale)
 
 **Solution : Composant contrôlé**
@@ -1109,17 +1150,26 @@ export const PROGRESSION_EDUSCOL = {
 
 - Carte blanche, ombre portée
 - Titre : "Configuration de la démonstration" (2xl, bold)
-- Grille 4 colonnes (responsive : 1 col mobile, 2 tablette, 4 desktop)
-- Champs : Label (sm, semibold) + Dropdown/Input (lg, border-2)
-- Bouton génération : Bleu, pleine largeur, xl, bold, ombre
+- Grille 3 colonnes (responsive : 1 col mobile, 2 tablette, 3 desktop)
+- Champs : Label (sm, semibold) + Dropdown (lg, border-2)
+- Encart info enseignant masquable (bleu clair)
 
 #### Mode Collectif - Zone de manipulation
 
 - 2 colonnes : Figure référence (gauche) + Zone travail (droite)
 - Figure : Cadre gris clair, padding généreux
 - Zone travail : 600×500px, fond ambré, bordure pointillée ambrée
-- Contrôles : 3 boutons centrés au-dessus de la zone
-    - Vert (ajout) + Rouge (retrait) + Badge gris (compteur)
+- Contrôles : 4 éléments centrés au-dessus de la zone
+    - Vert (ajout) + Rouge (retrait) + Gris (tout retirer) + Badge gris (compteur)
+- Panneau enseignant masquable (jaune clair)
+
+**Bouton masquage info enseignant**
+
+- Taille : px-3 py-1 (petit) ou px-4 py-2 (moyen)
+- Couleurs : bg-blue-200 hover:bg-blue-300 (config) ou bg-yellow-200 hover:bg-yellow-300 (zone)
+- Texte : text-sm font-semibold
+- Icônes : 👁️ (affiché) / 👁️‍🗨️ (masqué)
+- Transition : transition-colors
 
 #### GlobalToolbar (v0.4.2)
 
@@ -1244,26 +1294,34 @@ export const PROGRESSION_EDUSCOL = {
 
 ---
 
-### CU-02 : Configurer une démonstration (Mode Collectif)
+### CU-02 : Manipuler en démonstration (Mode Collectif) - v0.4.6
 
 **Acteur principal :** Enseignant  
-**Préconditions :** Mode Collectif sélectionné  
-**Postconditions :** Démonstration générée
+**Préconditions :** Configuration effectuée, zone affichée (0 morceau)  
+**Postconditions :** État de la manipulation mis à jour
 
 **Scénario nominal :**
 
-1. L'enseignant sélectionne une figure (ex: Carré)
-2. Le système met à jour les dénominateurs disponibles
-3. L'enseignant sélectionne un dénominateur (ex: 1/4)
-4. Le système met à jour les types de fractionnement
-5. L'enseignant sélectionne un type (ex: Petits carrés)
-6. L'enseignant saisit le nombre de morceaux (ex: 3)
-7. L'enseignant clique sur "Générer la démonstration"
-8. Le système affiche la zone de manipulation avec 3 morceaux
+1. L'enseignant clique sur "Ajouter un morceau"
+2. Le système affiche un morceau à la position (200, 200)
+3. L'enseignant répète 2 fois (total : 3 morceaux)
+4. L'enseignant clique sur un morceau
+5. Le système sélectionne le morceau (bordure bleue)
+6. Le système affiche la toolbar fixe (coin haut-droit)
+7. L'enseignant déplace le morceau par drag & drop
+8. L'enseignant clique sur "Pivoter" (5 fois)
+9. Le système pivote à chaque clic (rotation continue)
+10. L'enseignant pose les questions suggérées aux élèves
+11. Les élèves répondent oralement
+12. L'enseignant clique sur "Afficher" (panneau enseignant)
+13. Le système affiche : "Fraction : 1/4 (un quart), Total : 4, Actuels : 3, Manquants : 1"
 
 **Scénarios alternatifs :**
 
-- 7a. Type de fractionnement non sélectionné → Alert "Veuillez sélectionner..."
+- 12a. L'enseignant clique sur "Retirer un morceau" → Dernier morceau disparaît (2 restants)
+- 12b. L'enseignant clique sur "Tout retirer" → Confirmation → Tous les morceaux disparaissent
+- 12c. L'enseignant clique sur "Retourner" → Morceau se retourne
+- 12d. L'enseignant clique à côté → Désélection, toolbar disparaît
 
 ---
 
@@ -1789,6 +1847,106 @@ export const RECTANGLE_SPLITTING_TYPES = {
 ```
 
 \```
+
+#### Configuration automatique Mode Collectif (v0.4.6)
+
+```javascript
+// FigureSelector.jsx
+useEffect(() => {
+    if (!selectedSplittingType) return;
+
+    const config = {
+        figure: selectedFigure,
+        figureName: FIGURE_NAMES[selectedFigure],
+        denominator: selectedDenominator,
+        splittingType: selectedSplittingType,
+        // Variations visuelles par défaut
+        figureRotation: 0,
+        proportions:
+            selectedFigure === "rectangle"
+                ? { width: 1, height: 1.6 }
+                : selectedFigure === "house"
+                  ? { roofHeight: 0.5 }
+                  : {},
+        scale: 1,
+        divisionOrientation: "vertical",
+    };
+
+    // Émission automatique (pas de bouton)
+    onConfigChange(config);
+}, [
+    selectedFigure,
+    selectedDenominator,
+    selectedSplittingType,
+    onConfigChange,
+]);
+```
+
+#### Gestion des morceaux Mode Collectif (v0.4.6)
+
+```javascript
+// ManipulationZone.jsx
+// État : démarre à 0 morceau
+const [pieces, setPieces] = useState([]);
+
+// Ajout
+const handleAddPiece = () => {
+    const newPiece = {
+        id: `piece-${Date.now()}`,
+        position: { x: 200, y: 200 },
+        rotation: 0,
+        isFlipped: false,
+    };
+    setPieces([...pieces, newPiece]);
+};
+
+// Retrait
+const handleRemovePiece = () => {
+    if (pieces.length > 0) {
+        const removedPieceId = pieces[pieces.length - 1].id;
+        setPieces(pieces.slice(0, -1));
+        if (selectedPieceId === removedPieceId) {
+            setSelectedPieceId(null);
+        }
+    }
+};
+
+// Tout retirer
+const handleRemoveAll = () => {
+    if (pieces.length > 0 && confirm("Retirer tous les morceaux ?")) {
+        setPieces([]);
+        setSelectedPieceId(null);
+    }
+};
+```
+
+#### Masquage informations enseignant (v0.4.6)
+
+```javascript
+// État local dans FigureSelector et ManipulationZone
+const [showTeacherInfo, setShowTeacherInfo] = useState(false);
+
+// Rendu conditionnel
+<div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+    <div className="flex items-center justify-between">
+        <p className="text-sm text-gray-600">
+            <span className="font-semibold">📋 Info enseignant</span>
+            {showTeacherInfo && (
+                <span>
+                    {" "}
+                    : Fraction 1/{denominator} ({fractionName})
+                </span>
+            )}
+        </p>
+        <button
+            onClick={() => setShowTeacherInfo(!showTeacherInfo)}
+            className="px-3 py-1 bg-blue-200 hover:bg-blue-300 text-gray-800 text-sm font-semibold rounded transition-colors"
+        >
+            {showTeacherInfo ? "👁️ Masquer" : "👁️‍🗨️ Afficher"}
+        </button>
+    </div>
+</div>;
+```
 
 ### Annexe D : Références des documents EDUSCOL
 

@@ -25,10 +25,10 @@ Parcours EDUSCOL avec deux activités :
 
 Outil de démonstration enseignant :
 
-- Configuration libre (figure, fraction, type, quantité)
-- Ajout/retrait de morceaux à la volée
-- Questions pédagogiques suggérées
-- Toolbar fixe permanente
+- Configuration automatique (figure, fractionnement, type)
+- Démarrage à 0 morceau (ajout/retrait à la volée)
+- Infos enseignant masquables (ne pas projeter)
+- Questions pédagogiques sans révéler les réponses
 
 ### 📝 Mode Guidé _(à venir)_
 

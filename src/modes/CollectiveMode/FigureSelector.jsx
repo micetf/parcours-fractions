@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FIGURE_NAMES } from "../../utils/fractionConfig";
 import {
     SQUARE_SPLITTING_TYPES,
@@ -6,7 +6,6 @@ import {
     DISK_SPLITTING_TYPES,
 } from "../../utils/fractionTypes";
 
-// Mapping des types de fractionnements par figure
 const SPLITTING_CONFIG = {
     square: SQUARE_SPLITTING_TYPES,
     rectangle: RECTANGLE_SPLITTING_TYPES,
@@ -17,7 +16,6 @@ const SPLITTING_CONFIG = {
     },
 };
 
-// Noms lisibles des fractionnements
 const SPLITTING_NAMES = {
     "vertical-rectangles": "Rectangles verticaux",
     "horizontal-rectangles": "Rectangles horizontaux",
@@ -34,7 +32,6 @@ const SPLITTING_NAMES = {
     default: "Standard",
 };
 
-// Noms des fractions
 const FRACTION_NAMES = {
     2: "demi",
     3: "tiers",
@@ -45,39 +42,25 @@ const FRACTION_NAMES = {
     10: "dixième",
 };
 
-const FRACTION_PLURALS = {
-    2: "demis",
-    3: "tiers",
-    4: "quarts",
-    5: "cinquièmes",
-    6: "sixièmes",
-    8: "huitièmes",
-    10: "dixièmes",
-};
-
-export default function FigureSelector({ onGenerate, currentConfig }) {
+export default function FigureSelector({ onConfigChange }) {
     const [selectedFigure, setSelectedFigure] = useState("square");
     const [selectedDenominator, setSelectedDenominator] = useState(2);
     const [selectedSplittingType, setSelectedSplittingType] = useState(null);
-    const [pieceCount, setPieceCount] = useState(1);
+    const [showTeacherInfo, setShowTeacherInfo] = useState(false);
 
-    // Obtenir les dénominateurs disponibles pour la figure sélectionnée
     const availableDenominators = Object.keys(
         SPLITTING_CONFIG[selectedFigure] || {}
     ).map(Number);
 
-    // Obtenir les types de fractionnements disponibles pour le dénominateur sélectionné
     const availableSplittingTypes =
         SPLITTING_CONFIG[selectedFigure]?.[selectedDenominator] || [];
 
-    // Initialiser le type de fractionnement si pas encore sélectionné
     if (selectedSplittingType === null && availableSplittingTypes.length > 0) {
         setSelectedSplittingType(availableSplittingTypes[0]);
     }
 
     const handleFigureChange = (figure) => {
         setSelectedFigure(figure);
-        // Réinitialiser les sélections dépendantes
         const newDenominators = Object.keys(SPLITTING_CONFIG[figure] || {}).map(
             Number
         );
@@ -92,21 +75,14 @@ export default function FigureSelector({ onGenerate, currentConfig }) {
         setSelectedSplittingType(null);
     };
 
-    const handleGenerate = () => {
-        if (!selectedSplittingType) {
-            alert("Veuillez sélectionner un type de fractionnement");
-            return;
-        }
+    useEffect(() => {
+        if (!selectedSplittingType) return;
 
         const config = {
             figure: selectedFigure,
             figureName: FIGURE_NAMES[selectedFigure],
             denominator: selectedDenominator,
-            fractionName: FRACTION_NAMES[selectedDenominator],
-            fractionPlural: FRACTION_PLURALS[selectedDenominator],
             splittingType: selectedSplittingType,
-            pieceCount: pieceCount,
-            // Variations visuelles par défaut
             figureRotation: 0,
             proportions:
                 selectedFigure === "rectangle"
@@ -118,8 +94,13 @@ export default function FigureSelector({ onGenerate, currentConfig }) {
             divisionOrientation: "vertical",
         };
 
-        onGenerate(config);
-    };
+        onConfigChange(config);
+    }, [
+        selectedFigure,
+        selectedDenominator,
+        selectedSplittingType,
+        onConfigChange,
+    ]);
 
     return (
         <div className="bg-white rounded-xl shadow-lg p-6">
@@ -127,8 +108,7 @@ export default function FigureSelector({ onGenerate, currentConfig }) {
                 Configuration de la démonstration
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Sélection de la figure */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                         Figure
@@ -145,10 +125,9 @@ export default function FigureSelector({ onGenerate, currentConfig }) {
                     </select>
                 </div>
 
-                {/* Sélection du dénominateur */}
                 <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Fraction
+                        Fractionnement
                     </label>
                     <select
                         value={selectedDenominator}
@@ -159,16 +138,15 @@ export default function FigureSelector({ onGenerate, currentConfig }) {
                     >
                         {availableDenominators.map((denom) => (
                             <option key={denom} value={denom}>
-                                1/{denom} ({FRACTION_NAMES[denom]})
+                                En {denom} parties
                             </option>
                         ))}
                     </select>
                 </div>
 
-                {/* Sélection du type de fractionnement */}
                 <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Type de fractionnement
+                        Type de découpe
                     </label>
                     <select
                         value={selectedSplittingType?.id || ""}
@@ -187,49 +165,30 @@ export default function FigureSelector({ onGenerate, currentConfig }) {
                         ))}
                     </select>
                 </div>
-
-                {/* Nombre de morceaux */}
-                <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Nombre de morceaux
-                    </label>
-                    <input
-                        type="number"
-                        min="1"
-                        max="10"
-                        value={pieceCount}
-                        onChange={(e) =>
-                            setPieceCount(Math.max(1, Number(e.target.value)))
-                        }
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-lg font-semibold text-center focus:border-blue-500 focus:outline-none"
-                    />
-                </div>
             </div>
 
-            {/* Bouton de génération */}
-            <div className="mt-6">
-                <button
-                    onClick={handleGenerate}
-                    className="w-full py-4 bg-blue-500 text-white text-xl font-bold rounded-xl hover:bg-blue-600 transition-colors shadow-lg"
-                >
-                    Générer la démonstration
-                </button>
-            </div>
-
-            {/* Aperçu de la configuration */}
-            {currentConfig && (
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                    <p className="text-sm text-gray-700">
+            <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-600">
                         <span className="font-semibold">
-                            Configuration actuelle :
-                        </span>{" "}
-                        {currentConfig.pieceCount} morceau
-                        {currentConfig.pieceCount > 1 ? "x" : ""} de{" "}
-                        {currentConfig.figureName} en{" "}
-                        {SPLITTING_NAMES[currentConfig.splittingType.id]}
+                            📋 Info enseignant
+                        </span>
+                        {showTeacherInfo && (
+                            <span>
+                                {" "}
+                                : Fraction 1/{selectedDenominator} (
+                                {FRACTION_NAMES[selectedDenominator]})
+                            </span>
+                        )}
                     </p>
+                    <button
+                        onClick={() => setShowTeacherInfo(!showTeacherInfo)}
+                        className="px-3 py-1 bg-blue-200 hover:bg-blue-300 text-gray-800 text-sm font-semibold rounded transition-colors"
+                    >
+                        {showTeacherInfo ? "👁️ Masquer" : "👁️‍🗨️ Afficher"}
+                    </button>
                 </div>
-            )}
+            </div>
         </div>
     );
 }

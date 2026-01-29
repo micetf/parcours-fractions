@@ -15,19 +15,28 @@ const FIGURE_COMPONENTS = {
     house: House,
 };
 
-export default function ManipulationZone({ config }) {
-    const [pieces, setPieces] = useState(() => {
-        return Array.from({ length: config.pieceCount }).map((_, i) => ({
-            id: `piece-${i}`,
-            position: {
-                x: 100 + (i % 3) * 120,
-                y: 100 + Math.floor(i / 3) * 150,
-            },
-            rotation: 0,
-            isFlipped: false,
-        }));
-    });
+const FRACTION_NAMES = {
+    2: "demi",
+    3: "tiers",
+    4: "quart",
+    5: "cinquième",
+    6: "sixième",
+    8: "huitième",
+    10: "dixième",
+};
 
+const FRACTION_PLURALS = {
+    2: "demis",
+    3: "tiers",
+    4: "quarts",
+    5: "cinquièmes",
+    6: "sixièmes",
+    8: "huitièmes",
+    10: "dixièmes",
+};
+
+export default function ManipulationZone({ config }) {
+    const [pieces, setPieces] = useState([]);
     const [selectedPieceId, setSelectedPieceId] = useState(null);
 
     const FigureComponent = FIGURE_COMPONENTS[config.figure];
@@ -37,6 +46,9 @@ export default function ManipulationZone({ config }) {
     const showFlipButton = config.figure !== "disk";
 
     const selectedPiece = pieces.find((p) => p.id === selectedPieceId);
+
+    const fractionName = FRACTION_NAMES[config.denominator];
+    const fractionPlural = FRACTION_PLURALS[config.denominator];
 
     const handlePiecePositionChange = (pieceId, newPosition) => {
         setPieces((prev) =>
@@ -92,6 +104,13 @@ export default function ManipulationZone({ config }) {
         }
     };
 
+    const handleRemoveAll = () => {
+        if (pieces.length > 0 && confirm("Retirer tous les morceaux ?")) {
+            setPieces([]);
+            setSelectedPieceId(null);
+        }
+    };
+
     const handleContainerClick = (e) => {
         if (e.target === e.currentTarget) {
             setSelectedPieceId(null);
@@ -113,6 +132,13 @@ export default function ManipulationZone({ config }) {
                     className="px-6 py-3 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-md"
                 >
                     ➖ Retirer un morceau
+                </button>
+                <button
+                    onClick={handleRemoveAll}
+                    disabled={pieces.length === 0}
+                    className="px-6 py-3 bg-gray-500 text-white font-bold rounded-lg hover:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-md"
+                >
+                    🗑️ Tout retirer
                 </button>
                 <div className="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-lg">
                     {pieces.length} morceau{pieces.length > 1 ? "x" : ""}
@@ -137,10 +163,6 @@ export default function ManipulationZone({ config }) {
                             />
                         </div>
                     </div>
-                    <p className="mt-4 text-gray-600">
-                        <span className="font-semibold">Fraction :</span> 1/
-                        {config.denominator} ({config.fractionName})
-                    </p>
                 </div>
 
                 <div className="flex-1">
@@ -197,27 +219,64 @@ export default function ManipulationZone({ config }) {
 
             <div className="mt-8 p-4 bg-blue-50 rounded-lg">
                 <h4 className="font-semibold text-gray-800 mb-2">
-                    💡 Questions suggérées :
+                    💡 Questions suggérées (à poser oralement) :
                 </h4>
                 <ul className="space-y-1 text-gray-700">
                     <li>
                         • Que représente un de ces morceaux pour la figure ?
                     </li>
                     <li>
-                        • Combien de morceaux a-t-on ? On a {pieces.length}{" "}
-                        {config.fractionPlural}
+                        • Combien de morceaux a-t-on actuellement ?{" "}
+                        <span className="font-semibold">({pieces.length})</span>
                     </li>
                     <li>
-                        • Combien de {config.fractionPlural} faut-il pour faire
-                        le {config.figureName} complet ?
+                        • Combien de morceaux identiques faut-il pour faire la
+                        figure complète ?
                     </li>
                     <li>
-                        • Combien de morceaux manque-t-il ? Il manque{" "}
-                        {Math.max(0, config.denominator - pieces.length)}{" "}
-                        {config.fractionPlural}
+                        • Combien de morceaux manque-t-il ?{" "}
+                        <span className="font-semibold">
+                            ({Math.max(0, config.denominator - pieces.length)})
+                        </span>
                     </li>
                 </ul>
             </div>
+
+            <details className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <summary className="cursor-pointer font-semibold text-gray-800">
+                    📋 Informations enseignant (ne pas projeter)
+                </summary>
+                <div className="mt-2 text-sm text-gray-700 space-y-1">
+                    <p>
+                        <span className="font-semibold">Fraction :</span> 1/
+                        {config.denominator} (un {fractionName})
+                    </p>
+                    <p>
+                        <span className="font-semibold">Pluriel :</span>{" "}
+                        {fractionPlural}
+                    </p>
+                    <p>
+                        <span className="font-semibold">
+                            Total nécessaire :
+                        </span>{" "}
+                        {config.denominator} morceaux
+                    </p>
+                    <p>
+                        <span className="font-semibold">
+                            Actuellement affichés :
+                        </span>{" "}
+                        {pieces.length} morceau{pieces.length > 1 ? "x" : ""}
+                    </p>
+                    <p>
+                        <span className="font-semibold">Manquants :</span>{" "}
+                        {Math.max(0, config.denominator - pieces.length)}{" "}
+                        morceau
+                        {Math.max(0, config.denominator - pieces.length) > 1
+                            ? "x"
+                            : ""}
+                    </p>
+                </div>
+            </details>
         </div>
     );
 }

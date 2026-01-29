@@ -19,6 +19,32 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
+## [0.4.6] - 2026-01-29
+
+### Changed - Mode Collectif UX
+
+#### Workflow simplifié
+
+- Configuration automatique (suppression bouton "Générer")
+- Démarrage à 0 morceau (suppression champ "Nombre")
+- Bouton "🗑️ Tout retirer" ajouté
+
+#### Confidentialité pédagogique
+
+- Infos enseignant masquables (boutons Afficher/Masquer)
+- Suppression affichage "Fraction : 1/X (nom)" visible élèves
+- Questions suggérées sans révéler les réponses
+
+### Technical Details
+
+Fichiers modifiés : 3
+
+- FigureSelector.jsx
+- ManipulationZone.jsx
+- CollectiveMode.jsx
+
+Lignes modifiées : ~80
+
 ## [0.4.5] - 2026-01-28
 
 ### Added
