@@ -19,6 +19,34 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
+## [0.4.8] - 2026-01-29
+
+### Changed
+
+#### Simplification fractionnements rectangle
+
+**Rectangle** : Limitation aux fractionnements 1/2, 1/4 et 1/8 uniquement.
+
+- Fractionnements 1/3, 1/5, 1/6 et 1/10 mis en commentaire (désactivés)
+- Alignement pédagogique avec carré et disque
+
+### Impact
+
+**Nombre d'exercices Mode Autonome :**
+
+- CE1 : 18 → **12 exercices** (-6)
+- CE2 : 28 → **20 exercices** (-8)
+- CM1 : 26 **inchangé** (rectangle 1/3 déjà absent)
+
+### Technical Details
+
+**Fichiers modifiés** : 2
+
+- `src/utils/fractionTypes.js` (1/3, 1/5, 1/6, 1/10 commentés)
+- `src/utils/fractionConfig.js` (fractions rectangle limitées à 1/2, 1/4, 1/8)
+
+**Lignes modifiées** : ~60 (mises en commentaire)
+
 ## [0.4.7] - 2026-01-29
 
 ### Added

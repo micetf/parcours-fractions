@@ -67,22 +67,30 @@ Application sur **http://localhost:5173**
 
 ## ⚙️ Configuration EDUSCOL 2025
 
-### CE1 (18 exercices)
+### CE1 (12 exercices)
 
 - Figures : carré, rectangle, disque
-- Fractions : 1/2, 1/3, 1/4, 1/5
+- Fractions :
+    - **Carré** : 1/2, 1/4
+    - **Rectangle** : 1/2, 1/4
+    - **Disque** : 1/2, 1/3, 1/4
 
-### CE2 (28 exercices)
+### CE2 (20 exercices)
 
 - Figures : carré, rectangle, disque
-- Fractions : 1/2, 1/3, 1/4, 1/5, 1/6, 1/8, 1/10
+- Fractions :
+    - **Carré** : 1/2, 1/4, 1/8
+    - **Rectangle** : 1/2, 1/4, 1/8
+    - **Disque** : 1/2, 1/3, 1/4, 1/8
 
 ### CM1 (26 exercices)
 
 - Figures : carré, rectangle, disque, maison
-- Fractions : 1/2, 1/3, 1/4, 1/5, 1/8, 1/10
-
----
+- Fractions :
+    - **Carré** : 1/2, 1/4, 1/8
+    - **Rectangle** : 1/2, 1/4, 1/8
+    - **Disque** : 1/2, 1/3, 1/4, 1/8
+    - **Maison** : 1/5, 1/10
 
 ## 🎨 Fractionnements multiples
 
@@ -95,9 +103,8 @@ Application sur **http://localhost:5173**
 ### Rectangle
 
 - **1/2** (3 types) : Verticaux, Horizontaux, Triangles diagonaux
-- **1/3** (2 types) : Verticaux, Horizontaux
-- **1/4** (5 types) : Rectangles verticaux, Rectangles horizontaux, Triangles médians, Triangles quadrants, **Grille 2×2**
-- **1/5 à 1/10** (2 types) : Verticaux, Horizontaux
+- **1/4** (5 types) : Rectangles verticaux, Rectangles horizontaux, Triangles médians, Triangles quadrants, Grille 2×2
+- **1/8** (2 types) : Verticaux, Horizontaux
 
 ### Disque
 

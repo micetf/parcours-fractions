@@ -8,9 +8,9 @@ export const PROGRESSION_EDUSCOL = {
             ],
             rectangle: [
                 { denominator: 2, name: "demi", plural: "demis" },
-                { denominator: 3, name: "tiers", plural: "tiers" },
+                // { denominator: 3, name: "tiers", plural: "tiers" },
                 { denominator: 4, name: "quart", plural: "quarts" },
-                { denominator: 5, name: "cinquième", plural: "cinquièmes" },
+                // { denominator: 5, name: "cinquième", plural: "cinquièmes" },
             ],
             disk: [
                 { denominator: 2, name: "demi", plural: "demis" },
@@ -29,12 +29,12 @@ export const PROGRESSION_EDUSCOL = {
             ],
             rectangle: [
                 { denominator: 2, name: "demi", plural: "demis" },
-                { denominator: 3, name: "tiers", plural: "tiers" },
+                // { denominator: 3, name: "tiers", plural: "tiers" },
                 { denominator: 4, name: "quart", plural: "quarts" },
-                { denominator: 5, name: "cinquième", plural: "cinquièmes" },
-                { denominator: 6, name: "sixième", plural: "sixièmes" },
+                // { denominator: 5, name: "cinquième", plural: "cinquièmes" },
+                // { denominator: 6, name: "sixième", plural: "sixièmes" },
                 { denominator: 8, name: "huitième", plural: "huitièmes" },
-                { denominator: 10, name: "dixième", plural: "dixièmes" },
+                // { denominator: 10, name: "dixième", plural: "dixièmes" },
             ],
             disk: [
                 { denominator: 2, name: "demi", plural: "demis" },
@@ -54,7 +54,7 @@ export const PROGRESSION_EDUSCOL = {
             ],
             rectangle: [
                 { denominator: 2, name: "demi", plural: "demis" },
-                { denominator: 3, name: "tiers", plural: "tiers" },
+                // { denominator: 3, name: "tiers", plural: "tiers" },
                 { denominator: 4, name: "quart", plural: "quarts" },
                 { denominator: 8, name: "huitième", plural: "huitièmes" },
             ],
