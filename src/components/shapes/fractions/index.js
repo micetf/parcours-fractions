@@ -9,4 +9,7 @@ export { default as SquareIsoscelesTriangleFraction } from "./SquareIsoscelesTri
 export { default as SquareRectangleThin8thFraction } from "./SquareRectangleThin8thFraction";
 export { default as SquareHalfRectangle8thFraction } from "./SquareHalfRectangle8thFraction";
 export { default as RectangleFraction } from "./RectangleFraction";
+export { default as RectangleDiagonalFraction } from "./RectangleDiagonalFraction";
+export { default as RectangleQuarterMedianFraction } from "./RectangleQuarterMedianFraction";
+export { default as RectangleQuarterQuadrantFraction } from "./RectangleQuarterQuadrantFraction";
 export { default as HouseFraction } from "./HouseFraction";

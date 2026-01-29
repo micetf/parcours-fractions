@@ -92,7 +92,10 @@ Application sur **http://localhost:5173**
 
 ### Rectangle
 
-- **1/2 à 1/5** (2 types) : Verticaux, Horizontaux
+- **1/2** (2 types) : Verticaux, Horizontaux
+- **1/3** (2 types) : Verticaux, Horizontaux
+- **1/4** (3 types) : Rectangles verticaux, Rectangles horizontaux, Triangles quarts
+- **1/5 à 1/10** (2 types) : Verticaux, Horizontaux
 
 ### Disque
 

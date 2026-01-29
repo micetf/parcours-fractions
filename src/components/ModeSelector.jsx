@@ -1,12 +1,6 @@
 export default function ModeSelector({ currentMode, onModeChange }) {
     const modes = [
         {
-            id: "autonomous",
-            name: "Mode Autonome",
-            icon: "🎯",
-            description: "Parcours EDUSCOL préétabli",
-        },
-        {
             id: "collective",
             name: "Mode Collectif",
             icon: "👨‍🏫",
@@ -18,6 +12,13 @@ export default function ModeSelector({ currentMode, onModeChange }) {
             icon: "📝",
             description: "Parcours personnalisé",
             disabled: true, // À venir
+        },
+        {
+            id: "autonomous",
+            name: "Mode Autonome",
+            icon: "🎯",
+            description: "Parcours EDUSCOL préétabli",
+            disabled: true,
         },
     ];
 

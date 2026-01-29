@@ -28,6 +28,8 @@ const SPLITTING_NAMES = {
     "isosceles-triangles": "Triangles isocèles",
     "thin-rectangle-triangles": "Triangles rectangles minces",
     "half-quarter-rectangles": "Rectangles demi-quart",
+    "quarter-median": "Triangle sur toute la largeur",
+    "quarter-quadrant": "Triangle sur demi-largeur",
     sectors: "Secteurs",
     default: "Standard",
 };

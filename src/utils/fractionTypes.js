@@ -68,6 +68,7 @@ export const SQUARE_SPLITTING_TYPES = {
 };
 
 export const RECTANGLE_SPLITTING_TYPES = {
+    // 1/2 : 3 types possibles (rectangles + diagonal)
     2: [
         {
             id: "vertical-rectangles",
@@ -79,8 +80,14 @@ export const RECTANGLE_SPLITTING_TYPES = {
             component: "RectangleFraction",
             props: { orientation: "horizontal" },
         },
+        {
+            id: "diagonal-triangles",
+            component: "RectangleDiagonalFraction",
+            props: {},
+        },
     ],
 
+    // 1/3 : 2 types (rectangles seulement)
     3: [
         {
             id: "vertical-rectangles",
@@ -94,7 +101,32 @@ export const RECTANGLE_SPLITTING_TYPES = {
         },
     ],
 
+    // 1/4 : 4 types possibles (rectangles + triangles)
     4: [
+        {
+            id: "vertical-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "vertical" },
+        },
+        {
+            id: "horizontal-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "horizontal" },
+        },
+        {
+            id: "quarter-median",
+            component: "RectangleQuarterMedianFraction",
+            props: {},
+        },
+        {
+            id: "quarter-quadrant",
+            component: "RectangleQuarterQuadrantFraction",
+            props: {},
+        },
+    ],
+
+    // 1/5 : 2 types (rectangles seulement)
+    5: [
         {
             id: "vertical-rectangles",
             component: "RectangleFraction",
@@ -107,7 +139,36 @@ export const RECTANGLE_SPLITTING_TYPES = {
         },
     ],
 
-    5: [
+    // 1/6 : 2 types (rectangles seulement)
+    6: [
+        {
+            id: "vertical-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "vertical" },
+        },
+        {
+            id: "horizontal-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "horizontal" },
+        },
+    ],
+
+    // 1/8 : 2 types (rectangles seulement)
+    8: [
+        {
+            id: "vertical-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "vertical" },
+        },
+        {
+            id: "horizontal-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "horizontal" },
+        },
+    ],
+
+    // 1/10 : 2 types (rectangles seulement)
+    10: [
         {
             id: "vertical-rectangles",
             component: "RectangleFraction",
@@ -126,6 +187,7 @@ export const DISK_SPLITTING_TYPES = {
     2: [{ id: "sectors", component: "DiskFraction", props: {} }],
     3: [{ id: "sectors", component: "DiskFraction", props: {} }],
     4: [{ id: "sectors", component: "DiskFraction", props: {} }],
+    8: [{ id: "sectors", component: "DiskFraction", props: {} }],
 };
 
 /**

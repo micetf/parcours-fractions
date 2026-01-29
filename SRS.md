@@ -19,6 +19,7 @@
 | 3.1     | 28/01/2026 | CPC Numérique | Correction géométrie triangle 1/4 + ajout triangles 1/8 - État Alpha v0.4.1 |
 | 3.2     | 28/01/2026 | CPC Numérique | Architecture contrôlée + rotation continue - État Alpha v0.4.2              |
 | 3.3     | 28/01/2026 | CPC Numérique | Optimisation fractionnements + UX sélection - Alpha v0.4.3                  |
+| 3.4     | 28/01/2026 | CPC Numérique | Ajout fractionnements triangle rectangle - État Alpha v0.4.4                |
 
 ---
 
@@ -704,7 +705,18 @@ Les callbacks `handleRotateSelected` et `handleFlipSelected` :
 
 #### EF-19 : Fractionnements du rectangle
 
-**Rectangle 1/2 à 1/5 (2 types)** :
+**Rectangle 1/2 (3 types)** :
+
+- Rectangles verticaux
+- Rectangles horizontaux
+- Triangles diagonaux
+  **Rectangle 1/4 (3 types)** :
+
+- Rectangles verticaux
+- Rectangles horizontaux
+- Triangles quarts (demi-rectangles coupés en diagonale)
+
+    **Rectangle 1/3 à 1/10 (2 types)** :
 
 - Rectangles verticaux
 - Rectangles horizontaux
@@ -1707,6 +1719,72 @@ export const SQUARE_SPLITTING_TYPES = {
             props: {},
         },
     ],
+};
+```
+
+\```
+
+#### Configuration des fractionnements du rectangle (v0.4.5)
+
+```javascript
+export const RECTANGLE_SPLITTING_TYPES = {
+    // 1/2 : 3 types possibles
+    2: [
+        {
+            id: "vertical-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "vertical" },
+        },
+        {
+            id: "horizontal-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "horizontal" },
+        },
+        {
+            id: "diagonal-triangles",
+            component: "RectangleDiagonalFraction",
+            props: {},
+        },
+    ],
+
+    // 1/3 : 2 types
+    3: [
+        {
+            id: "vertical-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "vertical" },
+        },
+        {
+            id: "horizontal-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "horizontal" },
+        },
+    ],
+
+    // 1/4 : 3 types possibles
+    4: [
+        {
+            id: "vertical-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "vertical" },
+        },
+        {
+            id: "horizontal-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "horizontal" },
+        },
+        {
+            id: "quarter-triangles",
+            component: "RectangleQuarterTriangleFraction",
+            props: {},
+        },
+    ],
+
+    // 1/5, 1/6, 1/8, 1/10 : inchangés (2 types)
+    5: [...],
+    6: [...],
+    8: [...],
+    10: [...],
 };
 ```
 

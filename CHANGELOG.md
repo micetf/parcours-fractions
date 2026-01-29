@@ -19,6 +19,52 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
+## [0.4.5] - 2026-01-28
+
+### Added
+
+#### Fractionnements en triangle pour les rectangles
+
+**Rectangle 1/2 diagonal** : Triangle formé par la diagonale du rectangle.
+
+- 2 positions possibles (diagonales opposées)
+- Composant : `RectangleDiagonalFraction.jsx`
+
+**Rectangle 1/4 triangles** : Triangles formés par demi-rectangles coupés en diagonale.
+
+- 8 positions possibles (4 demi-rectangles × 2 triangles)
+- Composant : `RectangleQuarterTriangleFraction.jsx`
+
+### Changed
+
+#### Configuration des fractionnements rectangle
+
+**Avant** :
+
+- 1/2 : 2 types (rectangles uniquement)
+- 1/4 : 2 types (rectangles uniquement)
+
+**Après** :
+
+- 1/2 : 3 types (rectangles + triangles diagonaux)
+- 1/4 : 3 types (rectangles + triangles quarts)
+
+### Technical Details
+
+**Fichiers créés** : 2
+
+- `src/components/shapes/fractions/RectangleDiagonalFraction.jsx`
+- `src/components/shapes/fractions/RectangleQuarterTriangleFraction.jsx`
+
+**Fichiers modifiés** : 4
+
+- `src/components/shapes/fractions/index.js`
+- `src/utils/fractionTypes.js`
+- `src/components/shapes/Piece.jsx`
+- `src/modes/CollectiveMode/FigureSelector.jsx`
+
+**Lignes de code ajoutées** : ~180
+
 ## [0.4.4] - 2026-01-28
 
 ### Fixed
