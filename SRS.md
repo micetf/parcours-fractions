@@ -9,7 +9,7 @@
 
 ---
 
-## Historique des révisions
+## 1. Historique des révisions (remplacer le tableau complet)
 
 | Version | Date       | Auteur        | Modifications                                                               |
 | ------- | ---------- | ------------- | --------------------------------------------------------------------------- |
@@ -22,8 +22,8 @@
 | 3.4     | 28/01/2026 | CPC Numérique | Ajout fractionnements triangle rectangle - État Alpha v0.4.4                |
 | 3.5     | 29/01/2026 | CPC Numérique | Refonte UX Mode Collectif pédagogique - État Alpha v0.4.6                   |
 | 3.6     | 29/01/2026 | CPC Numérique | Ajout fractionnement rectangle grille 2×2 - État Alpha v0.4.7               |
-
----
+| 3.7     | 29/01/2026 | CPC Numérique | Simplification fractionnements rectangle - État Alpha v0.4.8                |
+| 3.8     | 29/01/2026 | CPC Numérique | Ajout fractionnement rectangle forme en L - État Alpha v0.4.9               |
 
 ## 1. Introduction
 
@@ -747,11 +747,14 @@ Les callbacks `handleRotateSelected` et `handleFlipSelected` :
 
 #### EF-19 : Fractionnements du rectangle
 
-**Rectangle 1/2 (3 types)** :
+**Priorité :** Haute
+
+**Rectangle 1/2 (4 types)** :
 
 - Rectangles verticaux
 - Rectangles horizontaux
 - Triangles diagonaux
+- Forme en L (nouveauté v0.4.9)
 
 **Rectangle 1/4 (5 types)** :
 
@@ -759,9 +762,9 @@ Les callbacks `handleRotateSelected` et `handleFlipSelected` :
 - Rectangles horizontaux
 - Triangles quarts médians (toute la largeur)
 - Triangles quarts quadrants (demi-largeur)
-- **Grille 2×2 (petits rectangles)** ← NOUVEAU
+- Grille 2×2 (petits rectangles)
 
-**Rectangle 1/3 à 1/10 (2 types)** :
+**Rectangle 1/8 (2 types)** :
 
 - Rectangles verticaux
 - Rectangles horizontaux
@@ -1535,8 +1538,9 @@ export const PROGRESSION_EDUSCOL = {
 ✅ **CA-A17 :** Rotation continue sans retour arrière  
 ✅ **CA-A18 :** Boutons actifs indéfiniment (pas de closure stale)  
 ✅ **CA-A19 :** Toolbar fixe position prévisible (coin haut-droit)  
-⬜ **CA-A20 :** Tests sur les 4 navigateurs cibles  
-⬜ **CA-A21 :** Accessibilité WCAG AA validée
+✅ **CA-A20 :** Fractionnement rectangle forme en L disponible  
+⬜ **CA-A21 :** Tests sur les 4 navigateurs cibles  
+⬜ **CA-A22 :** Accessibilité WCAG AA validée
 
 ### Phase Beta (v0.5.0+)
 
@@ -1786,11 +1790,11 @@ export const SQUARE_SPLITTING_TYPES = {
 
 \```
 
-#### Configuration des fractionnements rectangle (v0.4.7)
+#### Configuration des fractionnements rectangle (v0.4.9)
 
 ```javascript
 export const RECTANGLE_SPLITTING_TYPES = {
-    // 1/2 : 3 types possibles
+    // 1/2 : 4 types possibles (v0.4.9 : +1 forme en L)
     2: [
         {
             id: "vertical-rectangles",
@@ -1807,19 +1811,10 @@ export const RECTANGLE_SPLITTING_TYPES = {
             component: "RectangleDiagonalFraction",
             props: {},
         },
-    ],
-
-    // 1/3 : 2 types
-    3: [
         {
-            id: "vertical-rectangles",
-            component: "RectangleFraction",
-            props: { orientation: "vertical" },
-        },
-        {
-            id: "horizontal-rectangles",
-            component: "RectangleFraction",
-            props: { orientation: "horizontal" },
+            id: "forme-en-l",
+            component: "RectangleLShapeFraction",
+            props: {},
         },
     ],
 
@@ -1852,11 +1847,19 @@ export const RECTANGLE_SPLITTING_TYPES = {
         },
     ],
 
-    // 1/5, 1/6, 1/8, 1/10 : 2 types (inchangés)
-    5: [...],
-    6: [...],
-    8: [...],
-    10: [...],
+    // 1/8 : 2 types (inchangés)
+    8: [
+        {
+            id: "vertical-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "vertical" },
+        },
+        {
+            id: "horizontal-rectangles",
+            component: "RectangleFraction",
+            props: { orientation: "horizontal" },
+        },
+    ],
 };
 ```
 
@@ -1987,8 +1990,8 @@ const [showTeacherInfo, setShowTeacherInfo] = useState(false);
 
 ---
 
-**Fin du document SRS v3.2 - COMPLET**
+**Fin du document SRS v3.8 - COMPLET**
 
-| Version | Date       | Auteur        | Modifications                                             |
-| ------- | ---------- | ------------- | --------------------------------------------------------- |
-| 3.2     | 28/01/2026 | CPC Numérique | Architecture contrôlée + rotation continue - Alpha v0.4.2 |
+| Version | Date       | Auteur        | Modifications                                            |
+| ------- | ---------- | ------------- | -------------------------------------------------------- |
+| 3.8     | 29/01/2026 | CPC Numérique | Ajout fractionnement rectangle forme en L - Alpha v0.4.9 |

@@ -19,6 +19,48 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
+## [0.4.9] - 2026-01-29
+
+### Added
+
+#### Fractionnement rectangle en forme de L
+
+**Rectangle 1/2 forme en L** : Deux formes complémentaires en L qui s'emboîtent.
+
+- Barre horizontale : largeur complète × 1/4 hauteur
+- Barre verticale : 1/2 largeur × hauteur variable
+- 2 positions possibles (L complémentaires)
+- Composant : `RectangleLShapeFraction.jsx`
+
+### Changed
+
+#### Configuration des fractionnements rectangle
+
+**Avant** :
+
+- 1/2 : 3 types (rectangles + diagonale)
+
+**Après** :
+
+- 1/2 : 4 types (rectangles + diagonale + forme en L)
+
+### Technical Details
+
+**Fichiers créés** : 1
+
+- `src/components/shapes/fractions/RectangleLShapeFraction.jsx`
+
+**Fichiers modifiés** : 4
+
+- `src/components/shapes/fractions/index.js`
+- `src/utils/fractionTypes.js`
+- `src/components/shapes/Piece.jsx`
+- `src/modes/CollectiveMode/FigureSelector.jsx`
+
+**Lignes de code ajoutées** : ~90
+
+---
+
 ## [0.4.8] - 2026-01-29
 
 ### Changed

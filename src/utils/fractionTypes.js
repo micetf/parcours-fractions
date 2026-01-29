@@ -68,7 +68,7 @@ export const SQUARE_SPLITTING_TYPES = {
 };
 
 export const RECTANGLE_SPLITTING_TYPES = {
-    // 1/2 : 3 types possibles (rectangles + diagonal)
+    // 1/2 : 4 types possibles (rectangles + diagonal + L)
     2: [
         {
             id: "vertical-rectangles",
@@ -83,6 +83,12 @@ export const RECTANGLE_SPLITTING_TYPES = {
         {
             id: "diagonal-triangles",
             component: "RectangleDiagonalFraction",
+            props: {},
+        },
+        // NOUVEAU : Forme en L
+        {
+            id: "Forme en L",
+            component: "RectangleLShapeFraction",
             props: {},
         },
     ],

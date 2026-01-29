@@ -6,7 +6,7 @@ Application web éducative pour l'apprentissage des fractions à l'école primai
 [![Vite](https://img.shields.io/badge/Vite-5.4-646cff?logo=vite)](https://vitejs.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?logo=tailwindcss)](https://tailwindcss.com)
 [![EDUSCOL](https://img.shields.io/badge/Conforme-EDUSCOL%202025-green)](https://eduscol.education.fr)
-![Version](https://img.shields.io/badge/Version-0.4.7--alpha-blue)
+![Version](https://img.shields.io/badge/Version-0.4.9--alpha-blue)
 
 ---
 
@@ -54,12 +54,12 @@ Application sur **http://localhost:5173**
 
 ---
 
-## 📝 Dernière version : v0.4.7 (29/01/2026)
+## 📝 Dernière version : v0.4.9 (29/01/2026)
 
 **Nouveau fractionnement :**
 
-- ✨ **Rectangle 1/4 grille 2×2** : Petits rectangles (80×128 px)
-- 📊 **Rectangle 1/4** : 4 → **5 types** disponibles
+- ✨ **Rectangle 1/2 forme en L** : Deux formes complémentaires qui s'emboîtent
+- 📊 **Rectangle 1/2** : 3 → **4 types** disponibles
 
 **Détails** : Voir [CHANGELOG.md](./CHANGELOG.md)
 
@@ -102,7 +102,7 @@ Application sur **http://localhost:5173**
 
 ### Rectangle
 
-- **1/2** (3 types) : Verticaux, Horizontaux, Triangles diagonaux
+- **1/2** (4 types) : Verticaux, Horizontaux, Triangles diagonaux, Forme en L
 - **1/4** (5 types) : Rectangles verticaux, Rectangles horizontaux, Triangles médians, Triangles quadrants, Grille 2×2
 - **1/8** (2 types) : Verticaux, Horizontaux
 
@@ -173,7 +173,7 @@ const handleRotate = () =>
 - ✅ Ajout/retrait morceaux
 - ✅ Contrôles permanents (pas de timer)
 - ✅ Tous les boutons actifs
-- ✅ Nouveau fractionnement grille 2×2
+- ✅ Nouveau fractionnement forme en L
 
 ---
 
@@ -190,7 +190,7 @@ const handleRotate = () =>
 
 ---
 
-## 🐛 Problèmes connus (v0.4.7)
+## 🐛 Problèmes connus (v0.4.9)
 
 - Pas de clippage automatique (Mode Collectif)
 - Pas de mode plein écran
