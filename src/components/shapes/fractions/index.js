@@ -12,4 +12,5 @@ export { default as RectangleFraction } from "./RectangleFraction";
 export { default as RectangleDiagonalFraction } from "./RectangleDiagonalFraction";
 export { default as RectangleQuarterMedianFraction } from "./RectangleQuarterMedianFraction";
 export { default as RectangleQuarterQuadrantFraction } from "./RectangleQuarterQuadrantFraction";
+export { default as RectangleQuarterRectangleFraction } from "./RectangleQuarterRectangleFraction";
 export { default as HouseFraction } from "./HouseFraction";

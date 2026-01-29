@@ -13,6 +13,7 @@ import {
     RectangleDiagonalFraction,
     RectangleQuarterMedianFraction,
     RectangleQuarterQuadrantFraction,
+    RectangleQuarterRectangleFraction,
     HouseFraction,
 } from "./fractions";
 
@@ -30,6 +31,7 @@ const FRACTION_COMPONENTS = {
     RectangleDiagonalFraction,
     RectangleQuarterMedianFraction,
     RectangleQuarterQuadrantFraction,
+    RectangleQuarterRectangleFraction,
     HouseFraction,
 };
 

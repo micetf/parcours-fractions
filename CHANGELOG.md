@@ -19,6 +19,48 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
+## [0.4.7] - 2026-01-29
+
+### Added
+
+#### Fractionnement rectangle en grille 2×2
+
+**Rectangle 1/4 grille** : Petits rectangles de demi-largeur × demi-longueur.
+
+- 4 positions possibles (grille 2×2)
+- Dimensions : 80×128 px (avec proportions par défaut 1×1.6)
+- Aire : 10 240 px² = 1/4 de 40 960 px² ✓
+- Composant : `RectangleQuarterRectangleFraction.jsx`
+
+### Changed
+
+#### Configuration des fractionnements rectangle
+
+**Avant** :
+
+- 1/4 : 4 types (rectangles + triangles)
+
+**Après** :
+
+- 1/4 : 5 types (rectangles + triangles + grille)
+
+### Technical Details
+
+**Fichiers créés** : 1
+
+- `src/components/shapes/fractions/RectangleQuarterRectangleFraction.jsx`
+
+**Fichiers modifiés** : 4
+
+- `src/components/shapes/fractions/index.js`
+- `src/utils/fractionTypes.js`
+- `src/components/shapes/Piece.jsx`
+- `src/modes/CollectiveMode/FigureSelector.jsx`
+
+**Lignes de code ajoutées** : ~80
+
+---
+
 ## [0.4.6] - 2026-01-29
 
 ### Changed - Mode Collectif UX
@@ -311,4 +353,4 @@ Lignes modifiées : ~80
 
 ---
 
-**Dernière mise à jour :** 28 janvier 2026
+**Dernière mise à jour :** 29 janvier 2026

@@ -2,10 +2,10 @@
 
 ## Application Web d'Apprentissage des Fractions
 
-**Version :** 3.3  
-**Date :** 28 janvier 2026  
+**Version :** 3.6  
+**Date dernière modif :** 29 janvier 2026  
 **Auteur :** Conseiller Pédagogique de Circonscription Numérique  
-**Statut :** En développement - Alpha v0.4.3
+**Statut :** En développement - Alpha v0.4.6
 
 ---
 
@@ -21,6 +21,7 @@
 | 3.3     | 28/01/2026 | CPC Numérique | Optimisation fractionnements + UX sélection - Alpha v0.4.3                  |
 | 3.4     | 28/01/2026 | CPC Numérique | Ajout fractionnements triangle rectangle - État Alpha v0.4.4                |
 | 3.5     | 29/01/2026 | CPC Numérique | Refonte UX Mode Collectif pédagogique - État Alpha v0.4.6                   |
+| 3.6     | 29/01/2026 | CPC Numérique | Ajout fractionnement rectangle grille 2×2 - État Alpha v0.4.7               |
 
 ---
 
@@ -751,13 +752,16 @@ Les callbacks `handleRotateSelected` et `handleFlipSelected` :
 - Rectangles verticaux
 - Rectangles horizontaux
 - Triangles diagonaux
-  **Rectangle 1/4 (3 types)** :
+
+**Rectangle 1/4 (5 types)** :
 
 - Rectangles verticaux
 - Rectangles horizontaux
-- Triangles quarts (demi-rectangles coupés en diagonale)
+- Triangles quarts médians (toute la largeur)
+- Triangles quarts quadrants (demi-largeur)
+- **Grille 2×2 (petits rectangles)** ← NOUVEAU
 
-    **Rectangle 1/3 à 1/10 (2 types)** :
+**Rectangle 1/3 à 1/10 (2 types)** :
 
 - Rectangles verticaux
 - Rectangles horizontaux
@@ -1782,7 +1786,7 @@ export const SQUARE_SPLITTING_TYPES = {
 
 \```
 
-#### Configuration des fractionnements du rectangle (v0.4.5)
+#### Configuration des fractionnements rectangle (v0.4.7)
 
 ```javascript
 export const RECTANGLE_SPLITTING_TYPES = {
@@ -1819,7 +1823,7 @@ export const RECTANGLE_SPLITTING_TYPES = {
         },
     ],
 
-    // 1/4 : 3 types possibles
+    // 1/4 : 5 types possibles (v0.4.7 : +1 type grille)
     4: [
         {
             id: "vertical-rectangles",
@@ -1832,21 +1836,29 @@ export const RECTANGLE_SPLITTING_TYPES = {
             props: { orientation: "horizontal" },
         },
         {
-            id: "quarter-triangles",
-            component: "RectangleQuarterTriangleFraction",
+            id: "quarter-median",
+            component: "RectangleQuarterMedianFraction",
+            props: {},
+        },
+        {
+            id: "quarter-quadrant",
+            component: "RectangleQuarterQuadrantFraction",
+            props: {},
+        },
+        {
+            id: "quarter-grid",
+            component: "RectangleQuarterRectangleFraction",
             props: {},
         },
     ],
 
-    // 1/5, 1/6, 1/8, 1/10 : inchangés (2 types)
+    // 1/5, 1/6, 1/8, 1/10 : 2 types (inchangés)
     5: [...],
     6: [...],
     8: [...],
     10: [...],
 };
 ```
-
-\```
 
 #### Configuration automatique Mode Collectif (v0.4.6)
 

@@ -101,7 +101,7 @@ export const RECTANGLE_SPLITTING_TYPES = {
         },
     ],
 
-    // 1/4 : 4 types possibles (rectangles + triangles)
+    // 1/4 : 5 types possibles (rectangles + triangles + grille)
     4: [
         {
             id: "vertical-rectangles",
@@ -121,6 +121,11 @@ export const RECTANGLE_SPLITTING_TYPES = {
         {
             id: "quarter-quadrant",
             component: "RectangleQuarterQuadrantFraction",
+            props: {},
+        },
+        {
+            id: "quarter-grid",
+            component: "RectangleQuarterRectangleFraction",
             props: {},
         },
     ],

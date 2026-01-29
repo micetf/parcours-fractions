@@ -6,7 +6,7 @@ Application web éducative pour l'apprentissage des fractions à l'école primai
 [![Vite](https://img.shields.io/badge/Vite-5.4-646cff?logo=vite)](https://vitejs.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?logo=tailwindcss)](https://tailwindcss.com)
 [![EDUSCOL](https://img.shields.io/badge/Conforme-EDUSCOL%202025-green)](https://eduscol.education.fr)
-![Version](https://img.shields.io/badge/Version-0.4.3--alpha-blue)
+![Version](https://img.shields.io/badge/Version-0.4.7--alpha-blue)
 
 ---
 
@@ -54,16 +54,18 @@ Application sur **http://localhost:5173**
 
 ---
 
-## 📝 Dernière version : v0.4.3 (28/01/2026)
+## 📝 Dernière version : v0.4.7 (29/01/2026)
 
-**Améliorations UX :**
+**Nouveau fractionnement :**
 
-- ✨ **Nouveau fractionnement 1/8** : Rectangle 80×40 px
-- 🐛 **Suppression redondance** : Horizontal/vertical carré
-- ⚡ **Zone cliquable précise** : Restreinte à la forme réelle
-- ⚡ **Contour adaptatif** : Suit la forme (drop-shadow SVG)
+- ✨ **Rectangle 1/4 grille 2×2** : Petits rectangles (80×128 px)
+- 📊 **Rectangle 1/4** : 4 → **5 types** disponibles
 
-**Détails** : Voir [CHANGELOG.md](./CHANGELOG.md)## ⚙️ Configuration EDUSCOL 2025
+**Détails** : Voir [CHANGELOG.md](./CHANGELOG.md)
+
+---
+
+## ⚙️ Configuration EDUSCOL 2025
 
 ### CE1 (18 exercices)
 
@@ -88,13 +90,13 @@ Application sur **http://localhost:5173**
 
 - **1/2** (2 types) : Rectangles verticaux, Triangles diagonaux
 - **1/4** (4 types) : Rectangles, Triangles coins, Petits carrés, Croix
-- **1/8** (5 types) : Rectangles verticaux, **Rectangles demi-quart**, Triangles isocèles, Triangles minces
+- **1/8** (4 types) : Rectangles verticaux, Rectangles demi-quart, Triangles isocèles, Triangles minces
 
 ### Rectangle
 
-- **1/2** (2 types) : Verticaux, Horizontaux
+- **1/2** (3 types) : Verticaux, Horizontaux, Triangles diagonaux
 - **1/3** (2 types) : Verticaux, Horizontaux
-- **1/4** (3 types) : Rectangles verticaux, Rectangles horizontaux, Triangles quarts
+- **1/4** (5 types) : Rectangles verticaux, Rectangles horizontaux, Triangles médians, Triangles quadrants, **Grille 2×2**
 - **1/5 à 1/10** (2 types) : Verticaux, Horizontaux
 
 ### Disque
@@ -164,6 +166,7 @@ const handleRotate = () =>
 - ✅ Ajout/retrait morceaux
 - ✅ Contrôles permanents (pas de timer)
 - ✅ Tous les boutons actifs
+- ✅ Nouveau fractionnement grille 2×2
 
 ---
 
@@ -180,7 +183,7 @@ const handleRotate = () =>
 
 ---
 
-## 🐛 Problèmes connus (v0.4.2)
+## 🐛 Problèmes connus (v0.4.7)
 
 - Pas de clippage automatique (Mode Collectif)
 - Pas de mode plein écran
@@ -228,4 +231,4 @@ Académie Grenoble | Ardèche
 
 **Développé avec ❤️ pour l'éducation**
 
-_Dernière mise à jour : 28 janvier 2026_
+_Dernière mise à jour : 29 janvier 2026_

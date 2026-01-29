@@ -28,6 +28,7 @@ const SPLITTING_NAMES = {
     "half-quarter-rectangles": "Rectangles demi-quart",
     "quarter-median": "Triangle sur toute la largeur",
     "quarter-quadrant": "Triangle sur demi-largeur",
+    "quarter-grid": "Grille 2×2 (petits rectangles)",
     sectors: "Secteurs",
     default: "Standard",
 };
