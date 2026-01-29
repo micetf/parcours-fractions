@@ -14,7 +14,11 @@ import {
     RectangleQuarterMedianFraction,
     RectangleQuarterQuadrantFraction,
     RectangleQuarterRectangleFraction,
+    RectangleQuarterLShapeFraction,
     RectangleLShapeFraction,
+    RectangleEighthChocolateFraction,
+    RectangleEighthHalfTriangleFraction,
+    RectangleEighthSmallLShapeFraction,
     HouseFraction,
 } from "./fractions";
 
@@ -33,6 +37,10 @@ const FRACTION_COMPONENTS = {
     RectangleQuarterMedianFraction,
     RectangleQuarterQuadrantFraction,
     RectangleQuarterRectangleFraction,
+    RectangleQuarterLShapeFraction,
+    RectangleEighthChocolateFraction,
+    RectangleEighthHalfTriangleFraction,
+    RectangleEighthSmallLShapeFraction,
     RectangleLShapeFraction,
     HouseFraction,
 };

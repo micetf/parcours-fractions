@@ -15,6 +15,10 @@ export { default as RectangleDiagonalFraction } from "./RectangleDiagonalFractio
 export { default as RectangleQuarterMedianFraction } from "./RectangleQuarterMedianFraction";
 export { default as RectangleQuarterQuadrantFraction } from "./RectangleQuarterQuadrantFraction";
 export { default as RectangleQuarterRectangleFraction } from "./RectangleQuarterRectangleFraction";
+export { default as RectangleQuarterLShapeFraction } from "./RectangleQuarterLShapeFraction";
 export { default as RectangleLShapeFraction } from "./RectangleLShapeFraction";
+export { default as RectangleEighthChocolateFraction } from "./RectangleEighthChocolateFraction";
+export { default as RectangleEighthHalfTriangleFraction } from "./RectangleEighthHalfTriangleFraction";
+export { default as RectangleEighthSmallLShapeFraction } from "./RectangleEighthSmallLShapeFraction";
 
 export { default as HouseFraction } from "./HouseFraction";

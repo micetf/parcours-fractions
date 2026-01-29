@@ -29,6 +29,11 @@ const SPLITTING_NAMES = {
     "quarter-median": "Triangle sur toute la largeur",
     "quarter-quadrant": "Triangle sur demi-largeur",
     "quarter-grid": "Grille 2×2 (petits rectangles)",
+    "l-shape": "Forme en L",
+    "quarter-l-shape": "Forme en L",
+    "chocolate-grid": "Carreaux de chocolat",
+    "half-triangles": "Triangles rectangles (grille 2×2)",
+    "small-l-shapes": "Petites formes en L",
     sectors: "Secteurs",
     default: "Standard",
 };

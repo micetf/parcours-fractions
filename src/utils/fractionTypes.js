@@ -87,7 +87,7 @@ export const RECTANGLE_SPLITTING_TYPES = {
         },
         // NOUVEAU : Forme en L
         {
-            id: "Forme en L",
+            id: "l-shape",
             component: "RectangleLShapeFraction",
             props: {},
         },
@@ -107,7 +107,7 @@ export const RECTANGLE_SPLITTING_TYPES = {
     //     },
     // ],
 
-    // 1/4 : 5 types possibles (rectangles + triangles + grille)
+    // 1/4 : 6 types possibles (rectangles + triangles + grille + L)
     4: [
         {
             id: "vertical-rectangles",
@@ -132,6 +132,11 @@ export const RECTANGLE_SPLITTING_TYPES = {
         {
             id: "quarter-grid",
             component: "RectangleQuarterRectangleFraction",
+            props: {},
+        },
+        {
+            id: "quarter-l-shape",
+            component: "RectangleQuarterLShapeFraction",
             props: {},
         },
     ],
@@ -164,7 +169,7 @@ export const RECTANGLE_SPLITTING_TYPES = {
     //     },
     // ],
 
-    // 1/8 : 2 types (rectangles seulement)
+    // 1/8 : 5 types (rectangles + grille chocolat + triangles + petits L)
     8: [
         {
             id: "vertical-rectangles",
@@ -175,6 +180,21 @@ export const RECTANGLE_SPLITTING_TYPES = {
             id: "horizontal-rectangles",
             component: "RectangleFraction",
             props: { orientation: "horizontal" },
+        },
+        {
+            id: "chocolate-grid",
+            component: "RectangleEighthChocolateFraction",
+            props: {},
+        },
+        {
+            id: "half-triangles",
+            component: "RectangleEighthHalfTriangleFraction",
+            props: {},
+        },
+        {
+            id: "small-l-shapes",
+            component: "RectangleEighthSmallLShapeFraction",
+            props: {},
         },
     ],
 
