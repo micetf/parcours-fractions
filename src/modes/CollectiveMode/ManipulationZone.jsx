@@ -85,9 +85,17 @@ export default function ManipulationZone({ config }) {
     };
 
     const handleAddPiece = () => {
+        // ✅ CORRECTION : Position variée pour chaque nouveau morceau
+        // Grille 3 colonnes avec espacement
+        const col = pieces.length % 3;
+        const row = Math.floor(pieces.length / 3);
+
         const newPiece = {
             id: `piece-${Date.now()}`,
-            position: { x: 200, y: 200 },
+            position: {
+                x: 100 + col * 120, // Espacement horizontal 120px
+                y: 100 + row * 120, // Espacement vertical 120px
+            },
             rotation: 0,
             isFlipped: false,
         };

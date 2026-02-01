@@ -6,7 +6,7 @@ Application web éducative pour l'apprentissage des fractions à l'école primai
 [![Vite](https://img.shields.io/badge/Vite-5.4-646cff?logo=vite)](https://vitejs.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?logo=tailwindcss)](https://tailwindcss.com)
 [![EDUSCOL](https://img.shields.io/badge/Conforme-EDUSCOL%202025-green)](https://eduscol.education.fr)
-![Version](https://img.shields.io/badge/Version-0.4.9--alpha-blue)
+![Version](https://img.shields.io/badge/Version-0.5.0--alpha-blue)
 
 ---
 
@@ -29,6 +29,7 @@ Outil de démonstration enseignant :
 - Démarrage à 0 morceau (ajout/retrait à la volée)
 - Infos enseignant masquables (ne pas projeter)
 - Questions pédagogiques sans révéler les réponses
+- **Position variée des morceaux** (grille 3 colonnes)
 
 ### 📝 Mode Guidé _(à venir)_
 
@@ -54,12 +55,15 @@ Application sur **http://localhost:5173**
 
 ---
 
-## 📝 Dernière version : v0.4.9 (29/01/2026)
+## 📝 Dernière version : v0.5.0 (29/01/2026)
 
-**Nouveau fractionnement :**
+**Refonte complète du fractionnement maison :**
 
-- ✨ **Rectangle 1/2 forme en L** : Deux formes complémentaires qui s'emboîtent
-- 📊 **Rectangle 1/2** : 3 → **4 types** disponibles
+- ✨ **Corps carré** : 120×120px (au lieu de 120×100px)
+- 🏠 **1/5 = Toit complet** : Triangle unique (au lieu de toit + 4 rectangles)
+- 🔺 **1/10 = Demi-toit** : 2 triangles rectangles uniquement (au lieu de 2 + 8 rectangles)
+- 📐 **Géométrie exacte** : Aire totale 18 000 px² (au lieu de 15 000 px²)
+- 🎯 **Morceaux visibles** : Position variée en grille 3×N (au lieu de superposition)
 
 **Détails** : Voir [CHANGELOG.md](./CHANGELOG.md)
 
@@ -109,6 +113,11 @@ Application sur **http://localhost:5173**
 ### Disque
 
 - **Tous** (1 type) : Secteurs angulaires
+
+### Maison ✨ (Nouveau)
+
+- **1/5** (1 seul morceau) : **Toit complet** (triangle 120×60px)
+- **1/10** (2 morceaux) : **Demi-toits** (triangles rectangles 60×60px)
 
 ---
 
@@ -173,7 +182,8 @@ const handleRotate = () =>
 - ✅ Ajout/retrait morceaux
 - ✅ Contrôles permanents (pas de timer)
 - ✅ Tous les boutons actifs
-- ✅ Nouveau fractionnement forme en L
+- ✅ Fractionnement maison 1/5 et 1/10
+- ✅ **Morceaux visibles** (grille 3×N)
 
 ---
 
@@ -190,7 +200,7 @@ const handleRotate = () =>
 
 ---
 
-## 🐛 Problèmes connus (v0.4.9)
+## 🐛 Problèmes connus (v0.5.0)
 
 - Pas de clippage automatique (Mode Collectif)
 - Pas de mode plein écran
@@ -201,7 +211,7 @@ const handleRotate = () =>
 
 ## 🗺️ Roadmap
 
-### v0.5.0
+### v0.6.0
 
 - Clippage automatique
 - Mode plein écran

@@ -85,27 +85,12 @@ export const RECTANGLE_SPLITTING_TYPES = {
             component: "RectangleDiagonalFraction",
             props: {},
         },
-        // NOUVEAU : Forme en L
         {
             id: "l-shape",
             component: "RectangleLShapeFraction",
             props: {},
         },
     ],
-
-    // 1/3 : 2 types (rectangles seulement)
-    // 3: [
-    //     {
-    //         id: "vertical-rectangles",
-    //         component: "RectangleFraction",
-    //         props: { orientation: "vertical" },
-    //     },
-    //     {
-    //         id: "horizontal-rectangles",
-    //         component: "RectangleFraction",
-    //         props: { orientation: "horizontal" },
-    //     },
-    // ],
 
     // 1/4 : 6 types possibles (rectangles + triangles + grille + L)
     4: [
@@ -141,34 +126,6 @@ export const RECTANGLE_SPLITTING_TYPES = {
         },
     ],
 
-    // 1/5 : 2 types (rectangles seulement)
-    // 5: [
-    //     {
-    //         id: "vertical-rectangles",
-    //         component: "RectangleFraction",
-    //         props: { orientation: "vertical" },
-    //     },
-    //     {
-    //         id: "horizontal-rectangles",
-    //         component: "RectangleFraction",
-    //         props: { orientation: "horizontal" },
-    //     },
-    // ],
-
-    // 1/6 : 2 types (rectangles seulement)
-    // 6: [
-    //     {
-    //         id: "vertical-rectangles",
-    //         component: "RectangleFraction",
-    //         props: { orientation: "vertical" },
-    //     },
-    //     {
-    //         id: "horizontal-rectangles",
-    //         component: "RectangleFraction",
-    //         props: { orientation: "horizontal" },
-    //     },
-    // ],
-
     // 1/8 : 5 types (rectangles + grille chocolat + triangles + petits L)
     8: [
         {
@@ -197,20 +154,6 @@ export const RECTANGLE_SPLITTING_TYPES = {
             props: {},
         },
     ],
-
-    // 1/10 : 2 types (rectangles seulement)
-    // 10: [
-    //     {
-    //         id: "vertical-rectangles",
-    //         component: "RectangleFraction",
-    //         props: { orientation: "vertical" },
-    //     },
-    //     {
-    //         id: "horizontal-rectangles",
-    //         component: "RectangleFraction",
-    //         props: { orientation: "horizontal" },
-    //     },
-    // ],
 };
 
 export const DISK_SPLITTING_TYPES = {
@@ -219,6 +162,26 @@ export const DISK_SPLITTING_TYPES = {
     3: [{ id: "sectors", component: "DiskFraction", props: {} }],
     4: [{ id: "sectors", component: "DiskFraction", props: {} }],
     8: [{ id: "sectors", component: "DiskFraction", props: {} }],
+};
+
+export const HOUSE_SPLITTING_TYPES = {
+    // 1/5 : Toit complet (triangle) + 4 rectangles verticaux
+    5: [
+        {
+            id: "roof-and-base",
+            component: "HouseFifthFraction",
+            props: {},
+        },
+    ],
+
+    // 1/10 : 2 demi-toits (triangles rectangles) + 8 rectangles verticaux
+    10: [
+        {
+            id: "half-roofs",
+            component: "HouseTenthFraction",
+            props: {},
+        },
+    ],
 };
 
 /**
@@ -238,11 +201,8 @@ export function getRandomSplittingType(figure, denominator) {
             types = DISK_SPLITTING_TYPES[denominator];
             break;
         case "house":
-            return {
-                id: "default",
-                component: "HouseFraction",
-                props: {},
-            };
+            types = HOUSE_SPLITTING_TYPES[denominator];
+            break;
         default:
             return null;
     }

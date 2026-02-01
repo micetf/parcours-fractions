@@ -6,11 +6,11 @@ export default function House({
     proportions = { roofHeight: 0.5 },
 }) {
     const baseWidth = 120;
-    const squareHeight = 100;
+    const squareHeight = 120;
     const roofHeight = squareHeight * proportions.roofHeight;
 
     const x = 40;
-    const squareY = 100 - squareHeight / 2;
+    const squareY = 120 - squareHeight / 2;
     const roofTop = squareY - roofHeight;
 
     return (

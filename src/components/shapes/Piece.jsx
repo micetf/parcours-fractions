@@ -19,7 +19,8 @@ import {
     RectangleEighthChocolateFraction,
     RectangleEighthHalfTriangleFraction,
     RectangleEighthSmallLShapeFraction,
-    HouseFraction,
+    HouseFifthFraction,
+    HouseTenthFraction,
 } from "./fractions";
 
 const FRACTION_COMPONENTS = {
@@ -42,7 +43,8 @@ const FRACTION_COMPONENTS = {
     RectangleEighthHalfTriangleFraction,
     RectangleEighthSmallLShapeFraction,
     RectangleLShapeFraction,
-    HouseFraction,
+    HouseFifthFraction,
+    HouseTenthFraction,
 };
 
 export default function Piece({
@@ -144,7 +146,7 @@ export default function Piece({
             disk: DiskFraction,
             square: SquareFraction,
             rectangle: RectangleFraction,
-            house: HouseFraction,
+            house: HouseFifthFraction,
         };
         FractionComponent = legacyMapping[shape];
     }

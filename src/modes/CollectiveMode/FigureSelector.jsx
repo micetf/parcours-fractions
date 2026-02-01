@@ -4,16 +4,14 @@ import {
     SQUARE_SPLITTING_TYPES,
     RECTANGLE_SPLITTING_TYPES,
     DISK_SPLITTING_TYPES,
+    HOUSE_SPLITTING_TYPES,
 } from "../../utils/fractionTypes";
 
 const SPLITTING_CONFIG = {
     square: SQUARE_SPLITTING_TYPES,
     rectangle: RECTANGLE_SPLITTING_TYPES,
     disk: DISK_SPLITTING_TYPES,
-    house: {
-        5: [{ id: "default", component: "HouseFraction", props: {} }],
-        10: [{ id: "default", component: "HouseFraction", props: {} }],
-    },
+    house: HOUSE_SPLITTING_TYPES,
 };
 
 const SPLITTING_NAMES = {
@@ -35,7 +33,8 @@ const SPLITTING_NAMES = {
     "half-triangles": "Triangles rectangles (grille 2×2)",
     "small-l-shapes": "Petites formes en L",
     sectors: "Secteurs",
-    default: "Standard",
+    "roof-and-base": "Standard",
+    "half-roofs": "Standard",
 };
 
 const FRACTION_NAMES = {

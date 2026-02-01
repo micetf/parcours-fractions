@@ -10,7 +10,7 @@ function App() {
     // Sélection du mode (sauvegardé séparément)
     const [currentMode, setCurrentMode] = useLocalStorage(
         "fractions-mode",
-        "autonomous"
+        "collective"
     ); // autonomous, collective, guided
 
     // ===== MODE AUTONOME (code existant) =====

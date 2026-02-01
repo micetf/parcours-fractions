@@ -25,7 +25,7 @@ export default function RectangleLShapeFraction({
     const barH = height / 4;
     // Barre verticale : 1/2 largeur × 3/4 hauteur
     const barW = width / 2;
-    const barV = (height * 3) / 8;
+    const barV = height / 2;
 
     // 2 formes en L complémentaires
     const paths = [

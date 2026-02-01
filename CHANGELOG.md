@@ -19,6 +19,89 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
+## [0.5.0] - 2026-01-29
+
+### Changed - Refonte complète du fractionnement maison ✨
+
+#### Correction géométrique de la maison
+
+**Corps de la maison**
+
+- Avant : Rectangle 120×100px
+- Après : **Carré 120×120px** (même dimension que la base du toit)
+- Justification : Cohérence géométrique avec la base du toit
+
+**Nouvelles dimensions**
+
+- Corps : carré 120×120px = 14 400 px²
+- Toit : triangle 120×60px = 3 600 px²
+- **Aire totale : 18 000 px²** (au lieu de 15 000 px²)
+
+#### Fractionnement 1/5 (cinquième)
+
+**Avant** : Triangle toit + 4 rectangles verticaux (5 morceaux)
+
+**Après** : **Triangle du toit UNIQUEMENT** (1 seul morceau)
+
+- Un cinquième de la maison = le toit complet
+- Aire : 3 600 px² = 18 000 / 5 ✓
+- Cohérence pédagogique : fraction simple et visuelle
+
+#### Fractionnement 1/10 (dixième)
+
+**Avant** : 2 demi-toits + 8 rectangles verticaux (10 morceaux)
+
+**Après** : **2 demi-toits UNIQUEMENT** (2 morceaux)
+
+- Un dixième = triangle rectangle (demi-toit)
+- Aire : 1 800 px² = 18 000 / 10 ✓
+- Index 0 : demi-toit gauche
+- Index 1 : demi-toit droit
+
+### Added
+
+#### Position variée des morceaux en mode collectif
+
+**Problème résolu** : Tous les morceaux ajoutés apparaissaient superposés à (200, 200)
+
+**Solution** : Grille automatique 3 colonnes
+
+```javascript
+const col = pieces.length % 3;
+const row = Math.floor(pieces.length / 3);
+
+position: {
+    x: 100 + col * 120,  // Espacement horizontal 120px
+    y: 100 + row * 120   // Espacement vertical 120px
+}
+```
+
+**Résultat** : Tous les morceaux sont visibles dès l'ajout
+
+### Technical Details
+
+**Fichiers créés** : 2
+
+- `src/components/shapes/fractions/HouseFifthFraction.jsx`
+- `src/components/shapes/fractions/HouseTenthFraction.jsx`
+
+**Fichiers supprimés** : 1
+
+- `src/components/shapes/fractions/HouseFraction.jsx` (ancien système)
+
+**Fichiers modifiés** : 6
+
+- `src/components/shapes/figures/House.jsx` (squareHeight: 100 → 120)
+- `src/components/shapes/fractions/index.js` (exports mis à jour)
+- `src/components/shapes/Piece.jsx` (imports mis à jour)
+- `src/utils/fractionTypes.js` (HOUSE_SPLITTING_TYPES refait)
+- `src/modes/CollectiveMode/FigureSelector.jsx` (noms de découpe)
+- `src/modes/CollectiveMode/ManipulationZone.jsx` (positions variées)
+
+**Lignes de code** : ~400 modifiées
+
+---
+
 ## [0.4.9] - 2026-01-29
 
 ### Added

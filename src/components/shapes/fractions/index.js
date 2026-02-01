@@ -21,4 +21,5 @@ export { default as RectangleEighthChocolateFraction } from "./RectangleEighthCh
 export { default as RectangleEighthHalfTriangleFraction } from "./RectangleEighthHalfTriangleFraction";
 export { default as RectangleEighthSmallLShapeFraction } from "./RectangleEighthSmallLShapeFraction";
 
-export { default as HouseFraction } from "./HouseFraction";
+export { default as HouseFifthFraction } from "./HouseFifthFraction";
+export { default as HouseTenthFraction } from "./HouseTenthFraction";
